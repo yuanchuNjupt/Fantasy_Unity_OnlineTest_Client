@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d7339a332234514b5092c4d3f5b432f, type: 3}
+  m_Name: "\u91CD\u51FB2"
+  m_EditorClassIdentifier: 
+  _comboName: "\u91CD\u51FB2"
+  _damage: 20
+  _comboHitName:
+  - "\u6B63\u4E2D\u80F8\u4E0D\u79FB\u52A8"
+  - "\u4E0B\u989A"
+  _comboParryName:
+  - "\u683C\u6321\u6B63\u8138"
+  - "\u683C\u6321\u6B63\u4E2D\u80F8"
+  _comboTime: 1
+  _comboPositionOffest: 0
