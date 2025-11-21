@@ -17,35 +17,40 @@ namespace Lobby
         public LobbyPlayer selfPlayer;
 
         //本机登陆
-        public async void OnLocalEntryLobby()
+        public async void OnLocalEntryLobby(PlayerData selfData , List<PlayerData> resOtherPlayerData)
         {
-            //向服务器发送登录请求
-            // var res = await Init.MainInstance._session.LoginRequest();
-            LoginRequest req = new LoginRequest();
-            var res = await NetWorkManager.Instance.Call<LoginResponse>(req);
-            if (res.ErrorCode == 0)
-            {
-                Init.MainInstance.PlayerId = res.playerId;
-                Debug.Log("登录成功 玩家ID：" + res.playerId);
-            }
-            else
-            {
-                Debug.LogError("登录失败 错误码：" + res.ErrorCode);
-                return;
-            }
+            
+            
+            // //向服务器发送登录请求
+            // // var res = await Init.MainInstance._session.LoginRequest();
+            // LoginRequest req = new LoginRequest();
+            // var res = await NetWorkManager.Instance.Call<LoginResponse>(req);
+            // if (res.ErrorCode == 0)
+            // {
+            //     Main.MainInstance.UserData.AccountId = res.playerId;
+            //     Debug.Log("登录成功 玩家ID：" + res.playerId);
+            // }
+            // else
+            // {
+            //     Debug.LogError("登录失败 错误码：" + res.ErrorCode);
+            //     return;
+            // }
+            
+            
             //实例化角色
             GameObject go = Resources.Load<GameObject>("PlayerModel");
             GameObject player = Instantiate(go);
-            player.transform.position = Vector3.zero;
+            // player.transform.position = Vector3.zero;
             selfPlayer = player.AddComponent<LobbyPlayer>();
-            selfPlayer.Init(Init.MainInstance.PlayerId , PlayerType.Self);
+            selfPlayer.InitPos(selfData.position , selfData.renderDir);
+            selfPlayer.Init(Main.MainInstance.UserData.AccountId , PlayerType.Self);
             
             //初始化相机
             CameraInit.MainInstance.InitPlayerCamera(player.transform);
             
 
             //实例化其他玩家
-            var resOtherPlayerData = res.otherPlayerData;
+            // var resOtherPlayerData = res.otherPlayerData;
             LobbyPlayer otherPlayer;
             
             Debug.Log("需要同步的其他玩家数量：" + resOtherPlayerData.Count);
@@ -69,7 +74,7 @@ namespace Lobby
         public void OnLocalExitLobby()
         {
             LogoutMessage message = new LogoutMessage();
-            message.playerId = Init.MainInstance.PlayerId;
+            message.playerId = Main.MainInstance.UserData.AccountId;
             
             NetWorkManager.Instance.Send(message);
             
@@ -96,7 +101,7 @@ namespace Lobby
             StateSyncRequest req = new StateSyncRequest();
 
             req.stateData = syncData;
-            syncData.playerId = Init.MainInstance.PlayerId;
+            syncData.playerId = Main.MainInstance.UserData.AccountId;
             
             // var res = await Init.MainInstance._session.Call(req) as StateSyncResponse;
             var res = await NetWorkManager.Instance.Call<StateSyncResponse>(req);

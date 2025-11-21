@@ -48,10 +48,13 @@ namespace UIFramework.Core
 
         #region 面板成员属性
 
+        
         private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
         private bool _isInitialized;
         private bool _isVisible;
+        
+        
         
         /// <summary>
         /// CanvasGroup组件

@@ -10,15 +10,32 @@ namespace Fantasy
 	public static class NetworkProtocolHelper
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<RegisterAccountResponse> RegisterAccountRequest(this Session session, RegisterAccountRequest request)
+		{
+			return (RegisterAccountResponse)await session.Call(request);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<RegisterAccountResponse> RegisterAccountRequest(this Session session, string account, string pass)
+		{
+			using var request = Fantasy.RegisterAccountRequest.Create(session.Scene);
+			request.account = account;
+			request.pass = pass;
+			return (RegisterAccountResponse)await session.Call(request);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static async FTask<LoginResponse> LoginRequest(this Session session, LoginRequest request)
 		{
 			return (LoginResponse)await session.Call(request);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static async FTask<LoginResponse> LoginRequest(this Session session)
+		public static async FTask<LoginResponse> LoginRequest(this Session session, string account, string pass)
 		{
 			using var request = Fantasy.LoginRequest.Create(session.Scene);
+			request.account = account;
+			request.pass = pass;
 			return (LoginResponse)await session.Call(request);
 		}
 

@@ -9,6 +9,53 @@ using Fantasy.Serialize;
 
 namespace Fantasy
 {
+	[ProtoContract]
+	public partial class RegisterAccountRequest : AMessage, IRequest
+	{
+		public static RegisterAccountRequest Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<RegisterAccountRequest>();
+		}
+		public override void Dispose()
+		{
+			account = default;
+			pass = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<RegisterAccountRequest>(this);
+#endif
+		}
+		[ProtoIgnore]
+		public RegisterAccountResponse ResponseType { get; set; }
+		public uint OpCode() { return OuterOpcode.RegisterAccountRequest; }
+		[ProtoMember(1)]
+		public string account { get; set; }
+		[ProtoMember(2)]
+		public string pass { get; set; }
+	}
+	[ProtoContract]
+	public partial class RegisterAccountResponse : AMessage, IResponse
+	{
+		public static RegisterAccountResponse Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<RegisterAccountResponse>();
+		}
+		public override void Dispose()
+		{
+			ErrorCode = default;
+			account = default;
+			pass = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<RegisterAccountResponse>(this);
+#endif
+		}
+		public uint OpCode() { return OuterOpcode.RegisterAccountResponse; }
+		[ProtoMember(1)]
+		public string account { get; set; }
+		[ProtoMember(2)]
+		public string pass { get; set; }
+		[ProtoMember(3)]
+		public uint ErrorCode { get; set; }
+	}
 	/// <summary>
 	/// 玩家登录请求
 	/// </summary>
@@ -21,6 +68,8 @@ namespace Fantasy
 		}
 		public override void Dispose()
 		{
+			account = default;
+			pass = default;
 #if FANTASY_NET || FANTASY_UNITY
 			GetScene().MessagePoolComponent.Return<LoginRequest>(this);
 #endif
@@ -28,6 +77,10 @@ namespace Fantasy
 		[ProtoIgnore]
 		public LoginResponse ResponseType { get; set; }
 		public uint OpCode() { return OuterOpcode.LoginRequest; }
+		[ProtoMember(1)]
+		public string account { get; set; }
+		[ProtoMember(2)]
+		public string pass { get; set; }
 	}
 	[ProtoContract]
 	public partial class LoginResponse : AMessage, IResponse
@@ -39,7 +92,7 @@ namespace Fantasy
 		public override void Dispose()
 		{
 			ErrorCode = default;
-			playerId = default;
+			selfData = default;
 			otherPlayerData.Clear();
 #if FANTASY_NET || FANTASY_UNITY
 			GetScene().MessagePoolComponent.Return<LoginResponse>(this);
@@ -47,7 +100,7 @@ namespace Fantasy
 		}
 		public uint OpCode() { return OuterOpcode.LoginResponse; }
 		[ProtoMember(1)]
-		public long playerId { get; set; }
+		public PlayerData selfData { get; set; }
 		[ProtoMember(2)]
 		public List<PlayerData> otherPlayerData = new List<PlayerData>();
 		[ProtoMember(3)]

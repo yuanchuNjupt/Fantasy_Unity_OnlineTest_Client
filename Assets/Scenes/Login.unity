@@ -258,7 +258,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e85b40dfddbda49806716823acbedf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerId: 0
   FPS: 120
 --- !u!1001 &1033830647
 PrefabInstance:
@@ -287,6 +286,43 @@ PrefabInstance:
         type: 3}
       propertyPath: m_BlockingMask.m_Bits
       value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: isAddPanel
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: addDefaultPanels
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: defaultPanels.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: defaultPanels.Array.data[1].addOnStart
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: defaultPanels.Array.data[0].panelPrefab
+      value: 
+      objectReference: {fileID: 3462415054228023081, guid: 4314084f886cf814a9f632a6adc0db7c,
+        type: 3}
+    - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: defaultPanels.Array.data[1].panelPrefab
+      value: 
+      objectReference: {fileID: 1438913382504994753, guid: bf5d41f9d9a904441909d45dca05a37a,
+        type: 3}
+    - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: defaultPanels.Array.data[1].targetLayer
+      value: Main
       objectReference: {fileID: 0}
     - target: {fileID: 6404497578039639016, guid: d546b1aad6da124428d6af08c1c3b90d,
         type: 3}
@@ -337,6 +373,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6833243158133851581, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 8377893675080569838, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 119
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

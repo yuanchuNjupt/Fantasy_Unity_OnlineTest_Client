@@ -73,8 +73,8 @@ namespace Generate
         /// 优点1：能够保证连接的稳定性，假设一个不通，还有其他的iP进行连接。
         /// 连接不通的原因：如用户网络问题，开了VPN CDN节点问题。
         /// 通常这些地址会有服务下发，或向服务端拉取。
-        public Session Connect(string romoteAddress, NetworkProtocolType networkProtocolType, Action onConnectComplete,
-            Action onConnectFail, Action onConnectDisconnect, int connectOutTime = 5000)
+        public Session Connect(string romoteAddress, NetworkProtocolType networkProtocolType, Action onConnectComplete = null,
+            Action onConnectFail = null, Action onConnectDisconnect = null, int connectOutTime = 5000)
         {
             mSession = mScene.Connect(romoteAddress, NetworkProtocolType.KCP, () =>
                 {
@@ -155,8 +155,8 @@ namespace Generate
         /// </summary>
         public void OnRelease()
         {
-            mSession.Dispose();
-            mScene.Dispose();
+            mSession?.Dispose();
+            mScene?.Dispose();
             _instance = null;
         }
     }

@@ -8,12 +8,13 @@ using TMPro;
 
 namespace UIFramework.ViewPath
 {
-	public class MainPanelView : BaseUIPanelView
+	public class RegisterPanelView : BaseUIPanelView
 	{
 		[Header("可绑定组件")]
-		public Transform HP_Transform;
-		public Image HP;
-		public TextMeshProUGUI BossName;
+		public Button Register;
+		public Button Exit;
+		public InputField account;
+		public InputField password;
 
 	}
 }
