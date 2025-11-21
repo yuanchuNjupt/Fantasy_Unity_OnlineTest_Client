@@ -278,6 +278,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: UIConfiger
       objectReference: {fileID: 0}
+    - target: {fileID: 1219575739342653481, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4191152889706071649, guid: d546b1aad6da124428d6af08c1c3b90d,
         type: 3}
       propertyPath: m_BlockingMask.m_Bits
