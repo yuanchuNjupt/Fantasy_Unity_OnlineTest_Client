@@ -5,6 +5,8 @@ using Config;
 using Fantasy;
 using Helper;
 using Lobby;
+using Manager;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -76,7 +78,12 @@ public class LobbyPlayer : MonoBehaviour
         playerType = type;
         _animator = GetComponent<Animator>();
         playerInput = GetComponent<PlayerInput>();
-        _playerCameraTransform = CameraInit.MainInstance._cameraControl.transform;
+
+        // var mouseManager = transform.AddComponent<MouseManager>();
+        // mouseManager.Init();
+        
+        
+        _playerCameraTransform = CameraInit.MainInstance.cameraControl.transform;
         if (type is PlayerType.Other)
         {
             //远程玩家 不需要输入组件
@@ -87,7 +94,7 @@ public class LobbyPlayer : MonoBehaviour
         
     }
 
-    public void PlayAnimation(string animName)
+    private void PlayAnimation(string animName)
     {
         _animator.CrossFade(animName , 0.2f);
     }
@@ -101,16 +108,20 @@ public class LobbyPlayer : MonoBehaviour
     //初始化生成的位置
     public void InitPos(CSVector3 position, CSVector3 renderDir)
     {
+        transform.position = position.ToVector3();
+        Quaternion targetRotation = Quaternion.LookRotation(renderDir.ToVector3());
+        transform.rotation = targetRotation;
+        
         syncTargetPos = position.ToVector3();
         _renderDir = renderDir.ToVector3();
     }
 
-    public void UpdatePos()
+    private void UpdatePos()
     {
         transform.position = Vector3.Lerp(transform.position , syncTargetPos , Time.deltaTime * smoothPosSpeed);
     }
 
-    public void UpdateDir()
+    private void UpdateDir()
     {
         // 如果有移动方向
         if (syncTargetDir != Vector3.zero)

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using GGG.Tool;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class TP_CameraControl : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class TP_CameraControl : MonoBehaviour
     [SerializeField] private float _smoothSpeed;   //摄像机平滑速度
     [SerializeField] private float _positionOffset;   //摄像机与目标物体的距离偏移
     [SerializeField] private float _positionSmoothTime;    //摄像机位置平滑时间
+
+    public PlayerInput playerInput;
     
     
     public Transform _lookTarget;
@@ -37,8 +40,9 @@ public class TP_CameraControl : MonoBehaviour
 
     private void CameraInput()
     {
-        _input.y += GameInputManager.MainInstance.CameraLook.x * _controlSpeed;
-        _input.x -= GameInputManager.MainInstance.CameraLook.y * _controlSpeed;
+        
+        _input.y += playerInput.actions["CameraLook"].ReadValue<Vector2>().x * _controlSpeed;
+        _input.x -= playerInput.actions["CameraLook"].ReadValue<Vector2>().y * _controlSpeed;
         
         _input.x = Mathf.Clamp(_input.x, _cameraVerticalMaxAngle.x, _cameraVerticalMaxAngle.y);
     }

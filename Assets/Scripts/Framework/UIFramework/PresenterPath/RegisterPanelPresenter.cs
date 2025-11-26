@@ -29,7 +29,7 @@ public class RegisterPanelPresenter : BasePresenter<RegisterPanelView>
             }
             
             
-            NetWorkManager.Instance.Connect("192.168.101.193:20000", NetworkProtocolType.KCP);
+            NetWorkManager.Instance.Connect(NetWorkConfig.GateAddress, NetworkProtocolType.KCP);
 
             var req = new RegisterAccountRequest();
             req.account = View.account.text;

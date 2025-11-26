@@ -29,7 +29,7 @@ public class BeginPanelPresenter : BasePresenter<BeginPanelView>
         }
         
         //连接服务器并发送登录请求
-        NetWorkManager.Instance.Connect("192.168.101.193:20000", NetworkProtocolType.KCP);
+        NetWorkManager.Instance.Connect(NetWorkConfig.GateAddress, NetworkProtocolType.KCP);
         
         LoginRequest req = new LoginRequest();
         req.account = View.account.text;
@@ -55,6 +55,8 @@ public class BeginPanelPresenter : BasePresenter<BeginPanelView>
         void OnLobbySceneLoaded(Scene scene, LoadSceneMode mode) {
             SceneManager.sceneLoaded -= OnLobbySceneLoaded;
             LobbyPlayerManager.MainInstance.OnLocalEntryLobby(res.selfData , res.otherPlayerData);
+            UIManager.MainInstance.ShowPanel<LobbyPlayerPanelView>();
+
         }
     }
     
@@ -62,7 +64,6 @@ public class BeginPanelPresenter : BasePresenter<BeginPanelView>
 
     private void OnRegisterClick()
     {
-        //TODO:实现注册功能
         UIManager.MainInstance.ShowPanel<RegisterPanelView>();
 
     }

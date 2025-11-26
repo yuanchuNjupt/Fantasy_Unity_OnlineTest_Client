@@ -4,17 +4,20 @@ using Fantasy.Async;
 using Fantasy.Network;
 using Fantasy.Network.Interface;
 using Generate;
-using GGG.Tool.Singleton;
 using Helper;
+using Manager;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Lobby
 {
-    public class LobbyPlayerManager : Singleton<LobbyPlayerManager>
+    public class LobbyPlayerManager : GGG.Tool.Singleton.Singleton<LobbyPlayerManager>
     {
         public Dictionary<long, LobbyPlayer> otherPlayers = new();
         
         public LobbyPlayer selfPlayer;
+        
+        public MouseManager mouseManager;
 
         //本机登陆
         public async void OnLocalEntryLobby(PlayerData selfData , List<PlayerData> resOtherPlayerData)
@@ -44,7 +47,8 @@ namespace Lobby
             selfPlayer = player.AddComponent<LobbyPlayer>();
             selfPlayer.InitPos(selfData.position , selfData.renderDir);
             selfPlayer.Init(Main.MainInstance.UserData.AccountId , PlayerType.Self);
-            
+            mouseManager = selfPlayer.transform.AddComponent<MouseManager>();
+            mouseManager.Init();
             //初始化相机
             CameraInit.MainInstance.InitPlayerCamera(player.transform);
             

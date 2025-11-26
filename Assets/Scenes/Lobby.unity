@@ -536,6 +536,7 @@ MonoBehaviour:
   _smoothSpeed: 0.15
   _positionOffset: 0.01
   _positionSmoothTime: 20
+  playerInput: {fileID: 0}
   _lookTarget: {fileID: 0}
 --- !u!4 &546672712
 Transform:
@@ -631,8 +632,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88a704d5ab907c34996bdb1711c12e51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraControl: {fileID: 546672711}
-  SceneCamera: {fileID: 330585545}
+  cameraControl: {fileID: 546672711}
+  sceneCamera: {fileID: 330585545}
 --- !u!4 &882862393
 Transform:
   m_ObjectHideFlags: 0
