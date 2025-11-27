@@ -20,7 +20,7 @@ namespace Lobby
         public MouseManager mouseManager;
 
         //本机登陆
-        public async void OnLocalEntryLobby(PlayerData selfData , List<PlayerData> resOtherPlayerData)
+        public async void OnLocalEntryLobby(stateSyncData selfData , List<stateSyncData> resOtherPlayerData)
         {
             
             
@@ -45,12 +45,14 @@ namespace Lobby
             GameObject player = Instantiate(go);
             // player.transform.position = Vector3.zero;
             selfPlayer = player.AddComponent<LobbyPlayer>();
-            selfPlayer.InitPos(selfData.position , selfData.renderDir);
-            selfPlayer.Init(Main.MainInstance.UserData.AccountId , PlayerType.Self);
+            selfPlayer.InitPos(selfData.position , selfData.inputDir);
+            selfPlayer.Init(Main.MainInstance.UserData.AccountId ,Main.MainInstance.UserData.UserName ,PlayerType.Self);
             mouseManager = selfPlayer.transform.AddComponent<MouseManager>();
             mouseManager.Init();
             //初始化相机
             CameraInit.MainInstance.InitPlayerCamera(player.transform);
+            var NameControl = player.GetComponent<LobbyPlayerName>();
+            NameControl.Init(selfPlayer.PlayerName , CameraInit.MainInstance.PlayerCamera.gameObject.transform);
             
 
             //实例化其他玩家
@@ -66,10 +68,11 @@ namespace Lobby
             foreach (var playerData in resOtherPlayerData)
             {
                 player = Instantiate(go);
+                player.GetComponent<LobbyPlayerName>().Init(playerData.PlayerName , CameraInit.MainInstance.PlayerCamera.gameObject.transform);
                 //同步其他玩家位置和方向
                 otherPlayer = player.AddComponent<LobbyPlayer>();
-                otherPlayer.Init(playerData.playerId , PlayerType.Other);
-                otherPlayer.InitPos(playerData.position , playerData.renderDir);
+                otherPlayer.Init(playerData.playerId , playerData.PlayerName , PlayerType.Other);
+                otherPlayer.InitPos(playerData.position , playerData.inputDir);
                 otherPlayers.Add(playerData.playerId, otherPlayer);
             }
         }
@@ -138,15 +141,17 @@ namespace Lobby
         protected override async FTask Run(Session session, OtherPlayerLoginMessage message)
         {
             //生成对应的玩家并缓存
-            Debug.Log("收到其他玩家登录消息 玩家ID：" + message.playerId);
+            Debug.Log("收到其他玩家登录消息 玩家ID：" + message.playerData.playerId);
             GameObject go = Resources.Load<GameObject>("PlayerModel");
             GameObject player = GameObject.Instantiate(go);
+            player.GetComponent<LobbyPlayerName>().Init(message.playerData.PlayerName , CameraInit.MainInstance.PlayerCamera.gameObject.transform);
             player.transform.position = Vector3.zero;
             LobbyPlayer playerScript = player.AddComponent<LobbyPlayer>();
-            playerScript.Init(message.playerId , PlayerType.Other);
+            playerScript.Init(message.playerData.playerId ,message.playerData.PlayerName, PlayerType.Other);
+            playerScript.InitPos(message.playerData.position , message.playerData.inputDir);
 
             //缓存其他玩家
-            LobbyPlayerManager.MainInstance.otherPlayers.Add(message.playerId, playerScript);
+            LobbyPlayerManager.MainInstance.otherPlayers.Add(message.playerData.playerId, playerScript);
 
             await FTask.CompletedTask;
         }

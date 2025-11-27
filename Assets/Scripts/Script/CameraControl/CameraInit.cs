@@ -10,6 +10,8 @@ public class CameraInit : Singleton<CameraInit>
     
     public Camera sceneCamera;
 
+    public Camera PlayerCamera;
+
     
     public void InitPlayerCamera(Transform target)
     {

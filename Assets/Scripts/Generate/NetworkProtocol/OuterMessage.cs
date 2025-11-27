@@ -56,6 +56,97 @@ namespace Fantasy
 		[ProtoMember(3)]
 		public uint ErrorCode { get; set; }
 	}
+	[ProtoContract]
+	public partial class RegisterNameRequest : AMessage, IRequest
+	{
+		public static RegisterNameRequest Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<RegisterNameRequest>();
+		}
+		public override void Dispose()
+		{
+			accountName = default;
+			name = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<RegisterNameRequest>(this);
+#endif
+		}
+		[ProtoIgnore]
+		public RegisterNameResponse ResponseType { get; set; }
+		public uint OpCode() { return OuterOpcode.RegisterNameRequest; }
+		[ProtoMember(1)]
+		public string accountName { get; set; }
+		[ProtoMember(2)]
+		public string name { get; set; }
+	}
+	[ProtoContract]
+	public partial class RegisterNameResponse : AMessage, IResponse
+	{
+		public static RegisterNameResponse Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<RegisterNameResponse>();
+		}
+		public override void Dispose()
+		{
+			ErrorCode = default;
+			accountName = default;
+			name = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<RegisterNameResponse>(this);
+#endif
+		}
+		public uint OpCode() { return OuterOpcode.RegisterNameResponse; }
+		[ProtoMember(1)]
+		public string accountName { get; set; }
+		[ProtoMember(2)]
+		public string name { get; set; }
+		[ProtoMember(3)]
+		public uint ErrorCode { get; set; }
+	}
+	[ProtoContract]
+	public partial class EntryLobbyRequest : AMessage, IRequest
+	{
+		public static EntryLobbyRequest Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<EntryLobbyRequest>();
+		}
+		public override void Dispose()
+		{
+			accountId = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<EntryLobbyRequest>(this);
+#endif
+		}
+		[ProtoIgnore]
+		public EntryLobbyResponse ResponseType { get; set; }
+		public uint OpCode() { return OuterOpcode.EntryLobbyRequest; }
+		[ProtoMember(1)]
+		public long accountId { get; set; }
+	}
+	[ProtoContract]
+	public partial class EntryLobbyResponse : AMessage, IResponse
+	{
+		public static EntryLobbyResponse Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<EntryLobbyResponse>();
+		}
+		public override void Dispose()
+		{
+			ErrorCode = default;
+			selfData = default;
+			otherPlayerData.Clear();
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<EntryLobbyResponse>(this);
+#endif
+		}
+		public uint OpCode() { return OuterOpcode.EntryLobbyResponse; }
+		[ProtoMember(1)]
+		public stateSyncData selfData { get; set; }
+		[ProtoMember(2)]
+		public List<stateSyncData> otherPlayerData = new List<stateSyncData>();
+		[ProtoMember(3)]
+		public uint ErrorCode { get; set; }
+	}
 	/// <summary>
 	/// 玩家登录请求
 	/// </summary>
@@ -92,17 +183,17 @@ namespace Fantasy
 		public override void Dispose()
 		{
 			ErrorCode = default;
-			selfData = default;
-			otherPlayerData.Clear();
+			accountId = default;
+			accountName = default;
 #if FANTASY_NET || FANTASY_UNITY
 			GetScene().MessagePoolComponent.Return<LoginResponse>(this);
 #endif
 		}
 		public uint OpCode() { return OuterOpcode.LoginResponse; }
 		[ProtoMember(1)]
-		public PlayerData selfData { get; set; }
+		public long accountId { get; set; }
 		[ProtoMember(2)]
-		public List<PlayerData> otherPlayerData = new List<PlayerData>();
+		public string accountName { get; set; }
 		[ProtoMember(3)]
 		public uint ErrorCode { get; set; }
 	}
@@ -115,14 +206,14 @@ namespace Fantasy
 		}
 		public override void Dispose()
 		{
-			playerId = default;
+			playerData = default;
 #if FANTASY_NET || FANTASY_UNITY
 			GetScene().MessagePoolComponent.Return<OtherPlayerLoginMessage>(this);
 #endif
 		}
 		public uint OpCode() { return OuterOpcode.OtherPlayerLoginMessage; }
 		[ProtoMember(1)]
-		public long playerId { get; set; }
+		public stateSyncData playerData { get; set; }
 	}
 	[ProtoContract]
 	public partial class LogoutMessage : AMessage, IMessage
@@ -159,29 +250,6 @@ namespace Fantasy
 		public uint OpCode() { return OuterOpcode.OtherPlayerLogoutMessage; }
 		[ProtoMember(1)]
 		public long playerId { get; set; }
-	}
-	[ProtoContract]
-	public partial class PlayerData : AMessage
-	{
-		public static PlayerData Create(Scene scene)
-		{
-			return scene.MessagePoolComponent.Rent<PlayerData>();
-		}
-		public override void Dispose()
-		{
-			playerId = default;
-			position = default;
-			renderDir = default;
-#if FANTASY_NET || FANTASY_UNITY
-			GetScene().MessagePoolComponent.Return<PlayerData>(this);
-#endif
-		}
-		[ProtoMember(1)]
-		public long playerId { get; set; }
-		[ProtoMember(2)]
-		public CSVector3 position { get; set; }
-		[ProtoMember(3)]
-		public CSVector3 renderDir { get; set; }
 	}
 	[ProtoContract]
 	public partial class StateSyncRequest : AMessage, IRequest
@@ -261,6 +329,7 @@ namespace Fantasy
 			position = default;
 			inputDir = default;
 			playerState = default;
+			PlayerName = default;
 #if FANTASY_NET || FANTASY_UNITY
 			GetScene().MessagePoolComponent.Return<stateSyncData>(this);
 #endif
@@ -273,6 +342,8 @@ namespace Fantasy
 		public CSVector3 inputDir { get; set; }
 		[ProtoMember(4)]
 		public int playerState { get; set; }
+		[ProtoMember(5)]
+		public string PlayerName { get; set; }
 	}
 	[ProtoContract]
 	public partial class CSVector3 : AMessage

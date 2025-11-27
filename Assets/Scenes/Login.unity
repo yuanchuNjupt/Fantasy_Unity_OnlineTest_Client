@@ -327,10 +327,35 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2431617491311705246, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2431617491311705246, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2431617491311705246, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4191152889706071649, guid: d546b1aad6da124428d6af08c1c3b90d,
         type: 3}
       propertyPath: m_BlockingMask.m_Bits
       value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 4310317812364781847, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4310317812364781847, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
         type: 3}
@@ -345,7 +370,7 @@ PrefabInstance:
     - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
         type: 3}
       propertyPath: defaultPanels.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
         type: 3}
@@ -355,6 +380,11 @@ PrefabInstance:
     - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
         type: 3}
       propertyPath: defaultPanels.Array.data[2].addOnStart
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: defaultPanels.Array.data[3].addOnStart
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
@@ -383,6 +413,17 @@ PrefabInstance:
     - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
         type: 3}
       propertyPath: defaultPanels.Array.data[2].targetLayer
+      value: Main
+      objectReference: {fileID: 0}
+    - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: defaultPanels.Array.data[3].panelPrefab
+      value: 
+      objectReference: {fileID: 6071912022676278613, guid: 8c4c0e383afa5ed41b22938fb7b06be6,
+        type: 3}
+    - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: defaultPanels.Array.data[3].targetLayer
       value: Main
       objectReference: {fileID: 0}
     - target: {fileID: 6404497578039639016, guid: d546b1aad6da124428d6af08c1c3b90d,
@@ -446,6 +487,11 @@ PrefabInstance:
       value: 119
       objectReference: {fileID: 0}
     - target: {fileID: 8377893675080569838, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 119
+      objectReference: {fileID: 0}
+    - target: {fileID: 8934445599872375446, guid: d546b1aad6da124428d6af08c1c3b90d,
         type: 3}
       propertyPath: m_BlockingMask.m_Bits
       value: 119

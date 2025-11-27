@@ -25,6 +25,35 @@ namespace Fantasy
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<RegisterNameResponse> RegisterNameRequest(this Session session, RegisterNameRequest request)
+		{
+			return (RegisterNameResponse)await session.Call(request);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<RegisterNameResponse> RegisterNameRequest(this Session session, string accountName, string name)
+		{
+			using var request = Fantasy.RegisterNameRequest.Create(session.Scene);
+			request.accountName = accountName;
+			request.name = name;
+			return (RegisterNameResponse)await session.Call(request);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<EntryLobbyResponse> EntryLobbyRequest(this Session session, EntryLobbyRequest request)
+		{
+			return (EntryLobbyResponse)await session.Call(request);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<EntryLobbyResponse> EntryLobbyRequest(this Session session, long accountId)
+		{
+			using var request = Fantasy.EntryLobbyRequest.Create(session.Scene);
+			request.accountId = accountId;
+			return (EntryLobbyResponse)await session.Call(request);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static async FTask<LoginResponse> LoginRequest(this Session session, LoginRequest request)
 		{
 			return (LoginResponse)await session.Call(request);
@@ -46,10 +75,10 @@ namespace Fantasy
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void OtherPlayerLoginMessage(this Session session, long playerId)
+		public static void OtherPlayerLoginMessage(this Session session, stateSyncData playerData)
 		{
 			using var message = Fantasy.OtherPlayerLoginMessage.Create(session.Scene);
-			message.playerId = playerId;
+			message.playerData = playerData;
 			session.Send(message);
 		}
 

@@ -42,19 +42,35 @@ public class BeginPanelPresenter : BasePresenter<BeginPanelView>
             Debug.LogError("登录失败 错误码：" + res.ErrorCode);
             return;
         }
-        Debug.Log("登录成功 玩家ID：" + res.selfData.playerId);
+        Debug.Log("登录成功 玩家ID：" + res.accountId);
+
+        Main.MainInstance.UserData.UserName = res.accountName;
+        Main.MainInstance.UserData.AccountId = res.accountId;
+        Main.MainInstance.UserData.AccountName = View.account.text;
+
+
+        if (res.accountName == null)
+        {
+            //需注册昵称
+            UIManager.MainInstance.ShowPanel<RegisterNamePanelView>();
+            UIManager.MainInstance.HidePanel<BeginPanelView>();
+            return;
+        }
         
-        Main.MainInstance.SetUserData(View.account.text, res.selfData.playerId);
+        //直接进入大厅
+        var EntryLobbyReq = new EntryLobbyRequest();
+        EntryLobbyReq.accountId = res.accountId;
+        var EntryLobbyRes = await NetWorkManager.Instance.Call<EntryLobbyResponse>(EntryLobbyReq);
+        
         
         //场景跳转
         UIManager.MainInstance.HidePanel<BeginPanelView>();
         SceneManager.sceneLoaded += OnLobbySceneLoaded;
         SceneManager.LoadScene("Lobby");
-        // LobbyPlayerManager.MainInstance.OnLocalEntryLobby();
         
         void OnLobbySceneLoaded(Scene scene, LoadSceneMode mode) {
             SceneManager.sceneLoaded -= OnLobbySceneLoaded;
-            LobbyPlayerManager.MainInstance.OnLocalEntryLobby(res.selfData , res.otherPlayerData);
+            LobbyPlayerManager.MainInstance.OnLocalEntryLobby(EntryLobbyRes.selfData , EntryLobbyRes.otherPlayerData);
             UIManager.MainInstance.ShowPanel<LobbyPlayerPanelView>();
 
         }

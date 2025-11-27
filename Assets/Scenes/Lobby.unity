@@ -634,6 +634,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraControl: {fileID: 546672711}
   sceneCamera: {fileID: 330585545}
+  PlayerCamera: {fileID: 1847197783}
 --- !u!4 &882862393
 Transform:
   m_ObjectHideFlags: 0

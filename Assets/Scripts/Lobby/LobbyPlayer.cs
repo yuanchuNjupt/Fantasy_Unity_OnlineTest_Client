@@ -33,6 +33,8 @@ public class LobbyPlayer : MonoBehaviour
     
     public long PlayerId;
     
+    public string PlayerName;
+    
     private Animator _animator;
     
     private Vector2 _inputDir;
@@ -72,7 +74,7 @@ public class LobbyPlayer : MonoBehaviour
 
 
 
-    public void Init(long playerId , PlayerType type)
+    public void Init(long playerId ,string playerName ,PlayerType type)
     {
         PlayerId = playerId;
         playerType = type;
@@ -81,6 +83,8 @@ public class LobbyPlayer : MonoBehaviour
 
         // var mouseManager = transform.AddComponent<MouseManager>();
         // mouseManager.Init();
+        
+        PlayerName = playerName;
         
         
         _playerCameraTransform = CameraInit.MainInstance.cameraControl.transform;

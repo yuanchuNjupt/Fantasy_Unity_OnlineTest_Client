@@ -26,6 +26,7 @@ public class Main : Singleton<Main>
     
     void Start()
     {
+        UserData = new UserData();
         StartAsync().Coroutine();
     }
 
@@ -48,14 +49,14 @@ public class Main : Singleton<Main>
        
     }
     
-    public void SetUserData(string username,long accountId)
-    {
-        UserData = new UserData()
-        {
-            AccountId = accountId,
-            UserName = username,
-        };
-    }
+    // public void SetUserData(string username,long accountId)
+    // {
+    //     UserData = new UserData()
+    //     {
+    //         AccountId = accountId,
+    //         UserName = username,
+    //     };
+    // }
 
 
 
