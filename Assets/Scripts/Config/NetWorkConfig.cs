@@ -1,4 +1,4 @@
-﻿namespace Generate
+﻿namespace Config
 {
     public class NetWorkConfig
     {

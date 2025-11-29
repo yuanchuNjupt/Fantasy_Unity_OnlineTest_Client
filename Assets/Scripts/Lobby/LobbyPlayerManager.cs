@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Config;
 using Fantasy;
 using Fantasy.Async;
 using Fantasy.Network;
@@ -27,7 +28,7 @@ namespace Lobby
         {
             
             //实例化角色
-            GameObject go = Resources.Load<GameObject>("PlayerModel");
+            GameObject go = Resources.Load<GameObject>(ModelInfoConfig.LobbyModelName);
             GameObject player = Instantiate(go);
             // player.transform.position = Vector3.zero;
             selfPlayer = player.AddComponent<LobbyPlayer>();
@@ -128,7 +129,7 @@ namespace Lobby
         {
             //生成对应的玩家并缓存
             Debug.Log("收到其他玩家登录消息 玩家ID：" + message.playerData.playerId);
-            GameObject go = Resources.Load<GameObject>("PlayerModel");
+            GameObject go = Resources.Load<GameObject>(ModelInfoConfig.LobbyModelName);
             GameObject player = GameObject.Instantiate(go);
             player.GetComponent<LobbyPlayerName>().Init(message.playerData.PlayerName , CameraInit.MainInstance.PlayerCamera.gameObject.transform);
             player.transform.position = Vector3.zero;

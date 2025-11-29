@@ -92,11 +92,22 @@ namespace Lobby.TeamInfo
 
         }
 
-        public void LevelTeam()
+        public void LeaveTeam()
         {
+            //向服务器发送解散队伍 / 退出队伍信息
+            var req = new TeamStateChangeMessage();
+            
+            //看看自己是不是队长 3 : 解散 2 : 退出
+            req.teamState = Main.MainInstance.UserData.AccountId == teamInfo.TeamOwner.accountId ? 3 : 2;
+            req.playerId = Main.MainInstance.UserData.AccountId;            
+            
+            NetWorkManager.Instance.Send(req);
+            
+            //本地清除队伍信息
+            teamInfo = null;
         }
 
-        public void AddMember(long playerId)
+        private void AddMember(long playerId)
         {
             teamInfo.TeamMembers.Add(new TeamMemberInfo()
             {
@@ -107,6 +118,29 @@ namespace Lobby.TeamInfo
             //更新UI
             var panel = UIManager.MainInstance.GetPanel<LobbyPlayerPanelView>();
             panel.GetComponent<LobbyPlayerPanelPresenter>().AddMember(playerId);
+        }
+
+        private void OnOtherMemberLeave(long playerId)
+        {
+            //队伍中有其他成员退出
+            var teamMemberInfo = teamInfo.TeamMembers.First(x => x.accountId == playerId);
+            teamInfo.TeamMembers.Remove(teamMemberInfo);
+            //更新UI
+            UIManager.MainInstance.GetPanel<LobbyPlayerPanelView>()
+                .GetComponent<LobbyPlayerPanelPresenter>().RemoveMember(playerId);
+        }
+        
+        private void OnTeamOwnerDissolve()
+        {
+            //队长解散队伍
+            //本地清除队伍信息
+
+            UIManager.MainInstance.GetPanel<LobbyPlayerPanelView>()
+                .GetComponent<LobbyPlayerPanelPresenter>().ClearMembers();
+            
+            //等待UI响应完毕后再清除数据
+            //因为UI响应过程中会访问teamInfo数据
+            teamInfo = null;
         }
 
 
@@ -123,16 +157,17 @@ namespace Lobby.TeamInfo
                         Debug.Log("收到新玩家加入队伍消息");
                         LobbyPlayerManager.MainInstance.teamManager.AddMember(message.playerId);
 
-
                         break;
 
                     case 2:
-
+                        Debug.Log("收到玩家退出队伍消息 , 玩家ID：" + message.playerId);
+                        //从本地队伍信息中移除该成员
+                        LobbyPlayerManager.MainInstance.teamManager.OnOtherMemberLeave(message.playerId);
                         break;
 
                     case 3:
-
-
+                        Debug.Log("队长解散了队伍！");
+                        LobbyPlayerManager.MainInstance.teamManager.OnTeamOwnerDissolve();
                         break;
                     default:
                         Debug.Log("未知的队伍状态变更类型：" + message.teamState);

@@ -50,7 +50,6 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
 
     private async void OnCreateTeamButtonClick()
     {
-        //TODO:向服务器发送创建房间请求
         var res = await LobbyPlayerManager.MainInstance.teamManager.CreateTeam();
         if (res != 0)
         {
@@ -87,7 +86,6 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
             return;
         }
         
-        //TODO:向服务器发送加入小队请求
         var res = await LobbyPlayerManager.MainInstance.teamManager.JoinTeam(Main.MainInstance.UserData.AccountId, roomId);
         if (res != 0)
             return;
@@ -95,26 +93,36 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
         Debug.Log("加入小队成功，队伍ID : " + LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamId);
         
         //UI响应
+        //首先是队长
+        UIManager.MainInstance.AddPanel<MemberView>(View.MemberPrefab, UILayer.Main,
+            LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamOwner.accountId.ToString() , false);
+        var panel = UIManager.MainInstance.ShowPanel<MemberView>(LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamOwner.accountId.ToString() );
+        panel.gameObject.transform.SetParent(View.TeamMember ,false);
+        panel.MemberName.text = LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamOwner.memberName;
+        
+        //然后是队员
+        LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamMembers.ForEach(member =>
+        {
+            UIManager.MainInstance.AddPanel<MemberView>(View.MemberPrefab, UILayer.Main,
+                member.accountId.ToString() , false);
+            panel = UIManager.MainInstance.ShowPanel<MemberView>(member.accountId.ToString());
+            panel.gameObject.transform.SetParent(View.TeamMember ,false);
+            panel.MemberName.text = member.memberName;
+        });
+        
+        
         
         SwitchTeamState(true);
         View.RoomId.text = "房间号:" + LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamId;
-        
-        
-        
-        
     }
 
     private void OnLevelTeamButtonClick()
     {
-        SwitchTeamState(false);
         
-        //删除所有成员UI
-        LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamMembers.ForEach(x =>
-            UIManager.MainInstance.RemovePanel(x.accountId.ToString()));
-        UIManager.MainInstance.RemovePanel(LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamOwner.accountId.ToString());
+        ClearMembers();
         
         
-        LobbyPlayerManager.MainInstance.teamManager.LevelTeam();
+        LobbyPlayerManager.MainInstance.teamManager.LeaveTeam();
     }
 
 
@@ -125,6 +133,19 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
         var panel = UIManager.MainInstance.ShowPanel<MemberView>(playerId.ToString());
         panel.gameObject.transform.SetParent(View.TeamMember ,false);
         panel.MemberName.text = LobbyPlayerManager.MainInstance.otherPlayers[playerId].PlayerName;
+    }
+    
+    public void RemoveMember(long playerId)
+    {
+        UIManager.MainInstance.RemovePanel(playerId.ToString());
+    }
+    
+    public void ClearMembers()
+    {
+        SwitchTeamState(false);
+        LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamMembers.ForEach(x =>
+            UIManager.MainInstance.RemovePanel(x.accountId.ToString()));
+        UIManager.MainInstance.RemovePanel(LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamOwner.accountId.ToString());
     }
     
     private void SwitchTeamState(bool inTeam)
@@ -146,6 +167,7 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
         
             View.RoomInput.gameObject.SetActive(true);
             View.RoomIdBackground.gameObject.SetActive(false);
+            View.RoomInput.text = string.Empty;
             View.RoomId.text = "";
         }
     }

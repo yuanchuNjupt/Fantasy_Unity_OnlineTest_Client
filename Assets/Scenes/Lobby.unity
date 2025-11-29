@@ -513,7 +513,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47391555c6adb3a49b23fba76fc3a114, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _maxDistanceOffset: {x: 0.01, y: 5}
+  _minAndMaxDistanceOffset: {x: 0.01, y: 5}
   _whatIsWall:
     serializedVersion: 2
     m_Bits: 64
