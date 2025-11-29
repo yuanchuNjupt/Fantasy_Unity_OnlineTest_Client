@@ -22,7 +22,7 @@ namespace UIFramework.Core
         /// 在面板添加到UIManager之后会被调用，用于设置层级关系和初始化面板
         /// </summary>
         /// <param name="layerRoot">所属层级的根节点</param>
-        void Initialize(Transform layerRoot);
+        void Initialize(Transform layerRoot , bool autoInitRectTransform);
         
         /// <summary>
         /// 面板显示

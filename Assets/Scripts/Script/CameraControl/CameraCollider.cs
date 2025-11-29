@@ -9,7 +9,7 @@ public class CameraCollider : MonoBehaviour
     //最小值和最大值 偏移量
     //Layer 障碍物层级
     
-    [SerializeField , Header("最大最小偏移量")] private Vector2 _maxDistanceOffset;
+    [SerializeField , Header("最大最小偏移量")] private Vector2 _minAndMaxDistanceOffset;
     [SerializeField , Header("障碍物层级") , Space(10)] private LayerMask _whatIsWall;
     [SerializeField , Header("射线长度")] private float _rayLength;
     [SerializeField , Header("平滑时间")] private float _smoothTime;
@@ -30,7 +30,7 @@ public class CameraCollider : MonoBehaviour
     {
         // _originPosition = transform.position.normalized;
         _originPosition = new Vector3(0, 0, -1);
-        _originOffsetDistance = _maxDistanceOffset.y;
+        _originOffsetDistance = _minAndMaxDistanceOffset.y;
     }
 
     private void Update()
@@ -45,12 +45,12 @@ public class CameraCollider : MonoBehaviour
                 QueryTriggerInteraction.Ignore))
         {
             //如果打到东西了
-            _originOffsetDistance = Mathf.Clamp(hit.distance * 0.8f , _maxDistanceOffset.x, _maxDistanceOffset.y);
+            _originOffsetDistance = Mathf.Clamp(hit.distance * 0.8f , _minAndMaxDistanceOffset.x, _minAndMaxDistanceOffset.y);
         }
         else
         {
             //没打到 默认最大值
-            _originOffsetDistance = _maxDistanceOffset.y;
+            _originOffsetDistance = _minAndMaxDistanceOffset.y;
         
         }
         //更新相机位置

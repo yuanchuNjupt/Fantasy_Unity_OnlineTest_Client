@@ -5,6 +5,7 @@ using Fantasy.Network;
 using Fantasy.Network.Interface;
 using Generate;
 using Helper;
+using Lobby.TeamInfo;
 using Manager;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,26 +20,11 @@ namespace Lobby
         
         public MouseManager mouseManager;
 
+        public TeamManagerComponent teamManager = new TeamManagerComponent();
+
         //本机登陆
         public async void OnLocalEntryLobby(stateSyncData selfData , List<stateSyncData> resOtherPlayerData)
         {
-            
-            
-            // //向服务器发送登录请求
-            // // var res = await Init.MainInstance._session.LoginRequest();
-            // LoginRequest req = new LoginRequest();
-            // var res = await NetWorkManager.Instance.Call<LoginResponse>(req);
-            // if (res.ErrorCode == 0)
-            // {
-            //     Main.MainInstance.UserData.AccountId = res.playerId;
-            //     Debug.Log("登录成功 玩家ID：" + res.playerId);
-            // }
-            // else
-            // {
-            //     Debug.LogError("登录失败 错误码：" + res.ErrorCode);
-            //     return;
-            // }
-            
             
             //实例化角色
             GameObject go = Resources.Load<GameObject>("PlayerModel");

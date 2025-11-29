@@ -58,5 +58,6 @@ public class TP_CameraControl : MonoBehaviour
     {
         var newPos = (_lookTarget.position + (-transform.forward * _positionOffset));
         transform.position = Vector3.Lerp(transform.position , newPos , DevelopmentToos.UnTetheredLerp(_positionSmoothTime));
+        // transform.position = Vector3.Lerp(transform.position , newPos , Time.deltaTime * _positionSmoothTime);
     }
 }

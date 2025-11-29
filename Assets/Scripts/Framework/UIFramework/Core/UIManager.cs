@@ -198,12 +198,12 @@ namespace UIFramework.Core
 
         #region 面板管理
 
-        public T AddPanel<T>(GameObject prefab, string layer) where T : class, IUIPanel
+        public T AddPanel<T>(GameObject prefab, string layer , bool autoInitRectTransform = true) where T : class, IUIPanel
         {
-            return AddPanel<T>(prefab, layer, typeof(T).Name);
+            return AddPanel<T>(prefab, layer, typeof(T).Name , autoInitRectTransform);
         }
 
-        public T AddPanel<T>(GameObject prefab, string layer, string key) where T : class, IUIPanel
+        public T AddPanel<T>(GameObject prefab, string layer, string key , bool autoInitRectTransform = true) where T : class, IUIPanel
         {
             // 检查层级是否存在
             if (!HasLayer(layer))
@@ -221,16 +221,16 @@ namespace UIFramework.Core
                 return null;
             }
 
-            AddPanel(panel, layer, key);
+            AddPanel(panel, layer, key , autoInitRectTransform);
             return panel;
         }
 
-        public void AddPanel(IUIPanel panel, string layer)
+        public void AddPanel(IUIPanel panel, string layer , bool autoInitRectTransform = true)
         {
-            AddPanel(panel, layer, string.Empty);
+            AddPanel(panel, layer, string.Empty , autoInitRectTransform);
         }
 
-        public void AddPanel(IUIPanel panel, string layer, string key)
+        public void AddPanel(IUIPanel panel, string layer, string key , bool autoInitRectTransform = true)
         {
             // 检查层级是否存在
             if (!HasLayer(layer))
@@ -249,7 +249,7 @@ namespace UIFramework.Core
             UIPanelInfo panelInfo = new UIPanelInfo(panel, layer, keyName);
             _panelDict.Add(keyName, panelInfo);
             Transform layerRoot = GetLayer(layer).transform;
-            panel.Initialize(layerRoot);
+            panel.Initialize(layerRoot , autoInitRectTransform);
 
             // 触发面板添加事件
             OnPanelAdded?.Invoke(keyName, panel);

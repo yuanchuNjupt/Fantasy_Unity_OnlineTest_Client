@@ -14,10 +14,12 @@ namespace UIFramework.ViewPath
 		public Button TeamButton;
 		public Transform TeamBackground;
 		public InputField RoomInput;
+		public Transform RoomIdBackground;
 		public Button CreateTeamButton;
 		public Button JoinTeamButton;
+		public Button LevelTeamButton;
 		public Transform TeamMember;
-		
+		public Text RoomId;
 		public GameObject MemberPrefab;
 
 	}

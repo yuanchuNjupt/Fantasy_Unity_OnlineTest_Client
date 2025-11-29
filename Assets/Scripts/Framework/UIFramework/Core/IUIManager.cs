@@ -160,7 +160,7 @@ namespace UIFramework.Core
         /// 使用类型名作为面板的唯一标识
         /// 如果预制体缺少T类型组件，会销毁实例并返回null
         /// </remarks>
-        T AddPanel<T>(GameObject prefab, string layer) where T : class, IUIPanel;
+        T AddPanel<T>(GameObject prefab, string layer , bool autoInitRectTransform = true) where T : class, IUIPanel;
 
         /// <summary>
         /// 通过预制体实例化并添加UI面板到指定层级（带唯一标识）
@@ -174,7 +174,7 @@ namespace UIFramework.Core
         /// 如果key为空，使用类型名作为标识
         /// 相同key的面板会被覆盖
         /// </remarks>
-        T AddPanel<T>(GameObject prefab, string layer, string key) where T : class, IUIPanel;
+        T AddPanel<T>(GameObject prefab, string layer, string key , bool autoInitRectTransform = true) where T : class, IUIPanel;
 
         /// <summary>
         /// 直接添加UI面板实例到指定层级
@@ -185,7 +185,7 @@ namespace UIFramework.Core
         /// 使用面板类型名作为唯一标识
         /// 会调用面板的Initialize方法进行初始化
         /// </remarks>
-        void AddPanel(IUIPanel panel, string layer);
+        void AddPanel(IUIPanel panel, string layer , bool autoInitRectTransform = true);
 
         /// <summary>
         /// 直接添加UI面板实例到指定层级（带唯一标识）
@@ -197,7 +197,7 @@ namespace UIFramework.Core
         /// 如果key为空，使用面板类型名作为标识
         /// 相同key的面板会输出警告并忽略操作
         /// </remarks>
-        void AddPanel(IUIPanel panel, string layer, string key);
+        void AddPanel(IUIPanel panel, string layer, string key , bool autoInitRectTransform);
 
         /// <summary>
         /// 检查是否存在指定类型的面板

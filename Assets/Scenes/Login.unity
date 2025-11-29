@@ -357,6 +357,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4785370462015024861, guid: d546b1aad6da124428d6af08c1c3b90d,
+        type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 119
+      objectReference: {fileID: 0}
     - target: {fileID: 5746009918744581344, guid: d546b1aad6da124428d6af08c1c3b90d,
         type: 3}
       propertyPath: isAddPanel

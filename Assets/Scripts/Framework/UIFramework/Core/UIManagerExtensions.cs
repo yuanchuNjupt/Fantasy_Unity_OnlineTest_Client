@@ -50,9 +50,9 @@ namespace UIFramework.Core
         /// <param name="self">UI管理器实例</param>
         /// <param name="panel">要添加的面板实例</param>
         /// <param name="layer">目标层级枚举值</param>
-        public static void AddPanel<T>(this IUIManager self, T panel, UILayer layer) where T : class, IUIPanel
+        public static void AddPanel<T>(this IUIManager self, T panel, UILayer layer , bool autoInitRectTransform = true) where T : class, IUIPanel
         {
-            self.AddPanel(panel, layer.ToString(), string.Empty);
+            self.AddPanel(panel, layer.ToString(), string.Empty , autoInitRectTransform);
         }
 
         /// <summary>
@@ -67,9 +67,9 @@ namespace UIFramework.Core
         /// 标识规则与基础方法一致，格式为"TypeName_key"
         /// 会覆盖相同key的面板
         /// </remarks>
-        public static void AddPanel<T>(this IUIManager self, T panel, UILayer layer, string key) where T : class, IUIPanel
+        public static void AddPanel<T>(this IUIManager self, T panel, UILayer layer, string key , bool autoInitRectTransform = true) where T : class, IUIPanel
         {
-            self.AddPanel(panel, layer.ToString(), key);
+            self.AddPanel(panel, layer.ToString(), key , autoInitRectTransform);
         }
 
         /// <summary>
@@ -83,9 +83,9 @@ namespace UIFramework.Core
         /// <exception cref="MissingComponentException">
         /// 当预制体缺少对应组件时触发警告
         /// </exception>
-        public static T AddPanel<T>(this IUIManager self, GameObject prefab, UILayer layer) where T : class, IUIPanel
+        public static T AddPanel<T>(this IUIManager self, GameObject prefab, UILayer layer , bool autoInitRectTransform) where T : class, IUIPanel
         {
-            return self.AddPanel<T>(prefab, layer.ToString(), string.Empty);
+            return self.AddPanel<T>(prefab, layer.ToString(), string.Empty , autoInitRectTransform);
         }
 
         /// <summary>
@@ -100,9 +100,9 @@ namespace UIFramework.Core
         /// <remarks>
         /// 自动将预制体实例化到对应层级的Canvas下
         /// </remarks>
-        public static T AddPanel<T>(this IUIManager self, GameObject prefab, UILayer layer, string key) where T : class, IUIPanel
+        public static T AddPanel<T>(this IUIManager self, GameObject prefab, UILayer layer, string key , bool autoInitRectTransform = true) where T : class, IUIPanel
         {
-            return self.AddPanel<T>(prefab, layer.ToString(), key);
+            return self.AddPanel<T>(prefab, layer.ToString(), key , autoInitRectTransform);
         }
 
         /// <summary>

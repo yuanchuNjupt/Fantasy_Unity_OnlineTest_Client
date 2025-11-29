@@ -107,7 +107,7 @@ namespace UIFramework.Core
 
         #region 接口实现
 
-        void IUIPanel.Initialize(Transform layerRoot) => InitializePanel(layerRoot);
+        void IUIPanel.Initialize(Transform layerRoot , bool autoInitRectTransform) => InitializePanel(layerRoot , autoInitRectTransform);
 
         void IUIPanel.Show(object arg) => ShowPanel(arg);
 
@@ -124,7 +124,7 @@ namespace UIFramework.Core
         /// 初始化面板
         /// </summary>
         /// <param name="layerRoot">层级根节点</param>
-        protected virtual void InitializePanel(Transform layerRoot)
+        protected virtual void InitializePanel(Transform layerRoot , bool autoInitRectTransform)
         {
             if (_isInitialized)
             {
@@ -142,9 +142,12 @@ namespace UIFramework.Core
             {
                 // 设置层级关系
                 transform.SetParent(layerRoot, false);
-                
-                // 初始化RectTransform
-                InitializeRectTransform();
+
+                if (autoInitRectTransform)
+                {
+                    // 初始化RectTransform
+                    InitializeRectTransform();
+                }
 
                 // 设置初始状态
                 SetInitialState();

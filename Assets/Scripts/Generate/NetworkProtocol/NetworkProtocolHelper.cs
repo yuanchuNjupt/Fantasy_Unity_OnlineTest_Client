@@ -139,5 +139,49 @@ namespace Fantasy
 			session.Send(message);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<CreateTeamResponse> CreateTeamRequest(this Session session, CreateTeamRequest request)
+		{
+			return (CreateTeamResponse)await session.Call(request);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<CreateTeamResponse> CreateTeamRequest(this Session session, long playerId)
+		{
+			using var request = Fantasy.CreateTeamRequest.Create(session.Scene);
+			request.playerId = playerId;
+			return (CreateTeamResponse)await session.Call(request);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<JoinTeamResponse> JoinTeamRequest(this Session session, JoinTeamRequest request)
+		{
+			return (JoinTeamResponse)await session.Call(request);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<JoinTeamResponse> JoinTeamRequest(this Session session, long teamId, long playerId)
+		{
+			using var request = Fantasy.JoinTeamRequest.Create(session.Scene);
+			request.teamId = teamId;
+			request.playerId = playerId;
+			return (JoinTeamResponse)await session.Call(request);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void TeamStateChangeMessage(this Session session, TeamStateChangeMessage message)
+		{
+			session.Send(message);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void TeamStateChangeMessage(this Session session, int teamState, long playerId)
+		{
+			using var message = Fantasy.TeamStateChangeMessage.Create(session.Scene);
+			message.teamState = teamState;
+			message.playerId = playerId;
+			session.Send(message);
+		}
+
 	}
 }

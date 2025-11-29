@@ -317,6 +317,121 @@ namespace Fantasy
 		public stateSyncData roleData { get; set; }
 	}
 	[ProtoContract]
+	public partial class CreateTeamRequest : AMessage, IRequest
+	{
+		public static CreateTeamRequest Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<CreateTeamRequest>();
+		}
+		public override void Dispose()
+		{
+			playerId = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<CreateTeamRequest>(this);
+#endif
+		}
+		[ProtoIgnore]
+		public CreateTeamResponse ResponseType { get; set; }
+		public uint OpCode() { return OuterOpcode.CreateTeamRequest; }
+		[ProtoMember(1)]
+		public long playerId { get; set; }
+	}
+	[ProtoContract]
+	public partial class CreateTeamResponse : AMessage, IResponse
+	{
+		public static CreateTeamResponse Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<CreateTeamResponse>();
+		}
+		public override void Dispose()
+		{
+			ErrorCode = default;
+			teamId = default;
+			playerId = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<CreateTeamResponse>(this);
+#endif
+		}
+		public uint OpCode() { return OuterOpcode.CreateTeamResponse; }
+		[ProtoMember(1)]
+		public long teamId { get; set; }
+		[ProtoMember(2)]
+		public long playerId { get; set; }
+		[ProtoMember(3)]
+		public uint ErrorCode { get; set; }
+	}
+	[ProtoContract]
+	public partial class JoinTeamRequest : AMessage, IRequest
+	{
+		public static JoinTeamRequest Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<JoinTeamRequest>();
+		}
+		public override void Dispose()
+		{
+			teamId = default;
+			playerId = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<JoinTeamRequest>(this);
+#endif
+		}
+		[ProtoIgnore]
+		public JoinTeamResponse ResponseType { get; set; }
+		public uint OpCode() { return OuterOpcode.JoinTeamRequest; }
+		[ProtoMember(1)]
+		public long teamId { get; set; }
+		[ProtoMember(2)]
+		public long playerId { get; set; }
+	}
+	[ProtoContract]
+	public partial class JoinTeamResponse : AMessage, IResponse
+	{
+		public static JoinTeamResponse Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<JoinTeamResponse>();
+		}
+		public override void Dispose()
+		{
+			ErrorCode = default;
+			teamId = default;
+			teamOwnerId = default;
+			teamMemberIds.Clear();
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<JoinTeamResponse>(this);
+#endif
+		}
+		public uint OpCode() { return OuterOpcode.JoinTeamResponse; }
+		[ProtoMember(1)]
+		public long teamId { get; set; }
+		[ProtoMember(2)]
+		public long teamOwnerId { get; set; }
+		[ProtoMember(3)]
+		public List<long> teamMemberIds = new List<long>();
+		[ProtoMember(4)]
+		public uint ErrorCode { get; set; }
+	}
+	[ProtoContract]
+	public partial class TeamStateChangeMessage : AMessage, IMessage
+	{
+		public static TeamStateChangeMessage Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<TeamStateChangeMessage>();
+		}
+		public override void Dispose()
+		{
+			teamState = default;
+			playerId = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<TeamStateChangeMessage>(this);
+#endif
+		}
+		public uint OpCode() { return OuterOpcode.TeamStateChangeMessage; }
+		[ProtoMember(1)]
+		public int teamState { get; set; }
+		[ProtoMember(2)]
+		public long playerId { get; set; }
+	}
+	[ProtoContract]
 	public partial class stateSyncData : AMessage
 	{
 		public static stateSyncData Create(Scene scene)
