@@ -6,9 +6,9 @@ namespace UIFramework.Editor
 {
     
     /// <summary>
-    /// 用于生成UIView脚本文件
+    /// 用于生成UIView和Presenter的脚本文件
     /// </summary>
-    public class UIViewGenerator
+    public class UIGenerator
     {
         
 
@@ -18,11 +18,14 @@ namespace UIFramework.Editor
         private readonly string _viewCodeInfo;
 
         private readonly string _fileName;
+        
+        private readonly string _presenterCodeInfo;
 
-        public UIViewGenerator(string viewCodeInfo , string fileName)
+        public UIGenerator(string viewCodeInfo ,string presenterCodeInfo ,string fileName)
         {
             _viewCodeInfo = viewCodeInfo;
             _fileName = fileName;
+            _presenterCodeInfo = presenterCodeInfo;
         }
 
         public void GenerateViewFile()
@@ -55,8 +58,24 @@ namespace UIFramework.Editor
             }
             
             string filePath = GeneratorConfig.presenterPath + _fileName + "Presenter.cs";
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
             
+            using StreamWriter sw = File.CreateText(filePath);
+            sw.Write(_presenterCodeInfo);
+            sw.Close();
+            AssetDatabase.Refresh();
             
         }
+
+        public bool PresenterFileExists()
+        {
+            string filePath = GeneratorConfig.presenterPath + _fileName + "Presenter.cs";
+            return File.Exists(filePath);
+        }
+        
+        
     }
 }

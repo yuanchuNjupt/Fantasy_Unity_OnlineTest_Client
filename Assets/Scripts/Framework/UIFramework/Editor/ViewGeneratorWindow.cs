@@ -56,129 +56,67 @@ namespace UIFramework.Editor
                 return;
             }
 
-            UIViewTemplate template = new UIViewTemplate(classNamespace);
+            UITemplate template = new UITemplate(classNamespace);
             previewInfo = template.BuildViewTemplate(generateObject.transform);
             
         }
 
         [BoxGroup(LeftBoxGroup)]
-        [Button(ButtonSizes.Large, Name = "生成代码"), GUIColor("green")]
-        public void Generate()
+        [Button(ButtonSizes.Large, Name = "仅生成View代码"), GUIColor("green")]
+        public void GenerateView()
         {
             if (generateObject == null)
             {
                 Debug.LogError("生成对象为空");
                 return;
             }
-
-
-            UIViewTemplate template = new UIViewTemplate(classNamespace);
+            
+            UITemplate template = new UITemplate(classNamespace);
             previewInfo = template.BuildViewTemplate(generateObject.transform);
-            
-
-            
-            UIViewGenerator generator = new UIViewGenerator(previewInfo , generateObject.name);
+            UIGenerator generator = new UIGenerator(previewInfo ,template.BuildPresenterTemplate(generateObject.transform) ,generateObject.name);
             generator.GenerateViewFile();
             
-            
-            //存储信息
-            // string dataListJson = JsonConvert.SerializeObject(template.objViewInfoList);
-            // EditorPrefs.SetString("GeneratorViewDataList" , dataListJson);
-            //
-            // EditorPrefs.SetString("GeneratorViewClassName" , generateObject.name + "View");
-            
-            
-            
         }
-        
-        
-        
 
-        // 自动挂载，但是非常吃性能，直接作废
-  
-        /*
-        [UnityEditor.Callbacks.DidReloadScripts]
-        public static void AddViewComponent()
+
+        [BoxGroup(LeftBoxGroup)]
+        [InfoBox("警告：此操作将生成并覆盖现有文件，请谨慎操作！", InfoMessageType.Error)]
+        [PropertyTooltip("将会生成View和Presenter文件")]
+        [Button(ButtonSizes.Large, Name = "生成全部代码"), GUIColor("yellow")]
+        public void GenerateAll()
         {
-            string className = EditorPrefs.GetString("GeneratorViewClassName");
-            if (string.IsNullOrEmpty(className))
+            if (generateObject == null)
             {
+                Debug.LogError("生成对象为空");
                 return;
             }
-            
-            //1.反射获取脚本并挂载
-            var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
-            //找到Csharp程序集
-            var csharpAssembly = assemblies.First(a => a.GetName().Name == "Assembly-CSharp");
-            //获取类所在成员及路径
-            string relClassName = "UIFramework.ViewPath." + className;
+            UITemplate template = new UITemplate(classNamespace);
+            previewInfo = template.BuildViewTemplate(generateObject.transform);
+            UIGenerator generator = new UIGenerator(previewInfo ,template.BuildPresenterTemplate(generateObject.transform) ,generateObject.name);
 
-            Type type = csharpAssembly.GetType(relClassName);
-            if (type == null)
+            if (generator.PresenterFileExists())
             {
-                Debug.LogError("未找到类型：" + relClassName + "自动挂载失败");
-                EditorPrefs.DeleteKey("GeneratorViewDataList");
-                EditorPrefs.DeleteKey("GeneratorViewClassName");
-                return;
-            }
-               
-            //获取要查找的物体
-            string windowObjName = className.Replace("View", "");
-            GameObject viewObj = GameObject.Find(windowObjName);
-            if (viewObj == null)
-            {
-                Debug.LogError("未找到物体：" + windowObjName + "自动挂载失败");
-                EditorPrefs.DeleteKey("GeneratorViewDataList");
-                EditorPrefs.DeleteKey("GeneratorViewClassName");
-                return;
-            }
-            
-            Component c = viewObj.GetComponent(type);
-            if (c == null)
-            {
-                c = viewObj.AddComponent(type);
-            }
-            
-            
+                //如果存在Presenter文件，进行二次确认
+                bool confirmed = EditorUtility.DisplayDialog(
+                    "确认生成",
+                    $"确定要为 [{generateObject.name}] 生成全部代码吗？\n\n此操作将覆盖现有的Presenter 文件！",
+                    "确定生成",
+                    "取消"
+                );
 
-            //2.通过反射遍历数据列表找到对应字段，赋值
-            string dataListJson = EditorPrefs.GetString("GeneratorViewDataList");
-            List<ViewInfo> dataList = JsonConvert.DeserializeObject<List<ViewInfo>>(dataListJson);
-            
-            IEnumerable<FieldInfo> fieldInfos = type.GetFields();
-
-            foreach (FieldInfo fieldInfo in fieldInfos)
-            {
-                foreach (ViewInfo viewInfo in dataList)
+                if (!confirmed)
                 {
-                    if (fieldInfo.Name == viewInfo.fieldName)
-                    {
-                        //根据ID获取GameObject
-                        GameObject uiObject = EditorUtility.InstanceIDToObject(viewInfo.insID) as GameObject;
-                        if (uiObject == null)
-                        {
-                            Debug.LogError("未找到GameObject：" + viewInfo.insID + "自动挂载失败");
-                            continue;
-                        }
-
-                        if (string.Equals(viewInfo.fieldType, "GameObject"))
-                        {
-                            fieldInfo.SetValue(c, uiObject);
-                        }
-                        else
-                        {
-                            fieldInfo.SetValue(c, uiObject.GetComponent(viewInfo.fieldType));
-                        }
-                        break;
-                    }
+                    Debug.Log("已取消生成操作");
+                    return;
                 }
             }
-
-            EditorPrefs.DeleteKey("GeneratorViewDataList");
-            EditorPrefs.DeleteKey("GeneratorViewClassName");
+            
+            generator.GenerateViewFile();
+            generator.GeneratePresenterFile();
+            
+            Debug.Log($"已成功生成 [{generateObject.name}] 的全部代码！");
         }
         
-        */
         
     }
 }

@@ -9,10 +9,10 @@ namespace UIFramework.Editor
 
     
     /// <summary>
-    /// 负责构建UIView的模板
+    /// 负责构建UIView和Presenter的模板
     /// 会返回一个模板字符串
     /// </summary>
-    public class UIViewTemplate
+    public class UITemplate
     {
         /// <summary>
         /// 命名空间
@@ -26,7 +26,7 @@ namespace UIFramework.Editor
         /// </summary>
         public List<ViewInfo> objViewInfoList;
 
-        public UIViewTemplate(string namespaceName)
+        public UITemplate(string namespaceName)
         {
 
             this.namespaceName = namespaceName;
@@ -110,23 +110,6 @@ namespace UIFramework.Editor
             }
 
             sb.AppendLine();
-            
-            //绑定组件区域
-            
-            //自动绑定组件，不需要代码Find绑定了
-            
-            // sb.AppendLine("\t\tpublic void BindComponents()");
-            // sb.AppendLine("\t\t{");
-            // for (int i = 0; i < objViewInfoList.Count; i++)
-            // {
-            //     sb.AppendLine(
-            //         $"\t\t\t{objViewInfoList[i].fieldName} = GetComponentByName<{objViewInfoList[i].fieldType}>(\"[{objViewInfoList[i].fieldType}]{objViewInfoList[i].fieldName}\");");
-            // }
-            // sb.AppendLine("\t\t}");
-            
-            
-            
-            
             sb.AppendLine("\t}");
             sb.AppendLine("}");
             return sb.ToString();
@@ -134,9 +117,28 @@ namespace UIFramework.Editor
 
         public string BuildPresenterTemplate(Transform root)
         {
+            var sb = new StringBuilder();
+            sb.AppendLine("//此文件由UIViewTemplate自动生成，任何手动修改将会被下一次生成覆盖，若需手动修改请避免自动生成");
+            sb.AppendLine("//Author : 原初z");
+            sb.AppendLine();
             
+            sb.AppendLine("using UnityEngine;");
+            sb.AppendLine("using UIFramework.Core;");
+            sb.AppendLine("using UIFramework.Presenter;");
+            sb.AppendLine("using UIFramework.ViewPath;");
+            sb.AppendLine();
             
-            return "";
+            sb.AppendLine("public class " + root.name + "Presenter : BasePresenter<" + root.name + "View>");
+            sb.AppendLine("{");
+            sb.AppendLine();
+            sb.AppendLine("}");
+
+
+
+
+
+
+            return sb.ToString();
         }
         
     }
