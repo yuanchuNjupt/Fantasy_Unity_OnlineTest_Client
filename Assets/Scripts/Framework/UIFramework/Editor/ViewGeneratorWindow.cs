@@ -14,7 +14,7 @@ namespace UIFramework.Editor
     public class ViewGeneratorWindow : OdinEditorWindow
     {
         
-        private const string Title = "View代码生成";
+        private const string Title = "UI代码生成";
 
         private const string Horizontal = Title + "/Split";
 
@@ -46,6 +46,8 @@ namespace UIFramework.Editor
         [HideLabel]
         public string previewInfo;
 
+        
+        [PropertySpace(20)]
         [BoxGroup(LeftBoxGroup)]
         [Button(ButtonSizes.Large, Name = "预览代码"), GUIColor("blue")]
         public void Preview()
@@ -115,6 +117,43 @@ namespace UIFramework.Editor
             generator.GeneratePresenterFile();
             
             Debug.Log($"已成功生成 [{generateObject.name}] 的全部代码！");
+        }
+
+        
+        [PropertySpace(20)]
+        [BoxGroup(LeftBoxGroup)]
+        [LabelText("View生成路径")]
+        [FolderPath]
+        [OnValueChanged(nameof(OnViewPathChanged))]
+        public string ViewPath;
+        
+        [PropertySpace(20)]
+        [BoxGroup(LeftBoxGroup)]
+        [LabelText("Presenter生成路径")]
+        [FolderPath]
+        [OnValueChanged(nameof(OnPresenterPathChanged))]
+        public string PresenterPath;
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
+            ViewPath = GeneratorConfig.viewPath;
+            PresenterPath = GeneratorConfig.presenterPath;
+        }
+
+        private void OnViewPathChanged()
+        {
+            GeneratorConfig.viewPath = ViewPath;
+        }
+
+        private void OnPresenterPathChanged()
+        {
+            GeneratorConfig.presenterPath = PresenterPath;
         }
         
         

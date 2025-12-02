@@ -39,12 +39,5 @@ namespace UIFramework.Editor
             TagSwitcher.SwitchTag(gos);
             
         }
-        
-        [MenuItem("UI/设置")]
-        public static void OpenSettingWindow()
-        {
-            var window = EditorWindow.GetWindow<UISettingsWindow>();
-            window.Show();
-        }
     }
 }
