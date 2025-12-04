@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using Config;
 using Fantasy;
 using Fantasy.Async;
 using Fantasy.Network;
 using Fantasy.Network.Interface;
+using Framework.GameManagerFramework.DataManagers;
+using Framework.GameManagerFramework.WorldScripts;
 using Generate;
 using Helper;
 using Lobby.TeamInfo;
@@ -33,7 +35,7 @@ namespace Lobby
             // player.transform.position = Vector3.zero;
             selfPlayer = player.AddComponent<LobbyPlayer>();
             selfPlayer.InitPos(selfData.position , selfData.inputDir);
-            selfPlayer.Init(Main.MainInstance.UserData.AccountId ,Main.MainInstance.UserData.UserName ,PlayerType.Self);
+            selfPlayer.Init(World.GetExitsDataManager<UserDataManager>().UserData.AccountId ,World.GetExitsDataManager<UserDataManager>().UserData.UserName ,PlayerType.Self);
             mouseManager = selfPlayer.transform.AddComponent<MouseManager>();
             mouseManager.Init();
             //初始化相机
@@ -68,7 +70,7 @@ namespace Lobby
         public void OnLocalExitLobby()
         {
             LogoutMessage message = new LogoutMessage();
-            message.playerId = Main.MainInstance.UserData.AccountId;
+            message.playerId = World.GetExitsDataManager<UserDataManager>().UserData.AccountId;
             
             NetWorkManager.Instance.Send(message);
             
@@ -95,7 +97,7 @@ namespace Lobby
             StateSyncRequest req = new StateSyncRequest();
 
             req.stateData = syncData;
-            syncData.playerId = Main.MainInstance.UserData.AccountId;
+            syncData.playerId = World.GetExitsDataManager<UserDataManager>().UserData.AccountId;
             
             // var res = await Init.MainInstance._session.Call(req) as StateSyncResponse;
             var res = await NetWorkManager.Instance.Call<StateSyncResponse>(req);
