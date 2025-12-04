@@ -1,6 +1,5 @@
 ﻿using System;
 using Framework.GameManagerFramework.Base;
-using Framework.GameManagerFramework.Test;
 
 namespace Framework.GameManagerFramework.Runtime
 {
@@ -8,7 +7,6 @@ namespace Framework.GameManagerFramework.Runtime
     {
         public static Type[] LogicBehaviourExecutions = new Type[]
         {
-            typeof(RegisterLogicManager) , typeof(LoginLogicManager),
         };
 
         public static Type[] DataBehaviourExecutions = new Type[]

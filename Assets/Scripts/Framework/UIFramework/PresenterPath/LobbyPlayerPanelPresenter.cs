@@ -1,8 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Fantasy;
-using Generate;
+
+using Framework.GameManagerFramework.DataManagers;
+
 using Lobby;
 using UIFramework.Core;
 using UIFramework.Presenter;
@@ -61,10 +59,10 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
 
         //UI响应
         UIManager.MainInstance.AddPanel<MemberView>(View.MemberPrefab, UILayer.Main,
-            Main.MainInstance.UserData.AccountId.ToString() , false);
-        var panel = UIManager.MainInstance.ShowPanel<MemberView>(Main.MainInstance.UserData.AccountId.ToString());
+            World.GetExitsDataManager<UserDataManager>().UserData.AccountId.ToString() , false);
+        var panel = UIManager.MainInstance.ShowPanel<MemberView>(World.GetExitsDataManager<UserDataManager>().UserData.AccountId.ToString());
         panel.gameObject.transform.SetParent(View.TeamMember ,false);
-        panel.MemberName.text = Main.MainInstance.UserData.UserName;
+        panel.MemberName.text = World.GetExitsDataManager<UserDataManager>().UserData.UserName;
         
         //设置房间号，显示退出按钮
         
@@ -86,7 +84,7 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
             return;
         }
         
-        var res = await LobbyPlayerManager.MainInstance.teamManager.JoinTeam(Main.MainInstance.UserData.AccountId, roomId);
+        var res = await LobbyPlayerManager.MainInstance.teamManager.JoinTeam(World.GetExitsDataManager<UserDataManager>().UserData.AccountId, roomId);
         if (res != 0)
             return;
         

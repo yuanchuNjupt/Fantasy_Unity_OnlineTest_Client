@@ -4,6 +4,8 @@ using Fantasy;
 using Fantasy.Async;
 using Fantasy.Network;
 using Fantasy.Network.Interface;
+using Framework.GameManagerFramework.DataManagers;
+using Framework.GameManagerFramework.WorldScripts;
 using Generate;
 using UIFramework.Core;
 using UIFramework.ViewPath;
@@ -22,7 +24,7 @@ namespace Lobby.TeamInfo
         public async FTask<uint> CreateTeam()
         {
             var req = new CreateTeamRequest();
-            req.playerId = Main.MainInstance.UserData.AccountId;
+            req.playerId = World.GetExitsDataManager<UserDataManager>().UserData.AccountId;
 
             var res = await NetWorkManager.Instance.Call<CreateTeamResponse>(req);
 
@@ -36,8 +38,8 @@ namespace Lobby.TeamInfo
                 TeamId = res.teamId,
                 TeamOwner = new TeamMemberInfo()
                 {
-                    accountId = Main.MainInstance.UserData.AccountId,
-                    memberName = Main.MainInstance.UserData.AccountName,
+                    accountId = World.GetExitsDataManager<UserDataManager>().UserData.AccountId,
+                    memberName = World.GetExitsDataManager<UserDataManager>().UserData.AccountName,
                 },
                 TeamMembers = new List<TeamMemberInfo>(),
             };
@@ -98,8 +100,8 @@ namespace Lobby.TeamInfo
             var req = new TeamStateChangeMessage();
             
             //看看自己是不是队长 3 : 解散 2 : 退出
-            req.teamState = Main.MainInstance.UserData.AccountId == teamInfo.TeamOwner.accountId ? 3 : 2;
-            req.playerId = Main.MainInstance.UserData.AccountId;            
+            req.teamState = World.GetExitsDataManager<UserDataManager>().UserData.AccountId == teamInfo.TeamOwner.accountId ? 3 : 2;
+            req.playerId = World.GetExitsDataManager<UserDataManager>().UserData.AccountId;            
             
             NetWorkManager.Instance.Send(req);
             
