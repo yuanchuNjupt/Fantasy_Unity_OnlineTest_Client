@@ -24,7 +24,7 @@ namespace Lobby
         public TeamManagerComponent teamManager = new TeamManagerComponent();
 
         //本机登陆
-        public async void OnLocalEntryLobby(stateSyncData selfData , List<stateSyncData> resOtherPlayerData)
+        public void OnLocalEntryLobby(stateSyncData selfData , List<stateSyncData> resOtherPlayerData)
         {
             
             //实例化角色

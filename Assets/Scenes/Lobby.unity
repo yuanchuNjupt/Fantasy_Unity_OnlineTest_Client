@@ -533,7 +533,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _controlSpeed: 1.5
   _cameraVerticalMaxAngle: {x: -65, y: 65}
-  _smoothSpeed: 0.15
+  _smoothSpeed: 20
   _positionOffset: 0.01
   _positionSmoothTime: 20
   playerInput: {fileID: 0}

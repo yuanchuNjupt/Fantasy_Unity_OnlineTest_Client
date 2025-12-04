@@ -1,0 +1,65 @@
+using System.Collections.Generic;
+using Framework.GameManagerFramework.Base;
+using Framework.GameManagerFramework.Runtime;
+
+public class WorldManager
+{
+    /// <summary>
+    /// 默认的游戏世界
+    /// </summary>
+    public static World DefaultWorld { get; private set; }
+
+    private static List<World> _worlds = new();
+    
+    
+    /// <summary>
+    /// 构建一个游戏世界
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public static void CreateWorld<T>() where T : World , new()
+    {
+        T world = new T();
+        DefaultWorld = world;
+        
+        
+        TypeManager.InitializeWorldAssemblies(world , GetBehaviourExecution(world));
+        
+        //初始化游戏世界的程序集
+        world.OnCreate();
+        _worlds.Add(world);
+    }
+
+    /// <summary>
+    /// 销毁对应的游戏世界
+    /// </summary>
+    /// <param name="world"></param>
+    /// <typeparam name="T"></typeparam>
+    public static void DestroyWorld<T>() where T : World, new()
+    {
+        for (int i = 0; i < _worlds.Count; i++)
+        {
+            if (_worlds[i] is T)
+            {
+                _worlds[i].DestroyWorld();
+                _worlds.RemoveAt(i);
+                break;
+            }
+        }
+    }
+
+    public static IBehaviourExecution GetBehaviourExecution(World world)
+    {
+        if (world.GetType().Name == "HallWorld")
+        {
+            return new HallWorldScriptExecutionOrder();
+        }
+
+
+
+        return null;
+    }
+    
+    
+    
+    
+}

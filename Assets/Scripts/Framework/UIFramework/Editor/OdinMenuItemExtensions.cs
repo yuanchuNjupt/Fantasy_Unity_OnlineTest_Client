@@ -1,8 +1,8 @@
-﻿using UIFramework.View;
+﻿using UIFramework.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace UIFramework.Editor
+namespace Framework.UIFramework.Editor
 {
     public class OdinMenuItemExtensions
     {
