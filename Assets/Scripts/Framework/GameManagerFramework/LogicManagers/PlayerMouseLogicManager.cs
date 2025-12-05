@@ -1,5 +1,6 @@
 ﻿using Framework.GameManagerFramework.WorldScripts;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Framework.GameManagerFramework.LogicManagers
 {
@@ -15,14 +16,34 @@ namespace Framework.GameManagerFramework.LogicManagers
         
         public Vector2 MoveInput => _gameInputAction.CharacterInput.Movement.ReadValue<Vector2>();
         
+        public Vector2 CameraLook => _gameInputAction.CharacterInput.CameraLook.ReadValue<Vector2>();
+
+        public bool Run => _gameInputAction.CharacterInput.Run.phase == InputActionPhase.Performed;
+        
         
         public void OnCreate()
         {
             _gameInputAction = World.GetExitsLogicManager<UserMouseLogicManager>().GameInput;
             _gameInputAction.CharacterInput.Enable();
+            _gameInputAction.CallMouse.Enable();
+            
+            // 订阅 CallMouse 按键事件
+            _gameInputAction.CallMouse.CallMouse.started += OnCallMousePressed;
+            _gameInputAction.CallMouse.CallMouse.canceled += OnCallMouseReleased;
+            
             _showMouseCount = 0;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+        }
+        
+        private void OnCallMousePressed(InputAction.CallbackContext context)
+        {
+            ShowMousePartial();
+        }
+        
+        private void OnCallMouseReleased(InputAction.CallbackContext context)
+        {
+            HideMousePartial();
         }
         
         /// <summary>
@@ -59,7 +80,12 @@ namespace Framework.GameManagerFramework.LogicManagers
 
         public void OnDestroy()
         {
+            // 取消订阅 CallMouse 按键事件
+            _gameInputAction.CallMouse.CallMouse.started -= OnCallMousePressed;
+            _gameInputAction.CallMouse.CallMouse.canceled -= OnCallMouseReleased;
+            
             _gameInputAction.CharacterInput.Disable();
+            _gameInputAction.CallMouse.Disable();
         }
         
     }

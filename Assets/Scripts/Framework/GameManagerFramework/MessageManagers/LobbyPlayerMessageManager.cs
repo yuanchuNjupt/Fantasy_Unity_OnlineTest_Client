@@ -39,7 +39,7 @@ namespace Framework.MessageManagers
         /// </summary>
         /// <param name="syncData"></param>
         /// <returns></returns>
-        public async FTask<StateSyncResponse> SendStateSyncRequest(stateSyncData syncData)
+        public async FTask<StateSyncResponse> SendStateSyncRequest(StateSyncData syncData)
         {
             StateSyncRequest req = new StateSyncRequest();
 
@@ -106,7 +106,7 @@ namespace Framework.MessageManagers
                     return;
                 }
                 
-                otherPlayer.SyncPos(message.roleData.position , message.roleData.inputDir);
+                otherPlayer.SyncPos(message.roleData.position , message.roleData.inputDir , (PlayerState)message.roleData.playerState);
                 await FTask.CompletedTask;
             }
         }

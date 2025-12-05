@@ -141,9 +141,9 @@ namespace Fantasy
 		}
 		public uint OpCode() { return OuterOpcode.EntryLobbyResponse; }
 		[ProtoMember(1)]
-		public stateSyncData selfData { get; set; }
+		public StateSyncData selfData { get; set; }
 		[ProtoMember(2)]
-		public List<stateSyncData> otherPlayerData = new List<stateSyncData>();
+		public List<StateSyncData> otherPlayerData = new List<StateSyncData>();
 		[ProtoMember(3)]
 		public uint ErrorCode { get; set; }
 	}
@@ -213,7 +213,7 @@ namespace Fantasy
 		}
 		public uint OpCode() { return OuterOpcode.OtherPlayerLoginMessage; }
 		[ProtoMember(1)]
-		public stateSyncData playerData { get; set; }
+		public StateSyncData playerData { get; set; }
 	}
 	[ProtoContract]
 	public partial class LogoutMessage : AMessage, IMessage
@@ -260,7 +260,7 @@ namespace Fantasy
 		}
 		public override void Dispose()
 		{
-			statePackageId = default;
+			tatePackageId = default;
 			stateData = default;
 #if FANTASY_NET || FANTASY_UNITY
 			GetScene().MessagePoolComponent.Return<StateSyncRequest>(this);
@@ -270,9 +270,9 @@ namespace Fantasy
 		public StateSyncResponse ResponseType { get; set; }
 		public uint OpCode() { return OuterOpcode.StateSyncRequest; }
 		[ProtoMember(1)]
-		public long statePackageId { get; set; }
+		public long tatePackageId { get; set; }
 		[ProtoMember(2)]
-		public stateSyncData stateData { get; set; }
+		public StateSyncData stateData { get; set; }
 	}
 	[ProtoContract]
 	public partial class StateSyncResponse : AMessage, IResponse
@@ -294,7 +294,7 @@ namespace Fantasy
 		[ProtoMember(1)]
 		public long statePackageId { get; set; }
 		[ProtoMember(2)]
-		public stateSyncData stateData { get; set; }
+		public StateSyncData stateData { get; set; }
 		[ProtoMember(3)]
 		public uint ErrorCode { get; set; }
 	}
@@ -314,7 +314,7 @@ namespace Fantasy
 		}
 		public uint OpCode() { return OuterOpcode.OtherPlayerStateSyncMessage; }
 		[ProtoMember(1)]
-		public stateSyncData roleData { get; set; }
+		public StateSyncData roleData { get; set; }
 	}
 	[ProtoContract]
 	public partial class CreateTeamRequest : AMessage, IRequest
@@ -432,11 +432,71 @@ namespace Fantasy
 		public long playerId { get; set; }
 	}
 	[ProtoContract]
-	public partial class stateSyncData : AMessage
+	public partial class EnterDungeonMessage : AMessage, IMessage
 	{
-		public static stateSyncData Create(Scene scene)
+		public static EnterDungeonMessage Create(Scene scene)
 		{
-			return scene.MessagePoolComponent.Rent<stateSyncData>();
+			return scene.MessagePoolComponent.Rent<EnterDungeonMessage>();
+		}
+		public override void Dispose()
+		{
+			teamId = default;
+			teamMemberIds.Clear();
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<EnterDungeonMessage>(this);
+#endif
+		}
+		public uint OpCode() { return OuterOpcode.EnterDungeonMessage; }
+		[ProtoMember(1)]
+		public long teamId { get; set; }
+		[ProtoMember(2)]
+		public List<long> teamMemberIds = new List<long>();
+	}
+	[ProtoContract]
+	public partial class LoadDungeonProgressMessage : AMessage, IMessage
+	{
+		public static LoadDungeonProgressMessage Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<LoadDungeonProgressMessage>();
+		}
+		public override void Dispose()
+		{
+			teamId = default;
+			playerId = default;
+			progress = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<LoadDungeonProgressMessage>(this);
+#endif
+		}
+		public uint OpCode() { return OuterOpcode.LoadDungeonProgressMessage; }
+		[ProtoMember(1)]
+		public long teamId { get; set; }
+		[ProtoMember(2)]
+		public long playerId { get; set; }
+		[ProtoMember(3)]
+		public float progress { get; set; }
+	}
+	[ProtoContract]
+	public partial class StartDungeonBattleMessage : AMessage, IMessage
+	{
+		public static StartDungeonBattleMessage Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<StartDungeonBattleMessage>();
+		}
+		public override void Dispose()
+		{
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<StartDungeonBattleMessage>(this);
+#endif
+		}
+		public uint OpCode() { return OuterOpcode.StartDungeonBattleMessage; }
+	}
+	[ProtoContract]
+	public partial class StateSyncData : AMessage
+	{
+		public static StateSyncData Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<StateSyncData>();
 		}
 		public override void Dispose()
 		{
@@ -446,7 +506,7 @@ namespace Fantasy
 			playerState = default;
 			PlayerName = default;
 #if FANTASY_NET || FANTASY_UNITY
-			GetScene().MessagePoolComponent.Return<stateSyncData>(this);
+			GetScene().MessagePoolComponent.Return<StateSyncData>(this);
 #endif
 		}
 		[ProtoMember(1)]

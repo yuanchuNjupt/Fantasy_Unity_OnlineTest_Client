@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Framework.GameManagerFramework.LogicManagers;
 using GGG.Tool;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,14 +16,21 @@ public class TP_CameraControl : MonoBehaviour
     [SerializeField] private float _positionOffset;   //摄像机与目标物体的距离偏移
     [SerializeField] private float _positionSmoothTime;    //摄像机位置平滑时间
 
-    public PlayerInput playerInput;
     
+    private PlayerMouseLogicManager _playerMouseLogicManager;
     
     public Transform _lookTarget;
     private Vector3 _smoothDampVelocity = Vector3.zero;
+    
+    [SerializeField]
     private Vector2 _input;    //相机的输入 旋转角度
     private Vector3 _cameraRotation;   //当前摄像机的旋转角度
-    
+
+    private void Start()
+    {
+        _playerMouseLogicManager = World.GetExitsLogicManager<PlayerMouseLogicManager>();
+    }
+
     private void Update()
     {
         if(_lookTarget == null)
@@ -41,10 +49,11 @@ public class TP_CameraControl : MonoBehaviour
     private void CameraInput()
     {
         
-        _input.y += playerInput.actions["CameraLook"].ReadValue<Vector2>().x * _controlSpeed;
-        _input.x -= playerInput.actions["CameraLook"].ReadValue<Vector2>().y * _controlSpeed;
+        _input.y += _playerMouseLogicManager.CameraLook.x * _controlSpeed;
+        _input.x -= _playerMouseLogicManager.CameraLook.y * _controlSpeed;
         
         _input.x = Mathf.Clamp(_input.x, _cameraVerticalMaxAngle.x, _cameraVerticalMaxAngle.y);
+        
     }
     
     //更新相机的旋转
@@ -58,6 +67,5 @@ public class TP_CameraControl : MonoBehaviour
     {
         var newPos = (_lookTarget.position + (-transform.forward * _positionOffset));
         transform.position = Vector3.Lerp(transform.position , newPos , DevelopmentToos.UnTetheredLerp(_positionSmoothTime));
-        // transform.position = Vector3.Lerp(transform.position , newPos , Time.deltaTime * _positionSmoothTime);
     }
 }

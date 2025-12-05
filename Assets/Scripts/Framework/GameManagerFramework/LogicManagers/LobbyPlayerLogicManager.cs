@@ -56,7 +56,7 @@ namespace Framework.GameManagerFramework.LogicManagers
             }
         }
 
-        private void OnLocalEntryLobby(stateSyncData selfData , List<stateSyncData> resOtherPlayerData)
+        private void OnLocalEntryLobby(StateSyncData selfData , List<StateSyncData> resOtherPlayerData)
         {
             
             //实例化角色
@@ -98,7 +98,7 @@ namespace Framework.GameManagerFramework.LogicManagers
         
         
         //同步自己的位置到服务器
-        public async void SyncRoleState(stateSyncData syncData)
+        public async void SyncRoleState(StateSyncData syncData)
         {
 
             var res = await _lobbyPlayerMessageManager.SendStateSyncRequest(syncData);
@@ -108,7 +108,7 @@ namespace Framework.GameManagerFramework.LogicManagers
                 Debug.Log("同步状态失败 错误码：" + res.ErrorCode);
                 return;
             }
-            _lobbyPlayerDataManager.SelfPlayer.SyncPos(res.stateData.position , res.stateData.inputDir);
+            _lobbyPlayerDataManager.SelfPlayer.SyncPos(res.stateData.position , res.stateData.inputDir , (PlayerState)res.stateData.playerState);
             
         }
         

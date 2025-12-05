@@ -33,8 +33,8 @@ public class Main : MonoBehaviour
 
     }
 
-    private void OnDestroy()
-    {
-        NetWorkManager.Instance.OnRelease();
-    }
+    // private void OnDestroy()
+    // {
+    //     NetWorkManager.Instance.OnRelease();
+    // }
 }

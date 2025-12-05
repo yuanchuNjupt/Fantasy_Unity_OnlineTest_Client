@@ -21,5 +21,8 @@ namespace Fantasy
 		 public const uint JoinTeamRequest = 268445463;
 		 public const uint JoinTeamResponse = 402663191;
 		 public const uint TeamStateChangeMessage = 134227733;
+		 public const uint EnterDungeonMessage = 134227734;
+		 public const uint LoadDungeonProgressMessage = 134227735;
+		 public const uint StartDungeonBattleMessage = 134227736;
 	}
 }

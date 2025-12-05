@@ -3,6 +3,7 @@ using System;
 using Framework.GameManagerFramework.DataManagers;
 using Framework.GameManagerFramework.LogicManagers;
 using Lobby;
+using Lobby.TeamInfo;
 using UIFramework.Core;
 using UIFramework.Presenter;
 using UIFramework.ViewPath;
@@ -13,6 +14,9 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
     private bool _showTeamPanel = false;
     private PlayerMouseLogicManager _playerMouseLogicManager;
     private LobbyTeamLogicManager _lobbyTeamLogicManager;
+    private UserDataManager _userDataManager;
+    
+    private Team _teamInfo;
 
     private void Awake()
     {
@@ -24,6 +28,7 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
 
     private void Start()
     {
+        _userDataManager = World.GetExitsDataManager<UserDataManager>();
         _playerMouseLogicManager = World.GetExitsLogicManager<PlayerMouseLogicManager>();
         _lobbyTeamLogicManager = World.GetExitsLogicManager<LobbyTeamLogicManager>();
     }
@@ -35,6 +40,10 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
         View.JoinTeamButton.onClick.RemoveListener(OnJoinTeamButtonClick);
         View.LevelTeamButton.onClick.RemoveListener(OnLevelTeamButtonClick);
     }
+
+    #region 组队系统
+
+    
 
     private void OnTeamButtonClick()
     {
@@ -56,79 +65,41 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
 
     private async void OnCreateTeamButtonClick()
     {
-        var res = await LobbyPlayerManager.MainInstance.teamManager.CreateTeam();
-        if (res != 0)
-        {
-            Debug.LogWarning("创建小队失败，错误码：" + res);
+       
+        _teamInfo = await _lobbyTeamLogicManager.CreateTeam();
+        
+        if(_teamInfo == null)
             return;
-        }
-        Debug.Log("创建小队成功，队伍ID : " + LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamId);
-        
-
-        //UI响应
-        UIManager.MainInstance.AddPanel<MemberView>(View.MemberPrefab, UILayer.Main,
-            World.GetExitsDataManager<UserDataManager>().UserData.AccountId.ToString() , false);
-        var panel = UIManager.MainInstance.ShowPanel<MemberView>(World.GetExitsDataManager<UserDataManager>().UserData.AccountId.ToString());
-        panel.gameObject.transform.SetParent(View.TeamMember ,false);
-        panel.MemberName.text = World.GetExitsDataManager<UserDataManager>().UserData.UserName;
-        
+        AddMember(_userDataManager.UserData.AccountId , _userDataManager.UserData.UserName);
         //设置房间号，显示退出按钮
-        
         SwitchTeamState(true);
-        View.RoomId.text = "房间号:" + LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamId;
+        View.RoomId.text = "房间号:" + _teamInfo.TeamId;
     }
 
     private async void OnJoinTeamButtonClick()
     {
-        if (string.IsNullOrEmpty(View.RoomInput.text))
-        {
-            return;
-        }
+        _teamInfo = await _lobbyTeamLogicManager.JoinTeam(View.RoomInput.text);
         
-        // 验证输入是否为有效的数字
-        if (!long.TryParse(View.RoomInput.text, out long roomId))
-        {
-            Debug.LogWarning("房间号格式错误，请输入有效的数字");
+        if(_teamInfo == null)
             return;
-        }
-        
-        var res = await LobbyPlayerManager.MainInstance.teamManager.JoinTeam(World.GetExitsDataManager<UserDataManager>().UserData.AccountId, roomId);
-        if (res != 0)
-            return;
-        
-        Debug.Log("加入小队成功，队伍ID : " + LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamId);
         
         //UI响应
         //首先是队长
-        UIManager.MainInstance.AddPanel<MemberView>(View.MemberPrefab, UILayer.Main,
-            LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamOwner.accountId.ToString() , false);
-        var panel = UIManager.MainInstance.ShowPanel<MemberView>(LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamOwner.accountId.ToString() );
-        panel.gameObject.transform.SetParent(View.TeamMember ,false);
-        panel.MemberName.text = LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamOwner.memberName;
+        AddMember(_teamInfo.TeamOwner.accountId , _teamInfo.TeamOwner.memberName);
         
-        //然后是队员
-        LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamMembers.ForEach(member =>
+        _teamInfo.TeamMembers.ForEach(member =>
         {
-            UIManager.MainInstance.AddPanel<MemberView>(View.MemberPrefab, UILayer.Main,
-                member.accountId.ToString() , false);
-            panel = UIManager.MainInstance.ShowPanel<MemberView>(member.accountId.ToString());
-            panel.gameObject.transform.SetParent(View.TeamMember ,false);
-            panel.MemberName.text = member.memberName;
+            AddMember(member.accountId, member.memberName);
         });
         
-        
-        
         SwitchTeamState(true);
-        View.RoomId.text = "房间号:" + LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamId;
+        View.RoomId.text = "房间号:" + _teamInfo.TeamId;
     }
 
     private void OnLevelTeamButtonClick()
     {
-        
         ClearMembers();
-        
-        
-        LobbyPlayerManager.MainInstance.teamManager.LeaveTeam();
+        _lobbyTeamLogicManager.LeaveTeam();
     }
 
 
@@ -149,9 +120,11 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
     public void ClearMembers()
     {
         SwitchTeamState(false);
-        LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamMembers.ForEach(x =>
-            UIManager.MainInstance.RemovePanel(x.accountId.ToString()));
-        UIManager.MainInstance.RemovePanel(LobbyPlayerManager.MainInstance.teamManager.teamInfo.TeamOwner.accountId.ToString());
+        _teamInfo.TeamMembers.ForEach(member =>
+        {
+            UIManager.MainInstance.RemovePanel(member.accountId.ToString());
+        });
+        UIManager.MainInstance.RemovePanel(_teamInfo.TeamOwner.accountId.ToString());
     }
     
     private void SwitchTeamState(bool inTeam)
@@ -177,6 +150,8 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
             View.RoomId.text = "";
         }
     }
+    
+    #endregion
     
     
 }

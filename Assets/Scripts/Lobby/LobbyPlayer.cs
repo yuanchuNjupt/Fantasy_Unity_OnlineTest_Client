@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Config;
 using Fantasy;
 using Framework.GameManagerFramework.LogicManagers;
+using GGG.Tool;
 using Helper;
 using Lobby;
 using Manager;
@@ -20,12 +21,13 @@ public enum PlayerType
 
 public enum PlayerState
 {
-    Idle,
-    Run,
+    Idle = 1,
+    Run = 2,
+    Sprint = 3,
 }
 
 
-public class LobbyPlayer : MonoBehaviour
+public partial class LobbyPlayer : MonoBehaviour
 {
     
     public PlayerType playerType;
@@ -41,7 +43,8 @@ public class LobbyPlayer : MonoBehaviour
     
     public float smoothPosSpeed = 10f;
     
-    public float smoothRotSpeed = 10f;
+    
+    public float smoothRotSpeed = 7.5f;
     
     private Vector3 _renderDir = new Vector3(0 , 0 , 1);
     
@@ -56,39 +59,37 @@ public class LobbyPlayer : MonoBehaviour
 
     public Vector3 syncTargetDir;
     
+    public PlayerState syncTargetState;
+    
+    /// <summary>
+    /// 上一次的状态，用于判断停止动画
+    /// </summary>
+    private PlayerState _lastState;
+    
     /// <summary>
     /// 当前状态同步计数
     /// </summary>
     private int _syncStateCurrentCount;
     
     private Vector2 _lastInput;
+
     
 
     #endregion
     
-    
-    
-
-
-
-
-
     public void Init(string playerName ,PlayerType type)
     {
         playerType = type;
         _animator = GetComponent<Animator>();
         
-        
         PlayerName = playerName;
         _playerCameraTransform = CameraInit.MainInstance.cameraControl.transform;
-        // if (type is PlayerType.Other)
-        // {
-        //     //远程玩家 不需要输入组件
-        //     playerInput.enabled = false;
-        // }
+
         state = PlayerState.Idle;
+        _lastState = PlayerState.Idle;
+        syncTargetState = PlayerState.Idle;
         PlayAnimation("Idle");
-        
+        OnLobbyPlayerInputInit();
     }
 
     private void PlayAnimation(string animName)
@@ -96,10 +97,11 @@ public class LobbyPlayer : MonoBehaviour
         _animator.CrossFade(animName , 0.2f);
     }
 
-    public void SyncPos(CSVector3 position, CSVector3 inputDir)
+    public void SyncPos(CSVector3 position, CSVector3 inputDir , PlayerState playerState)
     {
         syncTargetPos = position.ToVector3();
         syncTargetDir = inputDir.ToVector3();
+        syncTargetState = playerState;
     }
     
     //初始化生成的位置
@@ -135,59 +137,50 @@ public class LobbyPlayer : MonoBehaviour
 
     public void UpdateState()
     {
-        if (syncTargetDir != Vector3.zero && state is not PlayerState.Run)
+        // 只在 syncTargetState 发生变化时才处理
+        if (syncTargetState == _lastState)
         {
-            PlayAnimation("Run");
-            state = PlayerState.Run;
+            return;
         }
-        else if (syncTargetDir == Vector3.zero && state is not PlayerState.Idle)
+        
+        // 判断是否从移动状态变为 Idle
+        if (syncTargetState == PlayerState.Idle && _lastState != PlayerState.Idle)
         {
-            PlayAnimation("Idle");
-            state = PlayerState.Idle;
+            // 根据上一次的状态播放对应的停止动画
+            if (_lastState == PlayerState.Run)
+            {
+                PlayAnimation("RunStop");
+            }
+            else if (_lastState == PlayerState.Sprint)
+            {
+                PlayAnimation("SprintStop");
+            }
         }
+        else
+        {
+            // 其他状态变化，直接播放对应动画
+            switch (syncTargetState)
+            {
+                case PlayerState.Idle:
+                    PlayAnimation("Idle");
+                    break;
+                case PlayerState.Run:
+                    PlayAnimation("Run");
+                    break;
+                case PlayerState.Sprint:
+                    PlayAnimation("Sprint");
+                    break;
+            }
+        }
+        
+        // 更新上一次的状态为当前的 syncTargetState
+        _lastState = syncTargetState;
     }
 
-    private void UpdateInput()
-    {
-        if(playerType is PlayerType.Self)
-        {
-            Vector2 input = World.GetExitsLogicManager<PlayerMouseLogicManager>().MoveInput;
-            if (input != Vector2.zero)
-            {
-                // 获取相机前方向（XZ平面投影）
-                Vector3 cameraForward = _playerCameraTransform.forward;
-                cameraForward.y = 0;
-                cameraForward.Normalize();
-            
-                // 获取相机右方向（XZ平面投影）
-                Vector3 cameraRight = _playerCameraTransform.right;
-                cameraRight.y = 0;
-                cameraRight.Normalize();
-            
-                // 基于相机坐标系计算移动方向
-                // input.y = 前后(W/S), input.x = 左右(A/D)
-                Vector3 moveDirection = cameraForward * input.y + cameraRight * input.x;
-            
-                // 转换为Vector2（XZ平面）
-                _inputDir = new Vector2(moveDirection.x, moveDirection.z);
-            }
-            else
-            {
-                _inputDir = Vector2.zero;
-            }
-        }
-    }
-    
-    
-    
-    
-    
 
     private void Update()
     {
-        
-        UpdateInput();
-        
+        OnLobbyPlayerInputUpdate();
         
         UpdatePos();
         UpdateDir();
@@ -213,19 +206,15 @@ public class LobbyPlayer : MonoBehaviour
                 return;
             }
             
-
-
-    
-            // _syncPacketId++;
-            
-            stateSyncData stateSyncData = new stateSyncData()
+            StateSyncData stateSyncData = new StateSyncData()
             {
                 inputDir = new CSVector3()
                 {
                     x = _inputDir.x,
                     y = 0,
                     z = _inputDir.y
-                }
+                },
+                playerState = (int)state,
             };
             
             //发送状态同步数据请求

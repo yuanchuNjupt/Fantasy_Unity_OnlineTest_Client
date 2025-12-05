@@ -75,7 +75,7 @@ namespace Fantasy
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void OtherPlayerLoginMessage(this Session session, stateSyncData playerData)
+		public static void OtherPlayerLoginMessage(this Session session, StateSyncData playerData)
 		{
 			using var message = Fantasy.OtherPlayerLoginMessage.Create(session.Scene);
 			message.playerData = playerData;
@@ -117,10 +117,10 @@ namespace Fantasy
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static async FTask<StateSyncResponse> StateSyncRequest(this Session session, long statePackageId, stateSyncData stateData)
+		public static async FTask<StateSyncResponse> StateSyncRequest(this Session session, long tatePackageId, StateSyncData stateData)
 		{
 			using var request = Fantasy.StateSyncRequest.Create(session.Scene);
-			request.statePackageId = statePackageId;
+			request.tatePackageId = tatePackageId;
 			request.stateData = stateData;
 			return (StateSyncResponse)await session.Call(request);
 		}
@@ -132,7 +132,7 @@ namespace Fantasy
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void OtherPlayerStateSyncMessage(this Session session, stateSyncData roleData)
+		public static void OtherPlayerStateSyncMessage(this Session session, StateSyncData roleData)
 		{
 			using var message = Fantasy.OtherPlayerStateSyncMessage.Create(session.Scene);
 			message.roleData = roleData;
@@ -180,6 +180,50 @@ namespace Fantasy
 			using var message = Fantasy.TeamStateChangeMessage.Create(session.Scene);
 			message.teamState = teamState;
 			message.playerId = playerId;
+			session.Send(message);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void EnterDungeonMessage(this Session session, EnterDungeonMessage message)
+		{
+			session.Send(message);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void EnterDungeonMessage(this Session session, long teamId, List<long> teamMemberIds)
+		{
+			using var message = Fantasy.EnterDungeonMessage.Create(session.Scene);
+			message.teamId = teamId;
+			message.teamMemberIds = teamMemberIds;
+			session.Send(message);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void LoadDungeonProgressMessage(this Session session, LoadDungeonProgressMessage message)
+		{
+			session.Send(message);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void LoadDungeonProgressMessage(this Session session, long teamId, long playerId, float progress)
+		{
+			using var message = Fantasy.LoadDungeonProgressMessage.Create(session.Scene);
+			message.teamId = teamId;
+			message.playerId = playerId;
+			message.progress = progress;
+			session.Send(message);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void StartDungeonBattleMessage(this Session session, StartDungeonBattleMessage message)
+		{
+			session.Send(message);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void StartDungeonBattleMessage(this Session session)
+		{
+			using var message = Fantasy.StartDungeonBattleMessage.Create(session.Scene);
 			session.Send(message);
 		}
 

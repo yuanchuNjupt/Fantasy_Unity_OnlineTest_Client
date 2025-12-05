@@ -2579,7 +2579,6 @@ GameObject:
   - component: {fileID: 1031496905623337367}
   - component: {fileID: 3007178768452464073}
   - component: {fileID: 4001802154864758268}
-  - component: {fileID: 755819626272594833}
   - component: {fileID: 8017823045107696429}
   m_Layer: 7
   m_Name: PlayerModel_NotSword
@@ -2901,37 +2900,6 @@ MonoBehaviour:
   - {fileID: 2190531213048888793}
   - {fileID: 4933436520436083394}
   - {fileID: 3978020201786582610}
---- !u!114 &755819626272594833
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1547339743743514304}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 63cb51a22aaf1fd4db64adc25e8634b2,
-    type: 3}
-  m_NotificationBehavior: 0
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: GameInput
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 0}
 --- !u!114 &8017823045107696429
 MonoBehaviour:
   m_ObjectHideFlags: 0

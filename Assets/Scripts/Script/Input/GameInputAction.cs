@@ -71,42 +71,6 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Climb"",
-                    ""type"": ""Button"",
-                    ""id"": ""b1432a7a-79fe-4490-9c50-d244fa2f4d72"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Grab"",
-                    ""type"": ""Button"",
-                    ""id"": ""ba6c2f75-e14b-48c8-b733-f6c96ab40993"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""TakeOut"",
-                    ""type"": ""Button"",
-                    ""id"": ""42f425bb-0dec-49b2-bf74-4c550e12ea0f"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Parry"",
-                    ""type"": ""Button"",
-                    ""id"": ""2f87f3c6-8ee5-4266-a343-c83c168d1fb3"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -263,59 +227,32 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""RAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
+                }
+            ]
+        },
+        {
+            ""name"": ""CallMouse"",
+            ""id"": ""c458b011-18ee-4049-ada3-66f45fde1d4d"",
+            ""actions"": [
+                {
+                    ""name"": ""CallMouse"",
+                    ""type"": ""Button"",
+                    ""id"": ""5326611a-300c-4e1b-8fbc-6d2d3af739fe"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
                 {
                     ""name"": """",
-                    ""id"": ""439089cb-5c17-41bd-9802-6928377f841b"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""id"": ""09450096-e3bf-4c70-8603-f5c2cadc4bc2"",
+                    ""path"": ""<Keyboard>/tab"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Climb"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""70cfe176-d838-45d5-9478-20f6466e0d1e"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Climb"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""cd4c8b8f-e7db-45c6-afcc-4733343552ae"",
-                    ""path"": ""<Keyboard>/f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Grab"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6f5e638d-50d4-4843-a54b-9732a4a7ed0e"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""TakeOut"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""a7e884b8-1494-4ce2-bc18-36de3e5162d6"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Parry"",
+                    ""action"": ""CallMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -331,15 +268,15 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         m_CharacterInput_Run = m_CharacterInput.FindAction("Run", throwIfNotFound: true);
         m_CharacterInput_LAttack = m_CharacterInput.FindAction("LAttack", throwIfNotFound: true);
         m_CharacterInput_RAttack = m_CharacterInput.FindAction("RAttack", throwIfNotFound: true);
-        m_CharacterInput_Climb = m_CharacterInput.FindAction("Climb", throwIfNotFound: true);
-        m_CharacterInput_Grab = m_CharacterInput.FindAction("Grab", throwIfNotFound: true);
-        m_CharacterInput_TakeOut = m_CharacterInput.FindAction("TakeOut", throwIfNotFound: true);
-        m_CharacterInput_Parry = m_CharacterInput.FindAction("Parry", throwIfNotFound: true);
+        // CallMouse
+        m_CallMouse = asset.FindActionMap("CallMouse", throwIfNotFound: true);
+        m_CallMouse_CallMouse = m_CallMouse.FindAction("CallMouse", throwIfNotFound: true);
     }
 
     ~@GameInputAction()
     {
         UnityEngine.Debug.Assert(!m_CharacterInput.enabled, "This will cause a leak and performance issues, GameInputAction.CharacterInput.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_CallMouse.enabled, "This will cause a leak and performance issues, GameInputAction.CallMouse.Disable() has not been called.");
     }
 
     public void Dispose()
@@ -406,10 +343,6 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_CharacterInput_Run;
     private readonly InputAction m_CharacterInput_LAttack;
     private readonly InputAction m_CharacterInput_RAttack;
-    private readonly InputAction m_CharacterInput_Climb;
-    private readonly InputAction m_CharacterInput_Grab;
-    private readonly InputAction m_CharacterInput_TakeOut;
-    private readonly InputAction m_CharacterInput_Parry;
     public struct CharacterInputActions
     {
         private @GameInputAction m_Wrapper;
@@ -419,10 +352,6 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         public InputAction @Run => m_Wrapper.m_CharacterInput_Run;
         public InputAction @LAttack => m_Wrapper.m_CharacterInput_LAttack;
         public InputAction @RAttack => m_Wrapper.m_CharacterInput_RAttack;
-        public InputAction @Climb => m_Wrapper.m_CharacterInput_Climb;
-        public InputAction @Grab => m_Wrapper.m_CharacterInput_Grab;
-        public InputAction @TakeOut => m_Wrapper.m_CharacterInput_TakeOut;
-        public InputAction @Parry => m_Wrapper.m_CharacterInput_Parry;
         public InputActionMap Get() { return m_Wrapper.m_CharacterInput; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -447,18 +376,6 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             @RAttack.started += instance.OnRAttack;
             @RAttack.performed += instance.OnRAttack;
             @RAttack.canceled += instance.OnRAttack;
-            @Climb.started += instance.OnClimb;
-            @Climb.performed += instance.OnClimb;
-            @Climb.canceled += instance.OnClimb;
-            @Grab.started += instance.OnGrab;
-            @Grab.performed += instance.OnGrab;
-            @Grab.canceled += instance.OnGrab;
-            @TakeOut.started += instance.OnTakeOut;
-            @TakeOut.performed += instance.OnTakeOut;
-            @TakeOut.canceled += instance.OnTakeOut;
-            @Parry.started += instance.OnParry;
-            @Parry.performed += instance.OnParry;
-            @Parry.canceled += instance.OnParry;
         }
 
         private void UnregisterCallbacks(ICharacterInputActions instance)
@@ -478,18 +395,6 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             @RAttack.started -= instance.OnRAttack;
             @RAttack.performed -= instance.OnRAttack;
             @RAttack.canceled -= instance.OnRAttack;
-            @Climb.started -= instance.OnClimb;
-            @Climb.performed -= instance.OnClimb;
-            @Climb.canceled -= instance.OnClimb;
-            @Grab.started -= instance.OnGrab;
-            @Grab.performed -= instance.OnGrab;
-            @Grab.canceled -= instance.OnGrab;
-            @TakeOut.started -= instance.OnTakeOut;
-            @TakeOut.performed -= instance.OnTakeOut;
-            @TakeOut.canceled -= instance.OnTakeOut;
-            @Parry.started -= instance.OnParry;
-            @Parry.performed -= instance.OnParry;
-            @Parry.canceled -= instance.OnParry;
         }
 
         public void RemoveCallbacks(ICharacterInputActions instance)
@@ -507,6 +412,52 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         }
     }
     public CharacterInputActions @CharacterInput => new CharacterInputActions(this);
+
+    // CallMouse
+    private readonly InputActionMap m_CallMouse;
+    private List<ICallMouseActions> m_CallMouseActionsCallbackInterfaces = new List<ICallMouseActions>();
+    private readonly InputAction m_CallMouse_CallMouse;
+    public struct CallMouseActions
+    {
+        private @GameInputAction m_Wrapper;
+        public CallMouseActions(@GameInputAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @CallMouse => m_Wrapper.m_CallMouse_CallMouse;
+        public InputActionMap Get() { return m_Wrapper.m_CallMouse; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(CallMouseActions set) { return set.Get(); }
+        public void AddCallbacks(ICallMouseActions instance)
+        {
+            if (instance == null || m_Wrapper.m_CallMouseActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_CallMouseActionsCallbackInterfaces.Add(instance);
+            @CallMouse.started += instance.OnCallMouse;
+            @CallMouse.performed += instance.OnCallMouse;
+            @CallMouse.canceled += instance.OnCallMouse;
+        }
+
+        private void UnregisterCallbacks(ICallMouseActions instance)
+        {
+            @CallMouse.started -= instance.OnCallMouse;
+            @CallMouse.performed -= instance.OnCallMouse;
+            @CallMouse.canceled -= instance.OnCallMouse;
+        }
+
+        public void RemoveCallbacks(ICallMouseActions instance)
+        {
+            if (m_Wrapper.m_CallMouseActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(ICallMouseActions instance)
+        {
+            foreach (var item in m_Wrapper.m_CallMouseActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_CallMouseActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public CallMouseActions @CallMouse => new CallMouseActions(this);
     public interface ICharacterInputActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -514,9 +465,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         void OnRun(InputAction.CallbackContext context);
         void OnLAttack(InputAction.CallbackContext context);
         void OnRAttack(InputAction.CallbackContext context);
-        void OnClimb(InputAction.CallbackContext context);
-        void OnGrab(InputAction.CallbackContext context);
-        void OnTakeOut(InputAction.CallbackContext context);
-        void OnParry(InputAction.CallbackContext context);
+    }
+    public interface ICallMouseActions
+    {
+        void OnCallMouse(InputAction.CallbackContext context);
     }
 }
