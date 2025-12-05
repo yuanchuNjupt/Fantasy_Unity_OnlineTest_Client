@@ -41,19 +41,20 @@ namespace Framework.GameManagerFramework.LogicManagers
             //跳转场景
             var entryLobbyRes = await _lobbyPlayerMessageManager.SendEntryLobbyRequest(_userDataManager.UserData.AccountId);
             //场景跳转
-            UIManager.MainInstance.HideAllLayersPanels();
-            SceneManager.sceneLoaded += OnLobbySceneLoaded;
-            SceneManager.LoadScene("Lobby");
-        
-            
-            return;
-            
-            // 定义场景加载回调方法
-            void OnLobbySceneLoaded(Scene scene, LoadSceneMode mode) {
-                SceneManager.sceneLoaded -= OnLobbySceneLoaded;
+
+            UIManager.MainInstance.ShowPanel<LoadingPanelView>();
+            UIManager.MainInstance.HideAllPanel("Main");
+            LoadSceneManager.MainInstance.LoadSceneAsync("Lobby" , (progress) =>
+            {
+                Debug.Log("加载进度:" + progress);
+                UIManager.MainInstance.GetPanel<LoadingPanelView>().SetProgress(progress / 100f);
+            },
+                () =>
+            {
                 OnLocalEntryLobby(entryLobbyRes.selfData , entryLobbyRes.otherPlayerData);
                 UIManager.MainInstance.ShowPanel<LobbyPlayerPanelView>();
-            }
+                UIManager.MainInstance.HidePanel<LoadingPanelView>();
+            });
         }
 
         private void OnLocalEntryLobby(StateSyncData selfData , List<StateSyncData> resOtherPlayerData)

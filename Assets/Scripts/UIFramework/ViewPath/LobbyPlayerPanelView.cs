@@ -11,6 +11,7 @@ namespace UIFramework.ViewPath
 	public class LobbyPlayerPanelView : BaseUIPanelView
 	{
 		[Header("可绑定组件")]
+		public Button BattleButton;
 		public Button TeamButton;
 		public Transform TeamBackground;
 		public InputField RoomInput;
