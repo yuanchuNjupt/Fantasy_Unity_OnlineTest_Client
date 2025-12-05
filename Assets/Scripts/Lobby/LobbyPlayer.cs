@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Config;
 using Fantasy;
+using Framework.GameManagerFramework.LogicManagers;
 using Helper;
 using Lobby;
 using Manager;
@@ -17,7 +18,7 @@ public enum PlayerType
     Other,
 }
 
-public enum PLayerState
+public enum PlayerState
 {
     Idle,
     Run,
@@ -29,9 +30,8 @@ public class LobbyPlayer : MonoBehaviour
     
     public PlayerType playerType;
     
-    public PLayerState state;
+    public PlayerState state;
     
-    public long PlayerId;
     
     public string PlayerName;
     
@@ -68,32 +68,25 @@ public class LobbyPlayer : MonoBehaviour
     
     
     
-    public PlayerInput playerInput;
 
 
 
 
 
-    public void Init(long playerId ,string playerName ,PlayerType type)
+    public void Init(string playerName ,PlayerType type)
     {
-        PlayerId = playerId;
         playerType = type;
         _animator = GetComponent<Animator>();
-        playerInput = GetComponent<PlayerInput>();
-
-        // var mouseManager = transform.AddComponent<MouseManager>();
-        // mouseManager.Init();
+        
         
         PlayerName = playerName;
-        
-        
         _playerCameraTransform = CameraInit.MainInstance.cameraControl.transform;
-        if (type is PlayerType.Other)
-        {
-            //远程玩家 不需要输入组件
-            playerInput.enabled = false;
-        }
-        state = PLayerState.Idle;
+        // if (type is PlayerType.Other)
+        // {
+        //     //远程玩家 不需要输入组件
+        //     playerInput.enabled = false;
+        // }
+        state = PlayerState.Idle;
         PlayAnimation("Idle");
         
     }
@@ -142,15 +135,15 @@ public class LobbyPlayer : MonoBehaviour
 
     public void UpdateState()
     {
-        if (syncTargetDir != Vector3.zero && state is not PLayerState.Run)
+        if (syncTargetDir != Vector3.zero && state is not PlayerState.Run)
         {
             PlayAnimation("Run");
-            state = PLayerState.Run;
+            state = PlayerState.Run;
         }
-        else if (syncTargetDir == Vector3.zero && state is not PLayerState.Idle)
+        else if (syncTargetDir == Vector3.zero && state is not PlayerState.Idle)
         {
             PlayAnimation("Idle");
-            state = PLayerState.Idle;
+            state = PlayerState.Idle;
         }
     }
 
@@ -158,7 +151,7 @@ public class LobbyPlayer : MonoBehaviour
     {
         if(playerType is PlayerType.Self)
         {
-            Vector2 input = playerInput.actions["Movement"].ReadValue<Vector2>();
+            Vector2 input = World.GetExitsLogicManager<PlayerMouseLogicManager>().MoveInput;
             if (input != Vector2.zero)
             {
                 // 获取相机前方向（XZ平面投影）
@@ -182,12 +175,7 @@ public class LobbyPlayer : MonoBehaviour
             {
                 _inputDir = Vector2.zero;
             }
-            // _inputDir = input;
         }
-        
-        
-        
-        
     }
     
     
@@ -241,18 +229,9 @@ public class LobbyPlayer : MonoBehaviour
             };
             
             //发送状态同步数据请求
-            LobbyPlayerManager.MainInstance.SyncRoleState(stateSyncData);
+            World.GetExitsLogicManager<LobbyPlayerLogicManager>().SyncRoleState(stateSyncData);
             
             
-            // StateSyncData stateSyncData = new StateSyncData()
-            // {
-            //     inputDir = _inputDir.ToCSVector3(),
-            // };
-            //
-            // //发送状态同步数据请求
-            // _hallRoleLogicCtrl.SyncRoleState(stateSyncData , _syncPacketId);
-            //
-            //记录上一次的输入
             _lastInput = _inputDir;
             
         }

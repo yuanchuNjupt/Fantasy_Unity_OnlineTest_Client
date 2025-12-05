@@ -36,14 +36,7 @@ namespace Framework.MessageManagers
             return await NetWorkManager.Instance.Call<RegisterNameResponse>(req);
         }
 
-        public async FTask<EntryLobbyResponse> SendEntryLobbyRequest(long accountId)
-        {
-            var EntryLobbyReq = new EntryLobbyRequest();
-            EntryLobbyReq.accountId = accountId;
-            var EntryLobbyRes = await NetWorkManager.Instance.Call<EntryLobbyResponse>(EntryLobbyReq);
-            return EntryLobbyRes;
-        }
-
+        
         public async FTask<LoginResponse> SendLoginGameRequest(string accountName, string password)
         {
             NetWorkManager.Instance.Connect(NetWorkConfig.GateAddress, NetworkProtocolType.KCP);

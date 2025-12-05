@@ -3,7 +3,7 @@ using Framework.GameManagerFramework.WorldScripts;
 
 namespace Framework.GameManagerFramework.DataManagers
 {
-    [WorldSource(typeof(PermanentlyDataWorld))]
+    [WorldSource(typeof(PermanentlyWorld))]
     public class UserDataManager : IDataBehaviour
     {
         

@@ -26,13 +26,11 @@ public class Main : MonoBehaviour
         Application.targetFrameRate = FPS;
         
         //用户信息持久化世界
-        WorldManager.CreateWorld<PermanentlyDataWorld>();
+        WorldManager.CreateWorld<PermanentlyWorld>();
         
         //登录注册世界
         WorldManager.CreateWorld<LoginWorld>();
-        
-        
-        
+
     }
 
     private void OnDestroy()

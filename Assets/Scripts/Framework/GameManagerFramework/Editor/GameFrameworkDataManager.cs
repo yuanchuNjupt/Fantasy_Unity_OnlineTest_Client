@@ -20,23 +20,23 @@ namespace Framework.GameManagerFramework.Editor
             {
                 if (_dataAsset == null)
                 {
-                    _dataAsset = AssetDatabase.LoadAssetAtPath<GameManagerData>(DataAssetPath);
-                    
-                    // 如果资产不存在，创建一个新的
-                    if (_dataAsset == null)
-                    {
-                        _dataAsset = ScriptableObject.CreateInstance<GameManagerData>();
-                        
-                        // 确保目录存在
-                        string directory = System.IO.Path.GetDirectoryName(DataAssetPath);
-                        if (!System.IO.Directory.Exists(directory))
-                        {
-                            System.IO.Directory.CreateDirectory(directory);
-                        }
-                        
-                        AssetDatabase.CreateAsset(_dataAsset, DataAssetPath);
-                        AssetDatabase.SaveAssets();
-                    }
+                //     _dataAsset = AssetDatabase.LoadAssetAtPath<GameManagerData>(DataAssetPath);
+                //     
+                //     // 如果资产不存在，创建一个新的
+                //     if (_dataAsset == null)
+                //     {
+                //         _dataAsset = ScriptableObject.CreateInstance<GameManagerData>();
+                //         
+                //         // 确保目录存在
+                //         string directory = System.IO.Path.GetDirectoryName(DataAssetPath);
+                //         if (!System.IO.Directory.Exists(directory))
+                //         {
+                //             System.IO.Directory.CreateDirectory(directory);
+                //         }
+                //         
+                //         AssetDatabase.CreateAsset(_dataAsset, DataAssetPath);
+                //         AssetDatabase.SaveAssets();
+                //     }
                 }
                 return _dataAsset;
             }

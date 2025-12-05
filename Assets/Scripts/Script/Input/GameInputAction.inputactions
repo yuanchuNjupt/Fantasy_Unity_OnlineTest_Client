@@ -2,7 +2,7 @@
     "name": "GameInputAction",
     "maps": [
         {
-            "name": "GameInput",
+            "name": "CharacterInput",
             "id": "22914133-17c8-4188-800c-69b6d054db52",
             "actions": [
                 {

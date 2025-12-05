@@ -1,6 +1,7 @@
 
+using System;
 using Framework.GameManagerFramework.DataManagers;
-
+using Framework.GameManagerFramework.LogicManagers;
 using Lobby;
 using UIFramework.Core;
 using UIFramework.Presenter;
@@ -10,7 +11,8 @@ using UnityEngine;
 public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
 {
     private bool _showTeamPanel = false;
-    
+    private PlayerMouseLogicManager _playerMouseLogicManager;
+    private LobbyTeamLogicManager _lobbyTeamLogicManager;
 
     private void Awake()
     {
@@ -18,6 +20,12 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
         View.CreateTeamButton.onClick.AddListener(OnCreateTeamButtonClick);
         View.JoinTeamButton.onClick.AddListener(OnJoinTeamButtonClick);
         View.LevelTeamButton.onClick.AddListener(OnLevelTeamButtonClick);
+    }
+
+    private void Start()
+    {
+        _playerMouseLogicManager = World.GetExitsLogicManager<PlayerMouseLogicManager>();
+        _lobbyTeamLogicManager = World.GetExitsLogicManager<LobbyTeamLogicManager>();
     }
 
     private void OnDestroy()
@@ -36,13 +44,13 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
         {
             View.TeamBackground.gameObject.SetActive(_showTeamPanel);
             //显示鼠标
-            LobbyPlayerManager.MainInstance.mouseManager.ShowMousePartial();
+            _playerMouseLogicManager.ShowMousePartial();
         }
         else
         {
             View.TeamBackground.gameObject.SetActive(_showTeamPanel);
             //隐藏鼠标
-            LobbyPlayerManager.MainInstance.mouseManager.HideMousePartial();
+            _playerMouseLogicManager.HideMousePartial();
         }
     }
 
@@ -124,13 +132,13 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
     }
 
 
-    public void AddMember(long playerId)
+    public void AddMember(long playerId , string playerName)
     {
         UIManager.MainInstance.AddPanel<MemberView>(View.MemberPrefab, UILayer.Main,
             playerId.ToString() , false);
         var panel = UIManager.MainInstance.ShowPanel<MemberView>(playerId.ToString());
         panel.gameObject.transform.SetParent(View.TeamMember ,false);
-        panel.MemberName.text = LobbyPlayerManager.MainInstance.otherPlayers[playerId].PlayerName;
+        panel.MemberName.text = playerName;
     }
     
     public void RemoveMember(long playerId)

@@ -12,7 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 732ead34df2d45da974dde713dfc738e, type: 3}
   m_Name: GameManagerData
   m_EditorClassIdentifier: 
-  worlds: []
+  worlds:
+  - Test2
+  - Test
   logicManagers: []
   dataManagers: []
   messageManagers: []

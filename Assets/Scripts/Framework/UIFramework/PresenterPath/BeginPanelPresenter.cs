@@ -12,9 +12,7 @@ using Lobby;
 using UIFramework.Core;
 using UIFramework.Presenter;
 using UIFramework.ViewPath;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using Scene = UnityEngine.SceneManagement.Scene;
+
 
 public class BeginPanelPresenter : BasePresenter<BeginPanelView>
 {

@@ -62,7 +62,8 @@ namespace Framework.GameManagerFramework.LogicManagers
             _userDataManager.UserData.UserName = res.name;
             //注册成功，返回登陆界面
         
-           EntryLobby(()=>UIManager.MainInstance.HidePanel<RegisterNamePanelView>());
+            WorldManager.CreateWorld<LobbyWorld>();
+            WorldManager.DestroyWorld<LoginWorld>();
         }
 
         public async void LoginGame(string account, string password)
@@ -98,33 +99,15 @@ namespace Framework.GameManagerFramework.LogicManagers
             }
         
             
-            EntryLobby(()=> UIManager.MainInstance.HidePanel<BeginPanelView>());
-        }
-
-        /// <summary>
-        /// 进入大厅
-        /// </summary>
-        private async void EntryLobby(Action callback = null)
-        {
-            //跳转场景
-            var entryLobbyRes = await _loginMessageManager.SendEntryLobbyRequest(_userDataManager.UserData.AccountId);
-            //场景跳转
-            callback?.Invoke();
-            SceneManager.sceneLoaded += OnLobbySceneLoaded;
-            SceneManager.LoadScene("Lobby");
-        
-            // 定义场景加载回调方法
-            void OnLobbySceneLoaded(Scene scene, LoadSceneMode mode) {
-                SceneManager.sceneLoaded -= OnLobbySceneLoaded;
-                LobbyPlayerManager.MainInstance.OnLocalEntryLobby(entryLobbyRes.selfData , entryLobbyRes.otherPlayerData);
-                UIManager.MainInstance.ShowPanel<LobbyPlayerPanelView>();
-            }
+            WorldManager.CreateWorld<LobbyWorld>();
+            WorldManager.DestroyWorld<LoginWorld>();
         }
         
 
         public void OnDestroy()
         {
-            
+            _userDataManager = null;
+            _loginMessageManager = null;
         }
     }
 }
