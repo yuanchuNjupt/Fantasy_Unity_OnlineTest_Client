@@ -24,6 +24,7 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
         View.CreateTeamButton.onClick.AddListener(OnCreateTeamButtonClick);
         View.JoinTeamButton.onClick.AddListener(OnJoinTeamButtonClick);
         View.LevelTeamButton.onClick.AddListener(OnLevelTeamButtonClick);
+        View.BattleButton.onClick.AddListener(OnEnterDungeonButtonClick);
     }
 
     private void Start()
@@ -39,6 +40,7 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
         View.CreateTeamButton.onClick.RemoveListener(OnCreateTeamButtonClick);
         View.JoinTeamButton.onClick.RemoveListener(OnJoinTeamButtonClick);
         View.LevelTeamButton.onClick.RemoveListener(OnLevelTeamButtonClick);
+        View.BattleButton.onClick.RemoveListener(OnEnterDungeonButtonClick);
     }
 
     #region 组队系统
@@ -152,6 +154,15 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
     }
     
     #endregion
-    
+
+
+    #region 进入战斗相关
+
+    private void OnEnterDungeonButtonClick()
+    {
+        World.GetExitsLogicManager<LobbyBattleLogicManager>().OnTeamLeaderEnterDungeon();
+    }
+
+    #endregion
     
 }

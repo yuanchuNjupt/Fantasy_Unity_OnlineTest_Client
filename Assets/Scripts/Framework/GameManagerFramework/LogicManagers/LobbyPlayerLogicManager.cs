@@ -48,8 +48,7 @@ namespace Framework.GameManagerFramework.LogicManagers
             {
                 Debug.Log("加载进度:" + progress);
                 UIManager.MainInstance.GetPanel<LoadingPanelView>().SetProgress(progress / 100f);
-            },
-                () =>
+            },() =>
             {
                 OnLocalEntryLobby(entryLobbyRes.selfData , entryLobbyRes.otherPlayerData);
                 UIManager.MainInstance.ShowPanel<LobbyPlayerPanelView>();

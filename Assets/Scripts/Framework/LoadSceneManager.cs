@@ -10,13 +10,13 @@ namespace Framework
     {
   
 
-        public void LoadSceneAsync(string sceneName,Action<float> onLoadProgress ,Action onLoadFinished = null)
+        public void LoadSceneAsync(string sceneName,Action<float> onLoadProgressUpdateCallBack = null,Action onLoadFinishedCallBack = null)
         {
             //显示UI进度条   
-            StartCoroutine(AsyncLoadScene(sceneName, onLoadProgress, onLoadFinished));
+            StartCoroutine(AsyncLoadScene(sceneName , onLoadProgressUpdateCallBack , onLoadFinishedCallBack));
         }
         
-        IEnumerator AsyncLoadScene(string sceneName, Action<float> onLoadProgress =null ,Action onLoadFinished = null)
+        IEnumerator AsyncLoadScene(string sceneName, Action<float> onLoadProgress =null,Action onLoadFinished = null)
         {
             
             var ao = SceneManager.LoadSceneAsync(sceneName);
@@ -32,8 +32,6 @@ namespace Framework
                 onLoadProgress?.Invoke(curProgress);
                 yield return null;
             }
-            
-            
             while (curProgress < maxProgress)
             {
                 curProgress++;
