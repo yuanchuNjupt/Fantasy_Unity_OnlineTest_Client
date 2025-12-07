@@ -485,11 +485,14 @@ namespace Fantasy
 		}
 		public override void Dispose()
 		{
+			battlePlayers.Clear();
 #if FANTASY_NET || FANTASY_UNITY
 			GetScene().MessagePoolComponent.Return<StartDungeonBattleMessage>(this);
 #endif
 		}
 		public uint OpCode() { return OuterOpcode.StartDungeonBattleMessage; }
+		[ProtoMember(1)]
+		public List<BattlePlayerData> battlePlayers = new List<BattlePlayerData>();
 	}
 	[ProtoContract]
 	public partial class StateSyncData : AMessage
@@ -542,6 +545,126 @@ namespace Fantasy
 		public float y { get; set; }
 		[ProtoMember(3)]
 		public float z { get; set; }
+	}
+	[ProtoContract]
+	public partial class FrameOperationData : AMessage
+	{
+		public static FrameOperationData Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<FrameOperationData>();
+		}
+		public override void Dispose()
+		{
+			operateType = default;
+			inputDir = default;
+			skillId = default;
+			skillType = default;
+			skillPos = default;
+			playerId = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<FrameOperationData>(this);
+#endif
+		}
+		[ProtoMember(1)]
+		public int operateType { get; set; }
+		[ProtoMember(2)]
+		public CSFixIntVector3 inputDir { get; set; }
+		[ProtoMember(3)]
+		public int skillId { get; set; }
+		[ProtoMember(4)]
+		public int skillType { get; set; }
+		[ProtoMember(5)]
+		public CSFixIntVector3 skillPos { get; set; }
+		[ProtoMember(6)]
+		public long playerId { get; set; }
+	}
+	[ProtoContract]
+	public partial class FrameOperateEventMessage_C2G : AMessage, IMessage
+	{
+		public static FrameOperateEventMessage_C2G Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<FrameOperateEventMessage_C2G>();
+		}
+		public override void Dispose()
+		{
+			battleId = default;
+			frameOperateDataList.Clear();
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<FrameOperateEventMessage_C2G>(this);
+#endif
+		}
+		public uint OpCode() { return OuterOpcode.FrameOperateEventMessage_C2G; }
+		[ProtoMember(1)]
+		public long battleId { get; set; }
+		[ProtoMember(2)]
+		public List<FrameOperationData> frameOperateDataList = new List<FrameOperationData>();
+	}
+	[ProtoContract]
+	public partial class FrameOperateEventMessage_G2C : AMessage, IMessage
+	{
+		public static FrameOperateEventMessage_G2C Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<FrameOperateEventMessage_G2C>();
+		}
+		public override void Dispose()
+		{
+			battleId = default;
+			frameOperateDataList.Clear();
+			logicFrameId = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<FrameOperateEventMessage_G2C>(this);
+#endif
+		}
+		public uint OpCode() { return OuterOpcode.FrameOperateEventMessage_G2C; }
+		[ProtoMember(1)]
+		public long battleId { get; set; }
+		[ProtoMember(2)]
+		public List<FrameOperationData> frameOperateDataList = new List<FrameOperationData>();
+		[ProtoMember(3)]
+		public long logicFrameId { get; set; }
+	}
+	[ProtoContract]
+	public partial class CSFixIntVector3 : AMessage
+	{
+		public static CSFixIntVector3 Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<CSFixIntVector3>();
+		}
+		public override void Dispose()
+		{
+			x = default;
+			y = default;
+			z = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<CSFixIntVector3>(this);
+#endif
+		}
+		[ProtoMember(1)]
+		public int x { get; set; }
+		[ProtoMember(2)]
+		public int y { get; set; }
+		[ProtoMember(3)]
+		public int z { get; set; }
+	}
+	[ProtoContract]
+	public partial class BattlePlayerData : AMessage
+	{
+		public static BattlePlayerData Create(Scene scene)
+		{
+			return scene.MessagePoolComponent.Rent<BattlePlayerData>();
+		}
+		public override void Dispose()
+		{
+			playerId = default;
+			playerName = default;
+#if FANTASY_NET || FANTASY_UNITY
+			GetScene().MessagePoolComponent.Return<BattlePlayerData>(this);
+#endif
+		}
+		[ProtoMember(1)]
+		public long playerId { get; set; }
+		[ProtoMember(2)]
+		public string playerName { get; set; }
 	}
 }
 

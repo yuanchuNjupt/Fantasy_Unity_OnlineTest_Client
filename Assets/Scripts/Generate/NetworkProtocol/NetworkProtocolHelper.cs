@@ -221,9 +221,41 @@ namespace Fantasy
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void StartDungeonBattleMessage(this Session session)
+		public static void StartDungeonBattleMessage(this Session session, List<BattlePlayerData> battlePlayers)
 		{
 			using var message = Fantasy.StartDungeonBattleMessage.Create(session.Scene);
+			message.battlePlayers = battlePlayers;
+			session.Send(message);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void FrameOperateEventMessage_C2G(this Session session, FrameOperateEventMessage_C2G message)
+		{
+			session.Send(message);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void FrameOperateEventMessage_C2G(this Session session, long battleId, List<FrameOperationData> frameOperateDataList)
+		{
+			using var message = Fantasy.FrameOperateEventMessage_C2G.Create(session.Scene);
+			message.battleId = battleId;
+			message.frameOperateDataList = frameOperateDataList;
+			session.Send(message);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void FrameOperateEventMessage_G2C(this Session session, FrameOperateEventMessage_G2C message)
+		{
+			session.Send(message);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void FrameOperateEventMessage_G2C(this Session session, long battleId, List<FrameOperationData> frameOperateDataList, long logicFrameId)
+		{
+			using var message = Fantasy.FrameOperateEventMessage_G2C.Create(session.Scene);
+			message.battleId = battleId;
+			message.frameOperateDataList = frameOperateDataList;
+			message.logicFrameId = logicFrameId;
 			session.Send(message);
 		}
 

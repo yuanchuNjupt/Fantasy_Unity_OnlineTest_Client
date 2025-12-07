@@ -24,5 +24,7 @@ namespace Fantasy
 		 public const uint EnterDungeonMessage = 134227734;
 		 public const uint LoadDungeonProgressMessage = 134227735;
 		 public const uint StartDungeonBattleMessage = 134227736;
+		 public const uint FrameOperateEventMessage_C2G = 134227737;
+		 public const uint FrameOperateEventMessage_G2C = 134227738;
 	}
 }

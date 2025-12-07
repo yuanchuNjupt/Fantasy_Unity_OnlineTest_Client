@@ -41,7 +41,7 @@ namespace Framework.GameManagerFramework.LogicManagers
             //发送进入副本的消息给服务器
             _lobbyBattleMessageManager.SendEnterDungeonMessage(_lobbyTeamDataManager.TeamInfo.TeamId);
         }
-
+        
         public void OnDestroy()
         {
         }

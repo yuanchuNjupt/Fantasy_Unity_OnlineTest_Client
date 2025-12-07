@@ -3,6 +3,7 @@ using Fantasy.Async;
 using Fantasy.Network;
 using Fantasy.Network.Interface;
 using Framework.GameManagerFramework.DataManagers;
+using Framework.GameManagerFramework.LogicManagers;
 using Framework.GameManagerFramework.WorldScripts;
 using Generate;
 using UIFramework.Core;
@@ -67,12 +68,14 @@ namespace Framework.MessageManagers
         {
             protected override async FTask Run(Session session, StartDungeonBattleMessage message)
             {
-                //收到开始战斗消息
-                WorldManager.CreateWorld<BattleWorld>();
-                UIManager.MainInstance.HideAllPanel("Main");
-                //显示战斗界面UI
-                UIManager.MainInstance.HidePanel<LoadingPanelView>();
-                
+                WorldManager.CreateWorld<BattleWorld>((() =>
+                {
+                    World.GetExitsDataManager<BattleDataManager>().InitBattlePlayerData(message.battlePlayers);
+                    World.GetExitsLogicManager<BattleLogicManager>().OnStartBattle();
+                    
+                    UIManager.MainInstance.HideAllPanel("Main");
+                    UIManager.MainInstance.HidePanel<LoadingPanelView>();
+                }));
                 await FTask.CompletedTask;
             }
         }

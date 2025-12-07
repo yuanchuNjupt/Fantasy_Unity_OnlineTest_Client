@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Framework.GameManagerFramework.Base;
 using Framework.GameManagerFramework.Runtime;
@@ -16,7 +17,7 @@ public class WorldManager
     /// 构建一个游戏世界
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public static void CreateWorld<T>() where T : World , new()
+    public static void CreateWorld<T>(Action onWorldCreateFinishedCallBack = null) where T : World , new()
     {
         T world = new T();
         DefaultWorld = world;
@@ -25,6 +26,7 @@ public class WorldManager
         TypeManager.InitializeWorldAssemblies(world , GetBehaviourExecution(world));
         
         //初始化游戏世界的程序集
+        onWorldCreateFinishedCallBack?.Invoke();
         world.OnCreate();
         _worlds.Add(world);
     }
