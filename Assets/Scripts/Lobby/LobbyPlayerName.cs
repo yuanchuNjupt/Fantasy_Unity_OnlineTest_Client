@@ -23,12 +23,9 @@ namespace Lobby
             if(!_initialized)
                 return;
             
-            // 让文字完全面向相机（所有轴向）
-            // 使用位置差计算方向
-            Vector3 directionToCamera = _cameraTransform.position - Name.gameObject.transform.position;
-            
-            // 直接设置旋转，让文字朝向相机
-            Name.gameObject.transform.rotation = Quaternion.LookRotation(-directionToCamera);
+            // 让文字完全面向相机
+            // 直接使用相机的正前方向作为文字的前方
+            Name.gameObject.transform.rotation = _cameraTransform.rotation;
         }
         
         

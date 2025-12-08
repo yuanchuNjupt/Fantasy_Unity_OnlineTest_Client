@@ -34,7 +34,7 @@ public partial class LobbyPlayer : MonoBehaviour
     
     private Vector2 _inputDir;
     
-    public float smoothPosSpeed = 10f;
+    public float smoothPosSpeed = 5f;
     
     
     public float smoothRotSpeed = 7.5f;
@@ -76,7 +76,7 @@ public partial class LobbyPlayer : MonoBehaviour
         _animator = GetComponent<Animator>();
         
         PlayerName = playerName;
-        _playerCameraTransform = CameraInit.MainInstance.cameraControl.transform;
+        _playerCameraTransform = World.GetExitsLogicManager<TP_CameraLogicManager>().cameraControl.transform;
 
         state = PlayerState.Idle;
         _lastState = PlayerState.Idle;

@@ -60,19 +60,21 @@ namespace Framework.GameManagerFramework.LogicManagers
         {
             
             //实例化角色
-            GameObject go = Resources.Load<GameObject>(ModelInfoConfig.LobbyModelName);
+            GameObject go = Resources.Load<GameObject>(LoadPathConfig.LobbyModelName);
             GameObject player = Object.Instantiate(go);
+            
+            //初始化相机
+            World.GetExitsLogicManager<TP_CameraLogicManager>().InitTPCamera(player.transform);
             
             _lobbyPlayerDataManager.SetSelfPlayer(player.AddComponent<LobbyPlayer>());
             _lobbyPlayerDataManager.SelfPlayer.InitPos(selfData.position , selfData.inputDir);
             _lobbyPlayerDataManager.SelfPlayer.Init(_userDataManager.UserData.UserName ,PlayerType.Self);
             
-            //初始化相机
-            CameraInit.MainInstance.InitPlayerCamera(player.transform);
+           
             
             
             var nameControl = player.GetComponent<LobbyPlayerName>();
-            nameControl.Init(_lobbyPlayerDataManager.SelfPlayer.PlayerName , CameraInit.MainInstance.PlayerCamera.gameObject.transform);
+            nameControl.Init(_lobbyPlayerDataManager.SelfPlayer.PlayerName , World.GetExitsLogicManager<TP_CameraLogicManager>().cameraControl.gameObject.transform);
             
 
 
@@ -87,7 +89,7 @@ namespace Framework.GameManagerFramework.LogicManagers
             foreach (var playerData in resOtherPlayerData)
             {
                 player = Object.Instantiate(go);
-                player.GetComponent<LobbyPlayerName>().Init(playerData.PlayerName , CameraInit.MainInstance.PlayerCamera.gameObject.transform);
+                player.GetComponent<LobbyPlayerName>().Init(playerData.PlayerName , World.GetExitsLogicManager<TP_CameraLogicManager>().cameraControl.gameObject.transform);
                 //同步其他玩家位置和方向
                 otherPlayer = player.AddComponent<LobbyPlayer>();
                 otherPlayer.Init(playerData.PlayerName , PlayerType.Other);
