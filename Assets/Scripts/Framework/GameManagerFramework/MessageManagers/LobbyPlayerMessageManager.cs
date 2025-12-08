@@ -57,9 +57,9 @@ namespace Framework.MessageManagers
             {
                 //生成对应的玩家并缓存
                 Debug.Log("收到其他玩家登录消息 玩家ID：" + message.playerData.playerId);
-                GameObject go = Resources.Load<GameObject>(ModelInfoConfig.LobbyModelName);
+                GameObject go = Resources.Load<GameObject>(LoadPathConfig.LobbyModelName);
                 GameObject player = Object.Instantiate(go);
-                player.GetComponent<LobbyPlayerName>().Init(message.playerData.PlayerName , CameraInit.MainInstance.PlayerCamera.gameObject.transform);
+                player.GetComponent<LobbyPlayerName>().Init(message.playerData.PlayerName , World.GetExitsLogicManager<TP_CameraLogicManager>().cameraControl.transform);
                 player.transform.position = Vector3.zero;
                 LobbyPlayer playerScript = player.AddComponent<LobbyPlayer>();
                 playerScript.Init(message.playerData.PlayerName, PlayerType.Other);

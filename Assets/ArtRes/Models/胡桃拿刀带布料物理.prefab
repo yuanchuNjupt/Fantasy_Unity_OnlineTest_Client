@@ -12739,7 +12739,6 @@ GameObject:
   - component: {fileID: 988758894916235884}
   - component: {fileID: 8356750994062225681}
   - component: {fileID: 485308255620449760}
-  - component: {fileID: 6043533562403570463}
   m_Layer: 7
   m_Name: "\u80E1\u6843\u62FF\u5200\u5E26\u5E03\u6599\u7269\u7406"
   m_TagString: Player
@@ -13108,28 +13107,6 @@ CapsuleCollider:
   m_Height: 1.6
   m_Direction: 1
   m_Center: {x: 0, y: 0.8, z: 0}
---- !u!114 &6043533562403570463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7579749314915240379}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5892860f4e709aa4db09a7e3804d722b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _groundDetectionPositionOffset: -0.15
-  _detectionRang: 0.25
-  whatisGround:
-    serializedVersion: 2
-    m_Bits: 64
-  _rotationSmoothTime: 0.15
-  LockPos: {fileID: 0}
-  _slowFootTime: 0
-  _fastFootTime: 0
-  _canTurnAndRun: 0
 --- !u!1 &7625739741699643674
 GameObject:
   m_ObjectHideFlags: 0
