@@ -18,6 +18,12 @@ namespace Framework.GameManagerFramework.LogicManagers
         //收到开始战斗的消息
         public void OnStartBattle()
         {
+            //先假设只初始化自己
+            World.GetExitsLogicManager<BattlePlayerLogicManager>().InitPlayer();
+            
+            
+            
+            
             
         }
 

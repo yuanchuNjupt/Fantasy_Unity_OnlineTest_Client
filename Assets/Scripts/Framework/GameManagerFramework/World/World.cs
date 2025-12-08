@@ -24,6 +24,10 @@ public partial class World
     protected virtual void OnDestroy()
     {
     }
+
+    public virtual void OnUpdate()
+    {
+    }
     
     protected virtual void OnDestroyComplete()
     {

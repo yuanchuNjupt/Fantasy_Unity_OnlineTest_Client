@@ -19,6 +19,8 @@ namespace Framework.GameManagerFramework.LogicManagers
         public Vector2 CameraLook => _gameInputAction.CharacterInput.CameraLook.ReadValue<Vector2>();
 
         public bool Run => _gameInputAction.CharacterInput.Run.phase == InputActionPhase.Performed;
+
+        public bool NormalAttack => _gameInputAction.CharacterInput.LAttack.triggered;
         
         
         public void OnCreate()

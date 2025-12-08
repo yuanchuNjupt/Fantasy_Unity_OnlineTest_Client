@@ -2,5 +2,35 @@
 <project version="4">
   <component name="Encoding" addBOMForNewFiles="with BOM under Windows, with no BOM otherwise">
     <file url="file://$USER_HOME$/Downloads/Lesson24.cs" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/LogicRender/LogicLayer/LogicActor.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/LogicRender/LogicLayer/LogicActorAttriBute.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/LogicRender/LogicLayer/LogicActorSkill.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/LogicRender/LogicLayer/LogicObject.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/LogicRender/RenderLayer/RenderObject.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Action/LogicActionController.cs" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Action/MoveBezierAction.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/BuffSystem/Buff/AttributeModify_Buff_Group.cs" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/BuffSystem/Buff/Buff.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/BuffSystem/Buff/BuffRender.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/BuffSystem/Buff/GrabBuff.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/BuffSystem/Buff/RepelBuff.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/BuffSystem/BuffSystem.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/BuffSystem/Config/BuffCollider.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Config/LogicFrameConfig.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Config/SkillCharacterConfig.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Config/SkillConfig.cs" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/EditorWindow/SkillComplierWindow.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Runtime/Logic/SKillBulletLogic.cs" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Runtime/Logic/SkillAction.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Runtime/Logic/SkillAudio.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Runtime/Logic/SkillBuff.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Runtime/Logic/SkillBullet.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Runtime/Logic/SkillDamage.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Runtime/Logic/SkillEffect.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Runtime/Skill.cs" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Timer/LogicTiemr.cs" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Timer/LogicTimerManager.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Tools/CameraFollow.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../../unity_resourse/ClassResources/DNF动作帧同步二/完成版课程资料/完成版双端工程(92节).zip/DNF2Client/Assets/Scripts/RenderLayer/HeroRender.cs" charset="GBK" />
   </component>
 </project>

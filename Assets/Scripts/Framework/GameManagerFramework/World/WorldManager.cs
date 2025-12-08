@@ -49,15 +49,22 @@ public class WorldManager
         }
     }
 
+    /// <summary>
+    /// 需要在游戏主脚本Main中的Update方法中调用此方法
+    /// </summary>
+    public static void OnWorldUpdate()
+    {
+        _worlds.ForEach(world => world.OnUpdate());
+    }
+    
+    
+
     public static IBehaviourExecution GetBehaviourExecution(World world)
     {
         if (world.GetType().Name == "HallWorld")
         {
             return new HallWorldScriptExecutionOrder();
         }
-
-
-
         return null;
     }
     

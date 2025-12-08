@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e5544d65ba116a4ead925b937d5a54f, type: 3}
+  m_Name: 10011
+  m_EditorClassIdentifier: 
+  buffIcon: {fileID: -2624345899017097639, guid: 4ba5b2c7920a8b749bdbbe6c911a4b35, type: 3}
+  buffid: 10011
+  buffName: "\u51FB\u9000"
+  buffDelay: 100
+  buffIntervalms: 100
+  buffDurationms: 0
+  buffType: 1
+  attachType: 1
+  buffPosType: 3
+  damageType: 2
+  damageRate: 0
+  buffParamsList:
+  - value: 3
+    des: "\u51FB\u9000\u7684\u8DDD\u79BB"
+  targetGrabData:
+    garbMoveTargetPos: {x: 1, y: 0, z: 0}
+    moveTimems: 1000
+  buffAudio: {fileID: 0}
+  effectConfig:
+    effect: {fileID: 0}
+    attachType: 0
+    effectPosType: 1
+  buffHitEffectObj: {fileID: 0}
+  buffTriggerAnim: 
+  buffDes: 

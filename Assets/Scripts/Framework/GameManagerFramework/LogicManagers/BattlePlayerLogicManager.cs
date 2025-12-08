@@ -1,4 +1,6 @@
-﻿using Framework.GameManagerFramework.DataManagers;
+﻿using Battle;
+using Config;
+using Framework.GameManagerFramework.DataManagers;
 using Framework.GameManagerFramework.WorldScripts;
 using UIFramework.Core;
 using UIFramework.ViewPath;
@@ -10,6 +12,8 @@ namespace Framework.GameManagerFramework.LogicManagers
     public class BattlePlayerLogicManager : ILogicBehaviour
     {
         private BattleDataManager _battleDataManager;
+
+        public BattlePlayerLogic PlayerLogic;
         
         public void OnCreate()
         {
@@ -20,16 +24,31 @@ namespace Framework.GameManagerFramework.LogicManagers
         {
             _battleDataManager.BattlePlayerDataList.ForEach(player =>
             {
-                GameObject go = Object.Instantiate(Resources.Load<GameObject>("PlayerModel_NotSword"));
-                
-
-
-
-
+                GameObject go = Object.Instantiate(Resources.Load<GameObject>(LoadPathConfig.BattleModelName));
+                BattlePlayerRender renderLayer = go.GetComponent<BattlePlayerRender>();
+                PlayerLogic = new BattlePlayerLogic();
+                PlayerLogic.PlayerId = player.playerId;
+                renderLayer.SetLogicObject(PlayerLogic);
+                //初始化
+                PlayerLogic.OnCreate();
+                renderLayer.OnCreate();
+                renderLayer.Init(World.GetExitsDataManager<UserDataManager>().UserData.AccountId == player.playerId
+                    ? PlayerType.Self
+                    : PlayerType.Other);
             });   
             
             
+           
+
+            
         }
+        
+        public void OnLogicFrameUpdate()
+        {
+            PlayerLogic.OnLogicFrameUpdate();
+        }
+        
+        
 
         
 
