@@ -8,9 +8,7 @@ using Lobby;
 using UIFramework.Core;
 using UIFramework.ViewPath;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
-using Scene = UnityEngine.SceneManagement.Scene;
 
 namespace Framework.GameManagerFramework.LogicManagers
 {

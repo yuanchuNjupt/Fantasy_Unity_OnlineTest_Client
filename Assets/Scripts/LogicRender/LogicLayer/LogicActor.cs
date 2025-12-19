@@ -29,6 +29,7 @@ public partial class LogicActor : LogicObject
     }
     public void PlayAnim(string name)
     {
+        Debug.Log("释放技能："+name);
         RenderObj.PlayAnim(name);
     }
     public virtual void OnHit(string effectHitObjPath,int survivalTimeMs, LogicObject source,FixInt logicXAxis)
@@ -38,13 +39,13 @@ public partial class LogicActor : LogicObject
     public virtual void SkillDamage(FixInt hp,SkillDamageConfig damageConfig)
     {
         Debug.Log("SkillDamage hp:"+hp);
-        CacluDamage(hp, DamageSource.SKill);
+        CaculDamage(hp, DamageSource.SKill);
     }
 
     public virtual void BuffDamage(FixInt hp, SkillDamageConfig damageConfig)
     {
         Debug.Log("BuffDamage hp:" + hp);
-        CacluDamage(hp, DamageSource.SKill);
+        CaculDamage(hp, DamageSource.SKill);
     }
     /// <summary>
     /// 某个技能或buff会减少或阻挡子弹伤害
@@ -52,7 +53,7 @@ public partial class LogicActor : LogicObject
     public virtual void BulletDamage(FixInt hp,SkillDamageConfig damageConfig)
     {
         Debug.Log("BulletDamage hp:" + hp);
-        CacluDamage(hp, DamageSource.Bullet);
+        CaculDamage(hp, DamageSource.Bullet);
     }
 
 
@@ -61,7 +62,7 @@ public partial class LogicActor : LogicObject
     /// </summary>
     /// <param name="hp"></param>
     /// <param name="source"></param>
-    public void CacluDamage(FixInt hp,DamageSource source)
+    public void CaculDamage(FixInt hp,DamageSource source)
     {
         if (ObjectState== LogicObjectState.Survival)
         {

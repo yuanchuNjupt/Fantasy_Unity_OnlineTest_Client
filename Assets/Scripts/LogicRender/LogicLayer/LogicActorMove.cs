@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// ´¦ÀíÑİÔ±¶ÔÏóÒÆ¶¯Âß¼­½Å±¾
+/// å¤„ç†æ¼”å‘˜å¯¹è±¡ç§»åŠ¨é€»è¾‘è„šæœ¬
 /// </summary>
 public partial class LogicActor
 {
     private FixIntVector3 mInputMoveDir;
     private long testPlayerid;
     /// <summary>
-    /// Âß¼­Ö¡Î»ÖÃ¸üĞÂ
+    /// é€»è¾‘å¸§ä½ç½®æ›´æ–°
     /// </summary>
     public void OnLogicFrameUpdateMove()
     {
@@ -20,23 +20,17 @@ public partial class LogicActor
         {
             return;
         }
-        //¼ÆËãÂß¼­Î»ÖÃ
+        //è®¡ç®—é€»è¾‘ä½ç½®
         LogicPos += mInputMoveDir* LogicMoveSpeed * (FixInt)LogicFrameConfig.LogicFrameInterval;
 
-        //¼ÆËãÂß¼­¶ÔÏóµÄ³¯Ïò
-        if (LogicDir!=mInputMoveDir)
+        //è®¡ç®—é€»è¾‘å¯¹è±¡çš„æœå‘
+        if (LogicDir!=mInputMoveDir && mInputMoveDir != FixIntVector3.zero)
         {
             LogicDir = mInputMoveDir;
         }
-        //¼ÆËãÂß¼­ÖáÏò
-        if (LogicDir.x!=FixInt.Zero&& IsForceNotAlllowModifyDir == false)
-        {
-            LogicXAxis = LogicDir.x > 0 ? 1 : -1;
-        }
-        Debug.Log("LogicPos:"+LogicPos + " LogicFrameid£º" + LogicFrameConfig.LogicFrameid+ " playerid:"+ testPlayerid);
-     }
+    }
 
-    public void InputLoigcFrameEvent(FixIntVector3 inputDir,long playerid=0)
+    public void InputLogicFrameEvent(FixIntVector3 inputDir,long playerid=0)
     {
         mInputMoveDir = inputDir;
         testPlayerid=playerid;

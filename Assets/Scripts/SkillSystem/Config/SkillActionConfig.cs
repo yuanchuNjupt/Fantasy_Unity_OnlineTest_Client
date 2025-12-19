@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 /// <summary>
-/// ĞĞ¶¯ÀàĞÍ
+/// è¡ŒåŠ¨ç±»å‹
 /// </summary>
 public enum MoveActionType
 {
-    [LabelText("Ö¸¶¨Ä¿±êÎ»ÖÃ")]TargetPos,
-    [LabelText("Òıµ¼Î»ÖÃ")] GuidePos,
-    [LabelText("±´Èû¶ûÒÆ¶¯")] BezierPos,
+    [LabelText("æŒ‡å®šç›®æ ‡ä½ç½®")]TargetPos,
+    [LabelText("å¼•å¯¼ä½ç½®")] GuidePos,
+    [LabelText("è´å¡å°”ç§»åŠ¨")] BezierPos,
 }
 /// <summary>
-/// ĞĞ¶¯Íê³ÉºóµÄ²Ù×÷
+/// è¡ŒåŠ¨å®Œæˆåçš„æ“ä½œ
 /// </summary>
 public enum MoveActionFinishOpation
 { 
@@ -24,28 +24,28 @@ public enum MoveActionFinishOpation
 [System.Serializable]
 public class SkillActionConfig
 {
-    //ÊÇ·ñÏÔÊ¾ÒÆ¶¯Î»ÖÃ
+    //æ˜¯å¦æ˜¾ç¤ºç§»åŠ¨ä½ç½®
     private bool mIsShowMovePos;
-    //ÊÇ·ñÏÔÊ¾ÒÆ¶¯Íê³É²ÎÊı
+    //æ˜¯å¦æ˜¾ç¤ºç§»åŠ¨å®Œæˆå‚æ•°
     private bool mIsShowFinishParam;
-    //ÊÇ·ñÏÔÊ¾±´Èû¶ûÊı¾İ
+    //æ˜¯å¦æ˜¾ç¤ºè´å¡å°”æ•°æ®
     private bool mIsShowBezierPos;
 
-    [LabelText("´¥·¢Ö¡")]
+    [LabelText("è§¦å‘å¸§")]
     public int triggerFrame;
-    [LabelText("ÒÆ¶¯·½Ê½"),OnValueChanged("OnMoveActionTypeChange")]
+    [LabelText("ç§»åŠ¨æ–¹å¼"),OnValueChanged("OnMoveActionTypeChange")]
     public MoveActionType moveActionType;
-    [LabelText("×î¸ßµãÎ»ÖÃ"),ShowIf("mIsShowBezierPos")]
+    [LabelText("æœ€é«˜ç‚¹ä½ç½®"),ShowIf("mIsShowBezierPos")]
     public Vector3 heightPos;
-    [LabelText("ÒÆ¶¯Î»ÖÃ"), ShowIf("mIsShowMovePos")]
+    [LabelText("ç§»åŠ¨ä½ç½®"), ShowIf("mIsShowMovePos")]
     public Vector3 movePos;
-    [LabelText("ÒÆ¶¯ËùĞèÊ±¼ä(ºÁÃ×°Â)")]
+    [LabelText("ç§»åŠ¨æ‰€éœ€æ—¶é—´(æ¯«ç±³å¥¥)")]
     public int durationMs;
 
-    [LabelText("ÒÆ¶¯Íê³É²Ù×÷"), OnValueChanged("OnMoveActionFinishOpationChange")]
+    [LabelText("ç§»åŠ¨å®Œæˆæ“ä½œ"), OnValueChanged("OnMoveActionFinishOpationChange")]
     public MoveActionFinishOpation actionFinishOpation;
 
-    [LabelText("´¥·¢²ÎÊı"), ShowIf("mIsShowFinishParam")]
+    [LabelText("è§¦å‘å‚æ•°"), ShowIf("mIsShowFinishParam")]
     public List<int> actionFinishidList;
 
     public void OnMoveActionTypeChange(MoveActionType value)

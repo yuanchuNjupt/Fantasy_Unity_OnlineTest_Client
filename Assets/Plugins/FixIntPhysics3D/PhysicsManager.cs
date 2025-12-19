@@ -17,10 +17,10 @@ namespace FixIntPhysics
             if (boxA.Active==false||boxB.Active==false)
                 return false;
 
-            FixIntVector3 minA = boxA.LogicPosition + boxA.Conter - boxA.Size * 0.5f;
-            FixIntVector3 maxA = boxA.LogicPosition + boxA.Conter + boxA.Size * 0.5f;
-            FixIntVector3 minB = boxB.LogicPosition + boxB.Conter - boxB.Size * 0.5f;
-            FixIntVector3 maxB = boxB.LogicPosition + boxB.Conter + boxB.Size * 0.5f;
+            FixIntVector3 minA = boxA.LogicPosition + boxA.Center - boxA.Size * 0.5f;
+            FixIntVector3 maxA = boxA.LogicPosition + boxA.Center + boxA.Size * 0.5f;
+            FixIntVector3 minB = boxB.LogicPosition + boxB.Center - boxB.Size * 0.5f;
+            FixIntVector3 maxB = boxB.LogicPosition + boxB.Center + boxB.Size * 0.5f;
 
             if (maxA.x < minB.x || minA.x > maxB.x)
                 return false;
@@ -35,9 +35,9 @@ namespace FixIntPhysics
         {
             if (box.Active == false || sphere.Active == false)
                 return false;
-            FixIntVector3 minA = box.LogicPosition + box.Conter - box.Size * 0.5f;
-            FixIntVector3 maxA = box.LogicPosition + box.Conter + box.Size * 0.5f;
-            FixIntVector3 centerB = sphere.LogicPosition + sphere.Conter;
+            FixIntVector3 minA = box.LogicPosition + box.Center - box.Size * 0.5f;
+            FixIntVector3 maxA = box.LogicPosition + box.Center + box.Size * 0.5f;
+            FixIntVector3 centerB = sphere.LogicPosition + sphere.Center;
             FixInt radiusB = sphere.Radius;
 
             // 计算Sphere的最近点，即将其限制在Box的边界内

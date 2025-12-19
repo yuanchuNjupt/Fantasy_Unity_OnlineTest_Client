@@ -65,6 +65,11 @@ public class WorldManager
         {
             return new HallWorldScriptExecutionOrder();
         }
+
+        if (world.GetType().Name == "BattleWorld")
+        {
+            return new BattleWorldScriptExecutionOrder();
+        }
         return null;
     }
     

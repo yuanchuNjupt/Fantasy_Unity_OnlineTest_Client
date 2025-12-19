@@ -19,7 +19,7 @@ namespace FixIntPhysics
         {
             this.Radius = radius;
             this.ColliderType = ColliderType.Cylinder;
-            this.Conter = new FixIntVector3(conter);
+            this.Center = new FixIntVector3(conter);
         }
         /// <summary>
         /// 更新碰撞体信息

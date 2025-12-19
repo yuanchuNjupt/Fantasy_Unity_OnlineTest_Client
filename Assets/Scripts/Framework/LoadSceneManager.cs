@@ -16,6 +16,12 @@ namespace Framework
             StartCoroutine(AsyncLoadScene(sceneName , onLoadProgressUpdateCallBack , onLoadFinishedCallBack));
         }
         
+        /// <summary>
+        /// 异步加载场景
+        /// </summary>
+        /// <param name="sceneName">目标场景名称</param>
+        /// <param name="onLoadProgress">加载进度回调函数，每次更新加载进度时都会触发，且将加载进度作为参数传入</param>
+        /// <param name="onLoadFinished">当场景加载完毕后，触发的回调函数</param>
         IEnumerator AsyncLoadScene(string sceneName, Action<float> onLoadProgress =null,Action onLoadFinished = null)
         {
             

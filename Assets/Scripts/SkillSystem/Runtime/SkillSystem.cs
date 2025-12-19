@@ -2,6 +2,7 @@ using FixMath;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -60,37 +61,69 @@ public class SkillSystem
         {
             return null;
         }
-        foreach (var skill in mSkillArr)
+        
+        
+        var skill = mSkillArr.FirstOrDefault(x => x.skillid == skillid);
+        if (skill == null)
         {
-            if (skill.skillid == skillid)
-            {
-                if (skill.skillState != SkillState.None && skill.skillState != SkillState.End)
-                {
-                    Debug.Log("技能正在释放中，无法释放:" + skillid);
-                    return null;
-                }
-                if (skill.SKillCfg.ComobinationSkillid!=0)
-                {
-                    CacleteCombinationSkillIdList(skill.SKillCfg.ComobinationSkillid);
-                }
-                skill.ReleaseSKill(releaseAfterCallBack , guidePos, (skill, combinationSkill) =>
-                {
-                    releaseSkillEnd?.Invoke(skill);
-                    if (!combinationSkill)
-                    {
-                        mCurReleasingSkill = null;
-                        if (skill.SKillCfg.ComobinationSkillid==0&&mCombinationSkillIdList.Count>0)
-                        {
-                            mCombinationSkillIdList.Clear();
-                        }
-                    }
-                });
-                mCurReleasingSkill = skill;
-                return skill;
-            }
+            Debug.LogError("技能不存在，无法释放:" + skillid);
+            return null;
         }
-        Debug.LogError("SKillid :" + skillid + " ���ܲ����ڣ����ñ���û���ҵ�");
-        return null;
+        
+        if (skill.skillState != SkillState.None && skill.skillState != SkillState.End)
+        {
+            Debug.Log("技能正在释放中，无法释放:" + skillid);
+            return null;
+        }
+        if (skill.SKillCfg.ComobinationSkillid!=0)
+        {
+            CacleteCombinationSkillIdList(skill.SKillCfg.ComobinationSkillid);
+        }
+        skill.ReleaseSKill(releaseAfterCallBack , guidePos, (skill, combinationSkill) =>
+        {
+            releaseSkillEnd?.Invoke(skill);
+            if (!combinationSkill)
+            {
+                mCurReleasingSkill = null;
+                if (skill.SKillCfg.ComobinationSkillid==0&&mCombinationSkillIdList.Count>0)
+                {
+                    mCombinationSkillIdList.Clear();
+                }
+            }
+        });
+        mCurReleasingSkill = skill;
+        return skill;
+        
+        
+        // foreach (var skill in mSkillArr)
+        // {
+        //     if (skill.skillid == skillid)
+        //     {
+        //         if (skill.skillState != SkillState.None && skill.skillState != SkillState.End)
+        //         {
+        //             Debug.Log("技能正在释放中，无法释放:" + skillid);
+        //             return null;
+        //         }
+        //         if (skill.SKillCfg.ComobinationSkillid!=0)
+        //         {
+        //             CacleteCombinationSkillIdList(skill.SKillCfg.ComobinationSkillid);
+        //         }
+        //         skill.ReleaseSKill(releaseAfterCallBack , guidePos, (skill, combinationSkill) =>
+        //         {
+        //             releaseSkillEnd?.Invoke(skill);
+        //             if (!combinationSkill)
+        //             {
+        //                 mCurReleasingSkill = null;
+        //                 if (skill.SKillCfg.ComobinationSkillid==0&&mCombinationSkillIdList.Count>0)
+        //                 {
+        //                     mCombinationSkillIdList.Clear();
+        //                 }
+        //             }
+        //         });
+        //         mCurReleasingSkill = skill;
+        //         return skill;
+        //     }
+        // }
     }
 
     public void TriggerStockPileSkill(int skillid)

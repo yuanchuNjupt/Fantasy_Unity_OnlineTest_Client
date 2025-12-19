@@ -1,4 +1,5 @@
 
+using System;
 using Fantasy.Async;
 using Framework.GameManagerFramework.WorldScripts;
 using Generate;
@@ -9,10 +10,20 @@ public class Main : MonoBehaviour
 
     [Header("帧率设置")]
     public int FPS = 120;
-    
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
+    }
+
     void Start()
     {
         StartAsync().Coroutine();
+    }
+
+    private void Update()
+    {
+        WorldManager.OnWorldUpdate();
     }
 
     private async FTask StartAsync()
@@ -33,8 +44,8 @@ public class Main : MonoBehaviour
 
     }
 
-    // private void OnDestroy()
-    // {
-    //     NetWorkManager.Instance.OnRelease();
-    // }
+    private void OnDestroy()
+    {
+        NetWorkManager.Instance.OnRelease();
+    }
 }

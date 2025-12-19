@@ -11,7 +11,7 @@ using System;
 public abstract class LogicObject
 {
     private FixIntVector3 logicPos;//逻辑对象逻辑位置
-    private FixIntVector3 logicDir;//逻辑对象朝向
+    private FixIntVector3 logicDir = new FixIntVector3(0,0,1);//逻辑对象朝向
     private FixIntVector3 logicAngle;//逻辑对象旋转角度
     private FixInt logicMoveSpeed=3;//逻辑对象移动速度
     private FixInt logicXAxis = 1;//逻辑轴向

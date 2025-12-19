@@ -32,7 +32,7 @@ public partial class LobbyPlayer : MonoBehaviour
     
     private Animator _animator;
     
-    private Vector2 _inputDir;
+    private Vector2 _predictionInputDir;
     
     public float smoothPosSpeed = 5f;
     
@@ -94,6 +94,7 @@ public partial class LobbyPlayer : MonoBehaviour
     {
         syncTargetPos = position.ToVector3();
         syncTargetDir = inputDir.ToVector3();
+        Debug.Log("收到的状态：" + playerState);
         syncTargetState = playerState;
     }
     
@@ -130,6 +131,8 @@ public partial class LobbyPlayer : MonoBehaviour
 
     public void UpdateState()
     {
+        
+        
         // 只在 syncTargetState 发生变化时才处理
         if (syncTargetState == _lastState)
         {
@@ -191,21 +194,24 @@ public partial class LobbyPlayer : MonoBehaviour
         {
     
             _syncStateCurrentCount = 0;
-            
 
-            if (Vector2.Equals(_lastInput, Vector2.zero) && Vector2.Equals(_inputDir, Vector2.zero))
+            var res = GetPredictionInputDirAndState();
+            _predictionInputDir = res.inputDir;
+            state = res.State;
+            if (Vector2.Equals(_lastInput, Vector2.zero) && Vector2.Equals(_predictionInputDir, Vector2.zero))
             {
                 //没有输入 不需要同步
                 return;
             }
             
+            
             StateSyncData stateSyncData = new StateSyncData()
             {
                 inputDir = new CSVector3()
                 {
-                    x = _inputDir.x,
+                    x = _predictionInputDir.x,
                     y = 0,
-                    z = _inputDir.y
+                    z = _predictionInputDir.y
                 },
                 playerState = (int)state,
             };
@@ -214,7 +220,7 @@ public partial class LobbyPlayer : MonoBehaviour
             World.GetExitsLogicManager<LobbyPlayerLogicManager>().SyncRoleState(stateSyncData);
             
             
-            _lastInput = _inputDir;
+            _lastInput = _predictionInputDir;
             
         }
     }

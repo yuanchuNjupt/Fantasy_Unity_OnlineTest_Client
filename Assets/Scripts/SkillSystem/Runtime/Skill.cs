@@ -2,14 +2,15 @@ using FixMath;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Config;
 using UnityEngine;
 
 public enum SkillState
 {
     None,
-    Befor,//����ǰҡ
-    After,//���ܺ�ҡ
-    End,//���ܽ���
+    Before,
+    After,
+    End,
 }
 
 public partial class Skill
@@ -74,7 +75,13 @@ public partial class Skill
         this.mSkillCreater = skillCreater;
         
         //加载技能数据
-        // Resources.Load<ScriptableObject>();
+        mSkillData = Resources.Load<ScriptableObject>(LoadPathConfig.SkillLoadPath + skillid) as SkillDataConfig;
+        
+        // 检查加载是否成功
+        if (mSkillData == null)
+        {
+            Debug.LogError($"技能数据加载失败！技能ID: {skillid}");
+        }
         // mSkillData = ZMAsset.LoadScriptableObject<SkillDataConfig>(AssetPathConfig.SKILL_DATA_PATH + skillid + ".asset");
     }
 
@@ -84,14 +91,13 @@ public partial class Skill
         OnReleaseSkillEnd = releaseSkillEnd;
         sKillGuidePos = guidePos;
         SkillStart();
-        skillState = SkillState.Befor;
+        skillState = SkillState.Before;
         PlayAnim();
     }
 
     public void PlayAnim()
     {
-        //���Ž�ɫ����
-        mSkillCreater.PlayAnim(mSkillData.character.skillAnim);
+        mSkillCreater.PlayAnim(mSkillData.skillCfg.skillid.ToString());
     }
 
     public void SkillStart()
@@ -134,7 +140,7 @@ public partial class Skill
         }
         mCurLogicFrameAccTime = mCurLogicFrame * LogicFrameConfig.LogicFrameIntervalms;
 
-        if (skillState == SkillState.Befor && mCurLogicFrameAccTime >= mSkillData.skillCfg.skillShakeArfterMs&&mSkillData.skillCfg.skillType!= SKillType.StockPile)
+        if (skillState == SkillState.Before && mCurLogicFrameAccTime >= mSkillData.skillCfg.skillShakeArfterMs&&mSkillData.skillCfg.skillType!= SKillType.StockPile)
         {
             SkillAfter();
         }
@@ -171,7 +177,7 @@ public partial class Skill
         }
         else
         {
-            if (mCurLogicFrame == mSkillData.character.logicFrame)
+            if (mCurLogicFrame == mSkillData.character.MaxLogicFrame)
             {
                 SKillEnd();
             }
@@ -202,7 +208,7 @@ public partial class Skill
         SKillEnd();
         if (stockData.skillid == 0)
         {
-            Debug.LogError("���������ͷ�ʧ�ܣ������׶μ���idΪ0");
+            Debug.LogError("");
         }
         else
         {

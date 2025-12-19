@@ -5,11 +5,11 @@ using UnityEngine;
 [System.Serializable]
 public class SkillBuffConfig 
 {
-    [LabelText("¥•∑¢÷°"), GUIColor("green")]
+    [LabelText("Ëß¶ÂèëÂ∏ß"), GUIColor("green")]
     public int triggerFrame;
 
 
-    [LabelText("∏Ωº”BuffId")]
+    [LabelText("ÈôÑÂä†BuffId")]
     public int buffid;
 
 }

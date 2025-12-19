@@ -12,10 +12,17 @@ namespace FixIntPhysics
         /// Eidotr Mode 绘制碰撞体范围工具
         /// </summary>
         public  BoxColliderGizmo boxDraw;
-        public FixIntBoxCollider(Vector3 size, Vector3 conter)
+        public FixIntBoxCollider(Vector3 size, Vector3 center)
         {
             this.Size =new FixIntVector3(size);
-            this.Conter =new FixIntVector3(conter);
+            this.Center =new FixIntVector3(center);
+            ColliderType = ColliderType.Box;
+        }
+
+        public FixIntBoxCollider(FixIntVector3 size , FixIntVector3 center)
+        {
+            Size = size;
+            Center = center;
             ColliderType = ColliderType.Box;
         }
 
@@ -54,25 +61,44 @@ namespace FixIntPhysics
         /// <summary>
         /// 设置碰撞体数据
         /// </summary>
-        /// <param name="conter">中心点</param>
+        /// <param name="center">中心点</param>
         /// <param name="size">宽度</param>
         /// <param name="isFloowTarget">碰撞体绘制是否跟随</param>
-        public override void SetBoxData(Vector3 conter, Vector3 size, bool isFloowTarget = false)
+        public override void SetBoxData(Vector3 center, Vector3 size, bool isFloowTarget = false)
         {
             if (boxDraw == null)
             {
                 GameObject obj = new GameObject();
                 boxDraw = obj.AddComponent<BoxColliderGizmo>();
-                boxDraw.SetBoxData(conter, size, mIsFloowTarget);
+                boxDraw.SetBoxData(center, size, mIsFloowTarget);
             }
 
             mIsFloowTarget = isFloowTarget;
-            this.Conter = new FixIntVector3(conter);
+            this.Center = new FixIntVector3(center);
             this.Size = new FixIntVector3(size);
 
-            //boxDraw.transform.localScale = this.Conter.x >= 0 ? Vector3.one : new Vector3(-1,1,1);
-            boxDraw?.SetBoxData(conter, size, mIsFloowTarget);
+            //boxDraw.transform.localScale = this.Center.x >= 0 ? Vector3.one : new Vector3(-1,1,1);
+            boxDraw?.SetBoxData(center, size, mIsFloowTarget);
         }
+
+        public override void SetBoxData(FixIntVector3 center, FixIntVector3 size, bool isFloowTarget = false)
+        {
+            if (boxDraw == null)
+            {
+                GameObject obj = new GameObject();
+                boxDraw = obj.AddComponent<BoxColliderGizmo>();
+                boxDraw.SetBoxData(center.ToVector3(), size.ToVector3(), mIsFloowTarget);
+            }
+
+            mIsFloowTarget = isFloowTarget;
+            this.Center = center;
+            this.Size = size;
+
+            //boxDraw.transform.localScale = this.Center.x >= 0 ? Vector3.one : new Vector3(-1,1,1);
+            boxDraw?.SetBoxData(center.ToVector3(), size.ToVector3(), mIsFloowTarget);
+        }
+
+
         public override void OnRelease()
         {
             if (boxDraw != null && boxDraw.gameObject != null)

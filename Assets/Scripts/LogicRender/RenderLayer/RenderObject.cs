@@ -18,7 +18,7 @@ public class RenderObject : MonoBehaviour
     protected float mSmoothPosSpeed = 10;
 
     protected bool mIsUpdatePosAndRotation = true;
-    protected Vector2 mRenderDir;
+    protected Vector3 mRenderDir;
 
     protected bool mIsLocalPlayer = false;
     protected Vector3 mPreTargetPos;//预测位置
@@ -117,9 +117,15 @@ public class RenderObject : MonoBehaviour
             return;
         }
         //mRenderDir.x = logicObject.LogicXAxis >= 0 ? 0 : -20;
-        mRenderDir.y = logicObject.LogicXAxis >= 0 ? 0 : 180;
+        mRenderDir = logicObject.LogicDir.ToVector3();
+        
+        // 计算目标旋转角度（朝向移动方向）
+        Quaternion targetRotation = Quaternion.LookRotation(mRenderDir);
+        
+        // 平滑插值到目标旋转
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10);
 
-        transform.localEulerAngles = mRenderDir;
+        
     }
     public virtual void OnDeath()
     {

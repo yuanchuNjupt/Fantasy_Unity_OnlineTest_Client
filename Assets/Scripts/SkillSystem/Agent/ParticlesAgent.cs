@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class ParticlesAgent : MonoBehaviour
+public class ParticlesAgent //: MonoBehaviour
 {
 #if UNITY_EDITOR
 

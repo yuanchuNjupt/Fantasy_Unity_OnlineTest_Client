@@ -22,8 +22,17 @@ namespace FixIntPhysics
         {
             this.Radius = radius;
             this.ColliderType = ColliderType.Shpere;
-            this.Conter = new FixIntVector3(conter);
+            this.Center = new FixIntVector3(conter);
         }
+        
+        public FixIntSphereCollider(FixInt radius, FixIntVector3 center)
+        {
+            Radius = radius;
+            this.ColliderType = ColliderType.Shpere;
+            this.Center = center;
+        }
+        
+        
         /// <summary>
         /// 更新碰撞体信息
         /// </summary>
@@ -56,9 +65,9 @@ namespace FixIntPhysics
         /// 设置碰撞信息
         /// </summary>
         /// <param name="raduis">半径</param>
-        /// <param name="conter">中心偏移位置</param>
+        /// <param name="center">中心偏移位置</param>
         /// <param name="isFloowTarget">是否跟随目标</param>
-        public override void SetBoxData(float raduis, Vector3 conter, bool isFloowTarget = false)
+        public override void SetBoxData(float raduis, Vector3 center, bool isFloowTarget = false)
         {
 #if UNITY_EDITOR
             if (mSphereGizomObj == null)
@@ -68,12 +77,36 @@ namespace FixIntPhysics
             }
 #endif
             mIsFloowTarget = isFloowTarget;
-            this.Conter = new FixIntVector3(conter);
+            this.Center = new FixIntVector3(center);
             this.Radius = raduis;
 #if UNITY_EDITOR
-            mSphereGizomObj.SetBoxData(raduis, conter, mIsFloowTarget);
+            mSphereGizomObj.SetBoxData(raduis, center, mIsFloowTarget);
 #endif
         }
+        
+        
+        public override void SetBoxData(float raduis, FixIntVector3 center, bool isFloowTarget = false)
+        {
+#if UNITY_EDITOR
+            if (mSphereGizomObj == null)
+            {
+                GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                mSphereGizomObj = obj.AddComponent<SphereColliderGizom>();
+            }
+#endif
+            mIsFloowTarget = isFloowTarget;
+            this.Center = center;
+            this.Radius = raduis;
+#if UNITY_EDITOR
+            mSphereGizomObj.SetBoxData(raduis, center.ToVector3(), mIsFloowTarget);
+#endif
+        }
+        
+        
+        
+        
+        
+        
         public override void OnRelease()
         {
 #if UNITY_EDITOR

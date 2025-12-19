@@ -68,11 +68,13 @@ namespace Framework.MessageManagers
         {
             protected override async FTask Run(Session session, StartDungeonBattleMessage message)
             {
+                
+                UnityEngine.Debug.Log("收到开始战斗消息" );
+                
                 WorldManager.CreateWorld<BattleWorld>((() =>
                 {
                     World.GetExitsDataManager<BattleDataManager>().InitBattlePlayerData(message.battlePlayers);
                     World.GetExitsLogicManager<BattleLogicManager>().OnStartBattle();
-                    
                     UIManager.MainInstance.HideAllPanel("Main");
                     UIManager.MainInstance.HidePanel<LoadingPanelView>();
                 }));

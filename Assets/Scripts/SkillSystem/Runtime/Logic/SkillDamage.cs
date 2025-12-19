@@ -187,9 +187,9 @@ public partial class Skill
             //限制y轴的偏移只能往上进行偏移
             offset.y = FixIntMath.Abs(offset.y);
             if (damageCollider == null)
-            //     collider = new FixIntBoxCollider(boxSize, offset);
-            //
-            // collider.SetBoxData(offset, boxSize);
+                collider = new FixIntBoxCollider(boxSize, offset);
+            
+            collider.SetBoxData(offset, boxSize);
             collider.UpdateColliderInfo(followTragetObj.LogicPos, boxSize);
         }
         else if (item.detectionMode == DamageDetectionMode.Sphere3D)
@@ -199,9 +199,9 @@ public partial class Skill
             offset.y = FixIntMath.Abs(offset.y);
 
             if (damageCollider == null)
-            //     collider = new FixIntSphereCollider(item.raduis, offset);
-            //
-            // collider.SetBoxData(item.raduis, offset);
+                collider = new FixIntSphereCollider(item.raduis, offset);
+            
+            collider.SetBoxData(item.raduis, offset);
             collider.UpdateColliderInfo(followTragetObj.LogicPos, FixIntVector3.zero, item.raduis);
         }
         return collider;

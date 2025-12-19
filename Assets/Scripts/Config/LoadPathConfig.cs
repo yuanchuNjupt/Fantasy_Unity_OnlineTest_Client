@@ -8,6 +8,8 @@
         
         public const string TPCameraPath = "TP_Camera";
         
+        public const string SkillLoadPath = "Skills/";
+        
         
     }
 }

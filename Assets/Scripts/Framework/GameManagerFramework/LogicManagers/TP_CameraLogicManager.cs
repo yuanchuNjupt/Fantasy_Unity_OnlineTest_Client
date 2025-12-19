@@ -18,6 +18,13 @@ public class TP_CameraLogicManager : ILogicBehaviour
 
     public void InitTPCamera(Transform lookTarget)
     {
+        // 如果摄像机已存在且未被销毁，先销毁它
+        if (cameraControl != null)
+        {
+            Object.Destroy(cameraControl.gameObject);
+            cameraControl = null;
+        }
+        
         GameObject cameraObj = Object.Instantiate(Resources.Load<GameObject>(LoadPathConfig.TPCameraPath));
         cameraControl = cameraObj.GetComponent<TP_CameraControl>();
         cameraControl.gameObject.transform.position = lookTarget.transform.position - lookTarget.transform.forward;
@@ -26,5 +33,11 @@ public class TP_CameraLogicManager : ILogicBehaviour
 
     public void OnDestroy()
     {
+        // 清理摄像机对象
+        if (cameraControl != null)
+        {
+            Object.Destroy(cameraControl.gameObject);
+            cameraControl = null;
+        }
     }
 }

@@ -1,10 +1,15 @@
-﻿using Framework.GameManagerFramework.LogicManagers;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Framework.GameManagerFramework.LogicManagers;
 using UnityEngine;
 
 public partial class LobbyPlayer
 {
     private PlayerMouseLogicManager _playerMouseLogicManager;
-
+    private List<Vector2> _inputDirList = new List<Vector2>();
+    private List<bool> _inputRunList = new List<bool>();
+    
+    
 
     private void OnLobbyPlayerInputInit()
     {
@@ -34,25 +39,21 @@ public partial class LobbyPlayer
                 Vector3 moveDirection = cameraForward * input.y + cameraRight * input.x;
             
                 // 转换为Vector2（XZ平面）
-                _inputDir = new Vector2(moveDirection.x, moveDirection.z);
+                input = new Vector2(moveDirection.x, moveDirection.z);
             }
             else
             {
-                _inputDir = Vector2.zero;
+                input = Vector2.zero;
             }
+            _inputDirList.Add(input);
         }
     }
 
+    //收集跑步状态输入
     private void UpdateInputState()
     {
-        if (_inputDir == Vector2.zero)
-        {
-            state = PlayerState.Idle;
-        }
-        else
-        {
-            state = _playerMouseLogicManager.Run ? PlayerState.Sprint : PlayerState.Run;
-        }
+        bool isRun = _playerMouseLogicManager.Run;
+        _inputRunList.Add(isRun);
             
     }
     
@@ -62,6 +63,32 @@ public partial class LobbyPlayer
     {
         UpdateInput();
         UpdateInputState();
+    }
+    
+    private (Vector2 inputDir , PlayerState State) GetPredictionInputDirAndState()
+    {
+        Vector2 resDir = Vector2.zero;
+        //从输入列表中获取最新的输入方向
+        for (int i = _inputDirList.Count - 1; i >= 0; i--)
+        {
+            if(_inputDirList[i] != Vector2.zero)
+            {
+                resDir = _inputDirList[i];
+                _inputDirList.Clear();
+                break;   
+            }
+        }
+        
+        bool isRun = _inputRunList.FirstOrDefault(x => x);
+        PlayerState state = PlayerState.Idle;
+        if (resDir != Vector2.zero)
+        {
+            state = isRun ? PlayerState.Sprint : PlayerState.Run;
+        }
+        
+        _inputRunList.Clear();
+        _inputDirList.Clear();
+        return (resDir , state);
     }
     
 }

@@ -58,6 +58,7 @@ public class SkillComplierWindow : OdinEditorWindow
         this.actionList = skillData.actionCfgList;
         this.bulletList = skillData.bulletCfgList;
         this.buffList = skillData.buffCfgList;
+        character.Init();
     }
     public static SkillComplierWindow GetWindow()
     {
@@ -76,9 +77,9 @@ public class SkillComplierWindow : OdinEditorWindow
         }
         SkillComplierWindow window = GetWindow<SkillComplierWindow>();
   
-        if (window.character.skillChararcter!=null)
+        if (window.character.skillCharacter!=null)
         {
-            return window.character.skillChararcter.transform.position;
+            return window.character.skillCharacter.transform.position;
         }
         return Vector3.zero;
     }

@@ -12,9 +12,9 @@ public partial class LogicActor
     /// <summary>
     /// 普通攻击技能id数组
     /// </summary>
-    private int[] mNormalSkillidArr = new int[] { 1001, 1002, 1003 };
+    private int[] _NormalSkillIdArr = new int[] { 1001, 1002};
 
-    private int[] mSkillidArr;
+    private int[] mSkillidArr = new int[] {};
 
     /// <summary>
     /// 正在释放技能的列表
@@ -39,14 +39,12 @@ public partial class LogicActor
     /// <summary>
     /// 初始化技能列表
     /// </summary>
-    public void InitActorSkill(int id)
+    public void InitActorSkill(List<int> normalAttackList , List<int> skillList)
     {
-        // mBattleLogicLayer = BattleWorld.GetExitsLogicCtrl<BattleLogicCtrl>();
-        // HeroDataMgr heroData = BattleWorld.GetExitsDataMgr<HeroDataMgr>();
-        // mNormalSkillidArr = heroData.GetHeroNormalSkilidArr(id);
-        // mSkillidArr = heroData.GetHeroSkillIdArr(id);
+        _NormalSkillIdArr = normalAttackList.ToArray();
+        mSkillidArr = skillList.ToArray();
         mSkillSystem = new SkillSystem(this);
-        mSkillSystem.InitSKills(mNormalSkillidArr);
+        mSkillSystem.InitSKills(_NormalSkillIdArr);
         mSkillSystem.InitSKills(mSkillidArr);
     }
     /// <summary>
@@ -56,12 +54,14 @@ public partial class LogicActor
     {
         if (LogicFrameConfig.IsUseLocalLogicFrame)
         {
-            ReleaseSKill(mNormalSkillidArr[mCurNormalComboIndex]);
+            Debug.Log("释放普通攻击，当前连击索引：" + mCurNormalComboIndex);
+            
+            ReleaseSKill(_NormalSkillIdArr[mCurNormalComboIndex]);
         }
         else
         {
             //输入技能释放操作
-            // mBattleLogicLayer.ReleaseSkillInput(mNormalSkillidArr[mCurNormalComboIndex]);
+            // mBattleLogicLayer.ReleaseSkillInput(_NormalSkillIdArr[mCurNormalComboIndex]);
         }
     }
     /// <summary>
@@ -70,6 +70,7 @@ public partial class LogicActor
     /// <param name="skillid"></param>
     public void ReleaseSKill(int skillid,FixIntVector3 guidePos=default(FixIntVector3), Action<bool> releaseSkillCallBack = null)
     {
+        
         Skill skill = mSkillSystem.ReleaseSkill(skillid, guidePos,   OnSkillReleaseAfter, (skill)=> {
             if (skill.SKillCfg.skillType== SKillType.StockPile)
             {
@@ -114,7 +115,7 @@ public partial class LogicActor
     /// <returns></returns>
     public bool IsNormalAttackSkill(int skillid)
     {
-        foreach (var item in mNormalSkillidArr)
+        foreach (var item in _NormalSkillIdArr)
         {
             if (skillid == item)
             {
@@ -137,7 +138,7 @@ public partial class LogicActor
         {
             mCurNormalComboIndex++;
             //如果当前普通攻击技能所以大于等级普通攻击技能数组长度，索引归0
-            if (mCurNormalComboIndex >= mNormalSkillidArr.Length || skill.skillid == mNormalSkillidArr[mNormalSkillidArr.Length - 1])
+            if (mCurNormalComboIndex >= _NormalSkillIdArr.Length || skill.skillid == _NormalSkillIdArr[^1])
             {
                 mCurNormalComboIndex = 0;
             }

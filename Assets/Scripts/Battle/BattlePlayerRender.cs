@@ -1,4 +1,5 @@
-﻿using Framework.GameManagerFramework.LogicManagers;
+﻿using FixMath;
+using Framework.GameManagerFramework.LogicManagers;
 using UnityEngine;
 
 namespace Battle
@@ -18,10 +19,16 @@ namespace Battle
         
         private Transform _playerCameraTransform;
 
+        private PlayerState _renderState;
+        
+        private BattleLogicManager _battleLogicManager;
+        
+        
         public void Init(PlayerType playerType)
         {
             _playerType = playerType;
             PlayAnim("Idle");
+            _renderState = PlayerState.Idle;
         }
 
         public override void OnCreate()
@@ -30,13 +37,24 @@ namespace Battle
             _logicLayer = logicObject as BattlePlayerLogic;
             _playerAnimator = GetComponent<Animator>();
             _playerMouseLogicManager = World.GetExitsLogicManager<PlayerMouseLogicManager>();
-            _playerCameraTransform = World.GetExitsLogicManager<TP_CameraLogicManager>().cameraControl.transform;
+            _battleLogicManager = World.GetExitsLogicManager<BattleLogicManager>();
+            
+            // 安全获取摄像机Transform
+            var cameraLogicManager = World.GetExitsLogicManager<TP_CameraLogicManager>();
+            if (cameraLogicManager != null && cameraLogicManager.cameraControl != null)
+            {
+                _playerCameraTransform = cameraLogicManager.cameraControl.transform;
+            }
         }
 
 
         public override void Update()
         {
+  
             UpdateInput();
+            UpdateState();
+            
+            
             base.Update();
         }
 
@@ -46,7 +64,7 @@ namespace Battle
             if(_playerType is PlayerType.Self)
             {
                 Vector2 input = _playerMouseLogicManager.MoveInput;
-                if (input != Vector2.zero)
+                if (input != Vector2.zero && _playerCameraTransform != null)
                 {
                     // 获取相机前方向（XZ平面投影）
                     Vector3 cameraForward = _playerCameraTransform.forward;
@@ -70,12 +88,19 @@ namespace Battle
                     _inputDir = Vector2.zero;
                 }
                 
+                if(LogicFrameConfig.IsUseLocalLogicFrame)
+                    _logicLayer.InputLogicFrameEvent(new FixIntVector3( _inputDir.x, 0 , _inputDir.y ));
+                else
+                    _battleLogicManager.MoveFrameDataInput(new FixIntVector3( _inputDir.x, 0 , _inputDir.y ));
+                
+                
+                
+                
                 //检测攻击
                 if (_playerMouseLogicManager.NormalAttack)
                 {
                     //释放技能
                     _logicLayer.ReleaseNormalAttack();
-                    
                     
                 }
                 
@@ -86,6 +111,28 @@ namespace Battle
         public override void PlayAnim(string clipName)
         {
             _playerAnimator.CrossFade(clipName , 0.2f);
+        }
+
+        private void UpdateState()
+        {
+            if(_inputDir != Vector2.zero && _renderState != PlayerState.Run)
+            {
+                PlayAnim("RunStart");
+                _renderState = PlayerState.Run;
+            }
+            else if (_inputDir == Vector2.zero && _renderState != PlayerState.Idle)
+            {
+                PlayAnim("Idle");
+                _renderState = PlayerState.Idle;
+            }
+        }
+
+        public override void UpdateNetInputDir(FixIntVector3 netInputDir)
+        {
+            if (_playerType != PlayerType.Self)
+            {
+                _inputDir = netInputDir.ToVector3();
+            }
         }
     }
 }

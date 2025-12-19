@@ -11,37 +11,56 @@ public class SkillCharacterConfig
     [AssetList]
     [LabelText("角色模型")]
     [PreviewField(70,ObjectFieldAlignment.Center)]
-    public GameObject skillChararcter;
+    public GameObject skillCharacter;
+    
     [LabelText("技能动画")]
     [TitleGroup("技能渲染","所有英雄渲染数据会在技能开始释放时触发")]
+    [OnValueChanged("OnAnimationClipChanged")]
     public AnimationClip skillAnim;
 
-    [BoxGroup("动画数据")][ProgressBar(0,100,r:0,g:255,b:0,Height =30)][HideLabel][OnValueChanged("OnAnimProgressValueChange")]
-    public short animProgress = 0;
+    [BoxGroup("动画数据")]
+    [ProgressBar(0,"_maxAnimationLength",r:0,g:255,b:0,Height =30)]
+    [HideLabel]
+    [OnValueChanged("OnAnimProgressValueChange")]
+    public int animProgress = 0;
+    
     [BoxGroup("动画数据")]
     [LabelText("是否循环动画")]
     public bool isLoopAnim = false;
+    
     [LabelText("动画循环次数")][ShowIf("isLoopAnim")]
     [BoxGroup("动画数据")]
     public int animLoopCount;
+    
+    [BoxGroup("动画数据")] 
+    [LabelText("最大逻辑帧数")]
+    [ReadOnly]
+    public int MaxLogicFrame;
+    
+    
     [LabelText("逻辑帧数")]
     [BoxGroup("动画数据"),HideIf("isSetCustomLogicFrame")]
     public int logicFrame = 0;
+    
     [LabelText("是否设置自定义逻辑帧数")]
     [BoxGroup("动画数据")]
     public bool isSetCustomLogicFrame=false;
+    
     [LabelText("自定义逻辑帧数")]
     [BoxGroup("动画数据"),ShowIf("isSetCustomLogicFrame")]
     public int customLogicFame = 0;
+    
     [LabelText("动画长度")]
     [BoxGroup("动画数据")]
     public float animLength = 0;
+    
     [LabelText("技能推荐时长(毫秒ms)")]
     [BoxGroup("动画数据")]
     public float skillDurationMS = 0;
 
 
-    private GameObject mTempChararcter;
+    private GameObject mTempCharacter;
+    private int _maxAnimationLength;
     private bool mIsPlayAnim=false;//是否播放动画，用来控制暂停动画
     private double mLastRunTime = 0;//上次运行的时间
     private Animator _animator;
@@ -51,15 +70,15 @@ public class SkillCharacterConfig
     [Button("播放",  ButtonSizes.Large)]
     public void Play()
     {
-        if (skillChararcter!=null)
+        if (skillCharacter!=null)
         {
             //先从场景中查找技能对象，如果查找不到，就主动克隆一个
-            string charactorName= skillChararcter.name;
-            mTempChararcter= GameObject.Find(charactorName);
-            if (mTempChararcter == null)
+            string charactorName= skillCharacter.name;
+            mTempCharacter= GameObject.Find(charactorName);
+            if (mTempCharacter == null)
             {
-                mTempChararcter = GameObject.Instantiate(skillChararcter);
-                mTempChararcter.name= mTempChararcter.name.Replace("(Clone)","");
+                mTempCharacter = GameObject.Instantiate(skillCharacter);
+                mTempCharacter.name= mTempCharacter.name.Replace("(Clone)","");
             }
             //计算动画文件长度
             animLength = isLoopAnim ? skillAnim.length * animLoopCount : skillAnim.length;
@@ -102,14 +121,13 @@ public class SkillCharacterConfig
             double curRunTime = EditorApplication.timeSinceStartup - mLastRunTime;
 
             //计算动画播放进度
-            float curAnimNormalizationValue = (float)curRunTime / animLength;
-            animProgress = (short)Mathf.Clamp(curAnimNormalizationValue*100,0,100);
+            animProgress = Mathf.Clamp((int)(curRunTime * 1000f) , 0 , _maxAnimationLength);
             //计算逻辑帧
             logicFrame = (int)(curRunTime / LogicFrameConfig.LogicFrameInterval);
             //采样动画，进行动画播放
-            skillAnim.SampleAnimation(mTempChararcter,(float)curRunTime);
+            skillAnim.SampleAnimation(mTempCharacter,animProgress / 1000f);
 
-            if (animProgress==100)
+            if (animProgress==_maxAnimationLength)
             {
                 //动画播放完成
                 PlaySkillEnd();
@@ -122,24 +140,33 @@ public class SkillCharacterConfig
     /// 动画进度改变监听
     /// </summary>
     /// <param name="value"></param>
-    public void OnAnimProgressValueChange(float value)
+    public void OnAnimProgressValueChange(int value)
     {
         //先从场景中查找技能对象，如果查找不到，就主动克隆一个
-        string charactorName = skillChararcter.name;
-        mTempChararcter = GameObject.Find(charactorName);
-        if (mTempChararcter == null)
+        string charactorName = skillCharacter.name;
+        mTempCharacter = GameObject.Find(charactorName);
+        if (mTempCharacter == null)
         {
-            mTempChararcter = GameObject.Instantiate(skillChararcter);
-            mTempChararcter.name = mTempChararcter.name.Replace("(Clone)", "");
+            mTempCharacter = GameObject.Instantiate(skillCharacter);
+            mTempCharacter.name = mTempCharacter.name.Replace("(Clone)", "");
         }
 
         //根据当前动画进度进行动画采样
-        float progressValue = (value / 100) * skillAnim.length;
-        logicFrame =(int) (progressValue / LogicFrameConfig.LogicFrameInterval);
+        logicFrame =(int) (value / LogicFrameConfig.LogicFrameIntervalms);
         //采样动画，进行动画播放
-        skillAnim.SampleAnimation(mTempChararcter, progressValue);
-
+        skillAnim.SampleAnimation(mTempCharacter, value / 1000f);
     }
+    
+    public void OnAnimationClipChanged(AnimationClip clip)
+    {
+        if(clip == null) return;
+        _maxAnimationLength = (int)(clip.length * 1000);
+        MaxLogicFrame = (int)(clip.length / LogicFrameConfig.LogicFrameInterval);
+    }
+    
+    
+    
+    
     public void PlaySkillEnd()
     {
         mIsPlayAnim = false;
@@ -147,5 +174,19 @@ public class SkillCharacterConfig
         SkillComplierWindow window= SkillComplierWindow.GetWindow();
         window?.PlaySkilEnd();
     }
+
+    /// <summary>
+    /// 在读取配置文件的时候初始化
+    /// </summary>
+    public void Init()
+    {
+        _maxAnimationLength = (int)(skillAnim.length * 1000);
+        if (skillAnim != null)
+        {
+            MaxLogicFrame = (int)(skillAnim.length / LogicFrameConfig.LogicFrameInterval);
+        }
+    }
+    
+    
 #endif
 }

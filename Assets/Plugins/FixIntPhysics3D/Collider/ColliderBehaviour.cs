@@ -16,16 +16,21 @@ namespace FixIntPhysics
         public FixInt Y { get { return LogicPosition.y; } }
         public FixInt Z { get { return LogicPosition.z; } }
 
-        public FixIntVector3 Conter { get; protected set; }
+        public FixIntVector3 Center { get; protected set; }
         public FixIntVector3 Size { get; protected set; }
         public virtual void UpdateColliderInfo(FixIntVector3 pos, FixIntVector3 size=default(FixIntVector3), FixInt radius=default(FixInt))
         {
             this.LogicPosition = pos;
         }
         public virtual void UpdateColliderInfo(Vector3 pos, Vector3 size = default, float radius = default) { }
-        public virtual void SetBoxData(float raduis, Vector3 conter, bool isFloowTarget = false) { }
+        public virtual void SetBoxData(float raduis, Vector3 center, bool isFloowTarget = false) { }
+        
+        public virtual void SetBoxData(float raduis, FixIntVector3 center, bool isFloowTarget = false) { }
 
-        public virtual void SetBoxData(Vector3 conter, Vector3 size, bool isFloowTarget = false) { }
+        public virtual void SetBoxData(Vector3 center, Vector3 size, bool isFloowTarget = false) { }
+        
+        public virtual void SetBoxData(FixIntVector3 center, FixIntVector3 size, bool isFloowTarget = false) { }
+        
 
         public virtual void OnRelease()
         {

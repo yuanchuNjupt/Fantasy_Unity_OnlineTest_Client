@@ -7,19 +7,19 @@ using Sirenix.OdinInspector;
 public class SkillAudioConfig  
 {
     [AssetList]
-    [BoxGroup("ÒôĞ§ÎÄ¼ş"),PreviewField(70,ObjectFieldAlignment.Left),OnValueChanged("OnAudioChange")]
+    [BoxGroup("éŸ³æ•ˆæ–‡ä»¶"),PreviewField(70,ObjectFieldAlignment.Left),OnValueChanged("OnAudioChange")]
     public AudioClip skillAudio;
 
-    [LabelText("ÒôĞ§ÎÄ¼şÃû³Æ"),BoxGroup("ÒôĞ§ÎÄ¼ş"),ReadOnly,GUIColor("green")]
+    [LabelText("éŸ³æ•ˆæ–‡ä»¶åç§°"),BoxGroup("éŸ³æ•ˆæ–‡ä»¶"),ReadOnly,GUIColor("green")]
     public string audioName;
 
-    [BoxGroup("²ÎÊıÅäÖÃ"),LabelText("´¥·¢Ö¡"),GUIColor("green")]
+    [BoxGroup("å‚æ•°é…ç½®"),LabelText("è§¦å‘å¸§"),GUIColor("green")]
     public int triggerFrame;
 
-    [ToggleGroup("isLoop","ÊÇ·ñÑ­»·")]
+    [ToggleGroup("isLoop","æ˜¯å¦å¾ªç¯")]
     public bool isLoop = false;
 
-    [ToggleGroup("isLoop","½áÊøÖ¡")]
+    [ToggleGroup("isLoop","ç»“æŸå¸§")]
     public int endFrame;
 
     public void OnAudioChange()
