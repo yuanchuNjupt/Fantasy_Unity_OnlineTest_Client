@@ -2,6 +2,6 @@
 {
     public class NetWorkConfig
     {
-        public const string GateAddress = "127.0.0.1:20000";
+        public const string GateAddress = "192.168.101.248:20000";
     }
 }
