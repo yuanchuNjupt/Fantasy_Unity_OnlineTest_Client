@@ -29,9 +29,9 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
 
     private void Start()
     {
-        _userDataManager = World.GetExitsDataManager<UserDataManager>();
-        _playerMouseLogicManager = World.GetExitsLogicManager<PlayerMouseLogicManager>();
-        _lobbyTeamLogicManager = World.GetExitsLogicManager<LobbyTeamLogicManager>();
+        _userDataManager = Framework.GameManager.Core.World.GetExitsDataManager<UserDataManager>();
+        _playerMouseLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<PlayerMouseLogicManager>();
+        _lobbyTeamLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<LobbyTeamLogicManager>();
     }
 
     private void OnDestroy()
@@ -160,7 +160,7 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
 
     private void OnEnterDungeonButtonClick()
     {
-        World.GetExitsLogicManager<LobbyBattleLogicManager>().OnTeamLeaderEnterDungeon();
+        Framework.GameManager.Core.World.GetExitsLogicManager<LobbyBattleLogicManager>().OnTeamLeaderEnterDungeon();
     }
 
     #endregion

@@ -37,11 +37,11 @@ namespace Battle
             base.OnCreate();
             _logicLayer = logicObject as BattlePlayerLogic;
             _playerAnimator = GetComponent<Animator>();
-            _playerMouseLogicManager = World.GetExitsLogicManager<PlayerMouseLogicManager>();
-            _battleLogicManager = World.GetExitsLogicManager<BattleLogicManager>();
+            _playerMouseLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<PlayerMouseLogicManager>();
+            _battleLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<BattleLogicManager>();
             
             // 安全获取摄像机Transform
-            var cameraLogicManager = World.GetExitsLogicManager<TP_CameraLogicManager>();
+            var cameraLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<TP_CameraLogicManager>();
             if (cameraLogicManager != null && cameraLogicManager.cameraControl != null)
             {
                 _playerCameraTransform = cameraLogicManager.cameraControl.transform;

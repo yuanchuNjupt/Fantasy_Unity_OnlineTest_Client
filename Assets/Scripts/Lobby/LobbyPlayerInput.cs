@@ -13,7 +13,7 @@ public partial class LobbyPlayer
 
     private void OnLobbyPlayerInputInit()
     {
-        _playerMouseLogicManager = World.GetExitsLogicManager<PlayerMouseLogicManager>();
+        _playerMouseLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<PlayerMouseLogicManager>();
     }
     
     

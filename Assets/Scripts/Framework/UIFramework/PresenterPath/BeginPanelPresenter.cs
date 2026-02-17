@@ -23,7 +23,7 @@ public class BeginPanelPresenter : BasePresenter<BeginPanelView>
     }
     private void OnLoginClick()
     {
-        World.GetExitsLogicManager<LoginLogicManager>().LoginGame(View.account.text , View.password.text);
+        Framework.GameManager.Core.World.GetExitsLogicManager<LoginLogicManager>().LoginGame(View.account.text , View.password.text);
     }
     private void OnRegisterClick()
     {

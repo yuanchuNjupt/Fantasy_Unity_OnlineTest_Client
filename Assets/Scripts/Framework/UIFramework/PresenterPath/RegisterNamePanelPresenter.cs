@@ -23,7 +23,7 @@ public class RegisterNamePanelPresenter : BasePresenter<RegisterNamePanelView>
 
     private void OnCommitButtonClick()
     {
-        World.GetExitsLogicManager<LoginLogicManager>().RegisterName(View.InputName.text);
+        Framework.GameManager.Core.World.GetExitsLogicManager<LoginLogicManager>().RegisterName(View.InputName.text);
     }
     
 }

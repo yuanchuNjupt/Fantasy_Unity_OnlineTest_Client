@@ -35,7 +35,7 @@ public class RegisterPanelPresenter : BasePresenter<RegisterPanelView>
 
     private void OnRegisterButtonClick()
     {
-        World.GetExitsLogicManager<LoginLogicManager>().RegisterAccount(View.account.text , View.password.text);
+        Framework.GameManager.Core.World.GetExitsLogicManager<LoginLogicManager>().RegisterAccount(View.account.text , View.password.text);
     }
     
 }

@@ -28,7 +28,7 @@ public class TP_CameraControl : MonoBehaviour
 
     private void Start()
     {
-        _playerMouseLogicManager = World.GetExitsLogicManager<PlayerMouseLogicManager>();
+        _playerMouseLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<PlayerMouseLogicManager>();
     }
 
     private void Update()

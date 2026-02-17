@@ -76,7 +76,7 @@ public partial class LobbyPlayer : MonoBehaviour
         _animator = GetComponent<Animator>();
         
         PlayerName = playerName;
-        _playerCameraTransform = World.GetExitsLogicManager<TP_CameraLogicManager>().cameraControl.transform;
+        _playerCameraTransform = Framework.GameManager.Core.World.GetExitsLogicManager<TP_CameraLogicManager>().cameraControl.transform;
 
         state = PlayerState.Idle;
         _lastState = PlayerState.Idle;
@@ -217,7 +217,7 @@ public partial class LobbyPlayer : MonoBehaviour
             };
             
             //发送状态同步数据请求
-            World.GetExitsLogicManager<LobbyPlayerLogicManager>().SyncRoleState(stateSyncData);
+            Framework.GameManager.Core.World.GetExitsLogicManager<LobbyPlayerLogicManager>().SyncRoleState(stateSyncData);
             
             
             _lastInput = _predictionInputDir;

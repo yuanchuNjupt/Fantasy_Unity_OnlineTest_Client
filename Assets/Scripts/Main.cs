@@ -1,10 +1,16 @@
 
 using System;
+using BloodAwakening.Global;
 using Fantasy.Async;
+using Framework.GameManager.Core;
+using Framework.GameManager.WorldScripts;
 using Framework.GameManagerFramework.WorldScripts;
 using Generate;
 using UnityEngine;
 
+/// <summary>
+/// 全局唯一的游戏入口，负责游戏的初始化和全局管理
+/// </summary>
 public class Main : MonoBehaviour
 {
 
@@ -33,19 +39,22 @@ public class Main : MonoBehaviour
 
         await NetWorkManager.Instance.Initlization();
 
-        Debug.Log("Network框架初始化完毕");
+        Log.Info(LogColor.Blue , "网络层初始化完成");
         Application.targetFrameRate = FPS;
         
-        //用户信息持久化世界
-        WorldManager.CreateWorld<PermanentlyWorld>();
+        //全局配置
+        WorldManager.CreateWorld<GlobalWorld>();
         
         //登录注册世界
         WorldManager.CreateWorld<LoginWorld>();
+        
 
     }
 
     private void OnDestroy()
     {
         NetWorkManager.Instance.OnRelease();
+        WorldManager.DestroyAllWorld();
+        
     }
 }
