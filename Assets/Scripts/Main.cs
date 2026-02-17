@@ -3,7 +3,6 @@ using System;
 using BloodAwakening.Global;
 using Fantasy.Async;
 using Framework.GameManager.Core;
-using Framework.GameManager.WorldScripts;
 using Framework.GameManagerFramework.WorldScripts;
 using Generate;
 using UnityEngine;
