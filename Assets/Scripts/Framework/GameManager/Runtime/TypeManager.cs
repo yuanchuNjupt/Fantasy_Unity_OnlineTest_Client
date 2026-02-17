@@ -258,61 +258,8 @@ namespace Framework.GameManagerFramework.Runtime
         /// </summary>
         private static object GetManagerInstance(Type managerType)
         {
-            // 尝试获取LogicBehaviour
-            if (typeof(ILogicBehaviour).IsAssignableFrom(managerType))
-            {
-                var method = typeof(GameManager.Core.World).GetMethod("GetExitsLogicManager");
-                if (method != null)
-                {
-                    var genericMethod = method.MakeGenericMethod(managerType);
-                    try
-                    {
-                        return genericMethod.Invoke(null, null);
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                }
-            }
-            
-            // 尝试获取DataBehaviour
-            if (typeof(IDataBehaviour).IsAssignableFrom(managerType))
-            {
-                var method = typeof(GameManager.Core.World).GetMethod("GetExitsDataManager");
-                if (method != null)
-                {
-                    var genericMethod = method.MakeGenericMethod(managerType);
-                    try
-                    {
-                        return genericMethod.Invoke(null, null);
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                }
-            }
-            
-            // 尝试获取MessageBehaviour
-            if (typeof(IMessageBehaviour).IsAssignableFrom(managerType))
-            {
-                var method = typeof(GameManager.Core.World).GetMethod("GetExitsMessageManager");
-                if (method != null)
-                {
-                    var genericMethod = method.MakeGenericMethod(managerType);
-                    try
-                    {
-                        return genericMethod.Invoke(null, null);
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                }
-            }
-            
-            return null;
+            // 直接调用World的非泛型查找方法，避免反射
+            return World.GetManagerByType(managerType);
         }
     }
 }

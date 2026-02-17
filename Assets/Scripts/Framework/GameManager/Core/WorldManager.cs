@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Framework.GameManagerFramework.Base;
 using Framework.GameManagerFramework.Runtime;
 
@@ -10,17 +11,27 @@ namespace Framework.GameManager.Core
         /// <summary>
         /// 默认的游戏世界
         /// </summary>
-        public static Framework.GameManager.Core.World DefaultWorld { get; private set; }
+        public static World DefaultWorld { get; private set; }
 
-        private static List<Framework.GameManager.Core.World> _worlds = new();
+        /// <summary>
+        /// 世界不可重复
+        /// </summary>
+        private static readonly HashSet<World> Worlds = new();
     
     
         /// <summary>
         /// 构建一个游戏世界
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public static void CreateWorld<T>(Action onWorldCreateFinishedCallBack = null) where T : Framework.GameManager.Core.World , new()
+        public static void CreateWorld<T>(Action onWorldCreateFinishedCallBack = null) where T : World , new()
         {
+
+            if (Worlds.OfType<T>().Any())
+            {
+                UnityEngine.Debug.LogWarning(nameof(T) + "已经创建，不可重复创建！");
+                return;
+            }
+            
             T world = new T();
             DefaultWorld = world;
         
@@ -30,31 +41,45 @@ namespace Framework.GameManager.Core
             //初始化游戏世界的程序集
             onWorldCreateFinishedCallBack?.Invoke();
             world.OnCreate();
-            _worlds.Add(world);
+            Worlds.Add(world);
+        }
+
+        public World GetWorld<T>() where T : World, new()
+        {
+            foreach (World world in Worlds)
+            {
+                if (world is T)
+                {
+                    return world as T;
+                }
+            }
+            
+            UnityEngine.Debug.LogWarning("未找到世界 : "+nameof(T) + "!");
+            
+            
+            return null;
         }
 
         /// <summary>
         /// 销毁对应的游戏世界
         /// </summary>
-        /// <param name="world"></param>
         /// <typeparam name="T"></typeparam>
-        public static void DestroyWorld<T>() where T : Framework.GameManager.Core.World, new()
+        public static void DestroyWorld<T>() where T : World, new()
         {
-            for (int i = 0; i < _worlds.Count; i++)
+            foreach (var world in Worlds.OfType<T>())
             {
-                if (_worlds[i] is T)
-                {
-                    _worlds[i].DestroyWorld();
-                    _worlds.RemoveAt(i);
-                    break;
-                }
+                world.DestroyWorld();
+                Worlds.Remove(world);
             }
         }
     
         public static void DestroyAllWorld()
         {
-            _worlds.ForEach(world => world.DestroyWorld());
-            _worlds.Clear();
+            foreach (World world in Worlds)
+            {
+                world.DestroyWorld();
+            }
+            Worlds.Clear();
         }
     
 
@@ -63,12 +88,15 @@ namespace Framework.GameManager.Core
         /// </summary>
         public static void OnWorldUpdate()
         {
-            _worlds.ForEach(world => world.OnUpdate());
+            foreach (World world in Worlds)
+            {
+                world.OnUpdate();
+            }
         }
     
     
 
-        public static IBehaviourExecution GetBehaviourExecution(Framework.GameManager.Core.World world)
+        public static IBehaviourExecution GetBehaviourExecution(World world)
         {
             if (world.GetType().Name == "HallWorld")
             {

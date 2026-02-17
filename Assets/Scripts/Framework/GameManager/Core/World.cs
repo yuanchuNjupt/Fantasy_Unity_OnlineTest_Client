@@ -79,7 +79,7 @@ namespace Framework.GameManager.Core
                 return res.logicBehaviour as T;
             }
         
-            Debug.LogError("No Exits Logic Manager:" + typeof(T).Name);
+            Debug.LogError("不存在Logic Manager:" + typeof(T).Name);
             return null;
         }
     
@@ -91,7 +91,7 @@ namespace Framework.GameManager.Core
                 return res.dataBehaviour as T;
             }
         
-            Debug.LogError("No Exits Data Manager:" + typeof(T).Name);
+            Debug.LogError("不存在Data Manager:" + typeof(T).Name);
             return null;
         }
     
@@ -103,7 +103,51 @@ namespace Framework.GameManager.Core
                 return res.messageBehaviour as T;
             }
         
-            Debug.LogError("No Exits Message Manager:" + typeof(T).Name);
+            Debug.LogError("不存在Message Manager:" + typeof(T).Name);
+            return null;
+        }
+        
+        /// <summary>
+        /// 根据类型获取Manager实例（非泛型版本，用于依赖注入）
+        /// </summary>
+        /// <param name="managerType">Manager的类型</param>
+        /// <returns>Manager实例，如果未找到返回null</returns>
+        public static object GetManagerByType(Type managerType)
+        {
+            if (managerType == null)
+            {
+                return null;
+            }
+        
+            string typeName = managerType.Name;
+        
+            // 尝试从LogicBehaviour中查找
+            if (typeof(ILogicBehaviour).IsAssignableFrom(managerType))
+            {
+                if (_logicBehaviours.TryGetValue(typeName, out var logicRes))
+                {
+                    return logicRes.logicBehaviour;
+                }
+            }
+        
+            // 尝试从DataBehaviour中查找
+            if (typeof(IDataBehaviour).IsAssignableFrom(managerType))
+            {
+                if (_dataBehaviours.TryGetValue(typeName, out var dataRes))
+                {
+                    return dataRes.dataBehaviour;
+                }
+            }
+        
+            // 尝试从MessageBehaviour中查找
+            if (typeof(IMessageBehaviour).IsAssignableFrom(managerType))
+            {
+                if (_messageBehaviours.TryGetValue(typeName, out var messageRes))
+                {
+                    return messageRes.messageBehaviour;
+                }
+            }
+        
             return null;
         }
     
