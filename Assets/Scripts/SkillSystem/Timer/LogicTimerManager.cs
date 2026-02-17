@@ -2,6 +2,7 @@ using FixMath;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.Fixed_pointNumber.Core;
 using GGG.Tool.Singleton;
 using UnityEngine;
 public class LogicTimerManager : Singleton<LogicTimerManager>
@@ -15,7 +16,7 @@ public class LogicTimerManager : Singleton<LogicTimerManager>
     /// 开始进行行动
     /// </summary>
     /// <param name="action"></param>
-    public void DelayCall(FixInt delayTime,Action timerCallBack,int loopCount=1)
+    public void DelayCall(FixedInt delayTime,Action timerCallBack,int loopCount=1)
     {
         LogicTiemr timer = new LogicTiemr(delayTime,timerCallBack,loopCount);
         mTimerList.Add(timer);

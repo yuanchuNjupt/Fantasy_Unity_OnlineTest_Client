@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Fantasy;
+using FixedPhysics.Fixed_pointNumber.Core;
 using FixMath;
 using Framework.GameManagerFramework.DataManagers;
 using Framework.GameManagerFramework.WorldScripts;
@@ -34,9 +35,9 @@ namespace Framework.GameManagerFramework.LogicManagers
         }
 
         //
-        public void MoveFrameDataInput(FixIntVector3 inputDir)
+        public void MoveFrameDataInput(FixedIntVector3 inputDir)
         {
-            CacheFrameOperateData(OperateTypeEnum.InputMove, inputDir ,0 ,FixIntVector3.zero , SkillTypeEnum.None);
+            CacheFrameOperateData(OperateTypeEnum.InputMove, inputDir ,0 ,FixedIntVector3.zero , SkillTypeEnum.None);
         }
 
 
@@ -73,7 +74,7 @@ namespace Framework.GameManagerFramework.LogicManagers
         
         
 
-        public void CacheFrameOperateData(OperateTypeEnum operateType , FixIntVector3 inputDir , int skillId , FixIntVector3 skillPos , SkillTypeEnum skillType)
+        public void CacheFrameOperateData(OperateTypeEnum operateType , FixedIntVector3 inputDir , int skillId , FixedIntVector3 skillPos , SkillTypeEnum skillType)
         {
             if (_battleDataManager.BattleState != BattleStateEnum.Start)
             {
@@ -89,11 +90,11 @@ namespace Framework.GameManagerFramework.LogicManagers
                 case OperateTypeEnum.None:
                     break;
                 case OperateTypeEnum.InputMove:
-                    frameOperationData.inputDir = new CSFixIntVector3(){x = inputDir.x.IntValue, y = inputDir.y.IntValue, z = inputDir.z.IntValue};
+                    frameOperationData.inputDir = new CSFixIntVector3(){x = inputDir.X.RenderInt, y = inputDir.Y.RenderInt, z = inputDir.Z.RenderInt};
                     break;
                 case OperateTypeEnum.ReleaseSkill:
                     frameOperationData.skillId = skillId;
-                    frameOperationData.skillPos = new CSFixIntVector3(){x =  inputDir.x.IntValue, y = inputDir.y.IntValue, z = inputDir.z.IntValue};
+                    frameOperationData.skillPos = new CSFixIntVector3(){x =  inputDir.X.RenderInt, y = inputDir.Y.RenderInt, z = inputDir.Z.RenderInt};
                     frameOperationData.skillType = (int)skillType;
                     break;
                 default:

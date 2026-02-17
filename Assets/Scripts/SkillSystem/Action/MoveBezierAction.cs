@@ -2,24 +2,25 @@ using FixMath;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 
 public class MoveBezierAction : ActionBehaviour
 {
     private LogicObject mActionObj;
-    private FixIntVector3 mStartPos;
-    private FixIntVector3 mHeightPos;
-    private FixIntVector3 mEndPos;
-    private FixInt mMoveTime;
+    private FixedIntVector3 mStartPos;
+    private FixedIntVector3 mHeightPos;
+    private FixedIntVector3 mEndPos;
+    private FixedInt mMoveTime;
     /// <summary>
     /// 当前累计运行的时间
     /// </summary>
-    private FixInt mAccRumTime;
+    private FixedInt mAccRumTime;
     /// <summary>
     /// 当前移动的时间缩放
     /// </summary>
-    private FixInt mTimeScale;
-    public MoveBezierAction(LogicObject actionObj, FixIntVector3 startPos, FixIntVector3 heightPos, FixIntVector3 endPos, FixInt time, Action moveFinsihCallBack, Action updateCallBack)
+    private FixedInt mTimeScale;
+    public MoveBezierAction(LogicObject actionObj, FixedIntVector3 startPos, FixedIntVector3 heightPos, FixedIntVector3 endPos, FixedInt time, Action moveFinsihCallBack, Action updateCallBack)
     {
         Debug.Log($"startPos:{startPos} heightPos:{heightPos} endPos:{endPos}");
         //接收参数
@@ -27,7 +28,7 @@ public class MoveBezierAction : ActionBehaviour
         mStartPos = startPos;
         mHeightPos = heightPos;
         mEndPos = endPos;
-        mMoveTime = time == FixInt.Zero ? 0.1f : time;
+        mMoveTime = time == 0 ? 0.1f : time;
         mActionFinishCalllBack = moveFinsihCallBack;
         mUpdateActionCallBack = updateCallBack;
     }

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.Fixed_pointNumber.Core;
+using FixedPhysics.Fixed_pointNumber.FixedIntMath;
+using FixedPhysics.FixedCollider.Colliders._3D;
 using UnityEngine;
-using FixIntPhysics;
 using FixMath;
 
 /// <summary>
@@ -20,7 +22,7 @@ public partial class Skill
     /// 特效对象字典 key为特效配置的HashCode，Value为生成的对应的特效
     /// </summary>
 
-    private Dictionary<int, ColliderBehaviour> mColliderDic = new Dictionary<int, ColliderBehaviour>();
+    private Dictionary<int, FixedIntCollider3D> mColliderDic = new ();
     ///// <summary>
     ///// 当前伤害累加时间
     ///// </summary>
@@ -53,7 +55,7 @@ public partial class Skill
                 int hashCode = item.GetHashCode();
                 if (item.colliderPosType == ColliderPosType.FollowPos)
                 {
-                    ColliderBehaviour damageCollider = null;
+                    FixedIntCollider3D damageCollider = null;
                     //更新碰撞体位置
                     if (mColliderDic.TryGetValue(item.GetHashCode(), out damageCollider) && damageCollider != null)
                     {
@@ -65,7 +67,7 @@ public partial class Skill
                 if (mCurLogicFrame == item.triggerFrame)
                 {
                     DestroyCollider(item);
-                    ColliderBehaviour collider = CreateOrUpdateCollider(item, null);
+                    FixedIntCollider3D collider = CreateOrUpdateCollider(item, null);
                     //创建字典缓存当前碰撞体
                     mColliderDic.Add(hashCode, collider);
                     if (item.triggerIntervalMs == 0)
@@ -106,7 +108,7 @@ public partial class Skill
     /// <summary>
     /// 触发碰撞体伤害
     /// </summary>
-    public void TriggerColliderDamage(ColliderBehaviour collider, SkillDamageConfig config)
+    public void TriggerColliderDamage(FixedIntCollider3D collider, SkillDamageConfig config)
     {
         //1.获取敌人目标列表 敌人 英雄
         // List<LogicActor> enemyList = BattleWorld.GetExitsLogicCtrl<BattleLogicCtrl>().GetEnemyList(mSkillCreater.ObjectType);
@@ -145,7 +147,7 @@ public partial class Skill
             {
                 foreach (var buffid in config.addBuffs)
                 {
-                    BuffSystem.MainInstance.AttachBuff(buffid, mSkillCreater, target, this, null);
+                    // BuffSystem.MainInstance.AttachBuff(buffid, mSkillCreater, target, this, null);
                 }
             }
             //触发对应的后续技能 
@@ -174,37 +176,38 @@ public partial class Skill
     /// <summary>
     /// 创建碰撞体
     /// </summary>
-    public ColliderBehaviour CreateOrUpdateCollider(SkillDamageConfig item, ColliderBehaviour damageCollider, LogicObject followObj = null)
+    public FixedIntCollider3D CreateOrUpdateCollider(SkillDamageConfig item, FixedIntCollider3D damageCollider, LogicObject followObj = null)
     {
-        ColliderBehaviour collider = damageCollider;
-        LogicObject followTragetObj = followObj == null ? mSkillCreater : followObj;
-        //创建对应的定点数碰撞体
-        if (item.detectionMode == DamageDetectionMode.BOX3D)
-        {
-            FixIntVector3 boxSize = new FixIntVector3(item.boxSize);
-            FixIntVector3 offset = new FixIntVector3(item.boxOffset) * followTragetObj.LogicXAxis;
-
-            //限制y轴的偏移只能往上进行偏移
-            offset.y = FixIntMath.Abs(offset.y);
-            if (damageCollider == null)
-                collider = new FixIntBoxCollider(boxSize, offset);
-            
-            collider.SetBoxData(offset, boxSize);
-            collider.UpdateColliderInfo(followTragetObj.LogicPos, boxSize);
-        }
-        else if (item.detectionMode == DamageDetectionMode.Sphere3D)
-        {
-            FixIntVector3 offset = new FixIntVector3(item.sphereOffset) * followTragetObj.LogicXAxis;
-            //限制y轴的偏移只能往上进行偏移
-            offset.y = FixIntMath.Abs(offset.y);
-
-            if (damageCollider == null)
-                collider = new FixIntSphereCollider(item.raduis, offset);
-            
-            collider.SetBoxData(item.raduis, offset);
-            collider.UpdateColliderInfo(followTragetObj.LogicPos, FixIntVector3.zero, item.raduis);
-        }
-        return collider;
+        // FixedIntCollider3D collider = damageCollider;
+        // LogicObject followTragetObj = followObj == null ? mSkillCreater : followObj;
+        // //创建对应的定点数碰撞体
+        // if (item.detectionMode == DamageDetectionMode.BOX3D)
+        // {
+        //     FixedIntVector3 boxSize = new FixedIntVector3(item.boxSize);
+        //     FixedIntVector3 offset = new FixedIntVector3(item.boxOffset) * followTragetObj.LogicXAxis;
+        //
+        //     //限制y轴的偏移只能往上进行偏移
+        //     offset.Y = FixedIntMathf.Abs(offset.Y);
+        //     if (damageCollider == null)
+        //         collider = new FixIntBoxCollider(boxSize, offset);
+        //     
+        //     collider.SetBoxData(offset, boxSize);
+        //     collider.UpdateColliderInfo(followTragetObj.LogicPos, boxSize);
+        // }
+        // else if (item.detectionMode == DamageDetectionMode.Sphere3D)
+        // {
+        //     FixedIntVector3 offset = new FixedIntVector3(item.sphereOffset) * followTragetObj.LogicXAxis;
+        //     //限制y轴的偏移只能往上进行偏移
+        //     offset.y = FixedIntMathf.Abs(offset.y);
+        //
+        //     if (damageCollider == null)
+        //         collider = new FixIntSphereCollider(item.raduis, offset);
+        //     
+        //     collider.SetBoxData(item.raduis, offset);
+        //     collider.UpdateColliderInfo(followTragetObj.LogicPos, FixIntVector3.zero, item.raduis);
+        // }
+        // return collider;
+        return null;
     }
 
 
@@ -215,14 +218,14 @@ public partial class Skill
     /// <param name="item"></param>
     public void DestroyCollider(SkillDamageConfig item)
     {
-        ColliderBehaviour collider = null;
-        int hashCode = item.GetHashCode();
-        mColliderDic.TryGetValue(hashCode, out collider);
-        if (collider != null)
-        {
-            mColliderDic.Remove(hashCode);
-            collider.OnRelease();
-        }
+        // FixedIntCollider3D collider = null;
+        // int hashCode = item.GetHashCode();
+        // mColliderDic.TryGetValue(hashCode, out collider);
+        // if (collider != null)
+        // {
+        //     mColliderDic.Remove(hashCode);
+        //     collider.OnRelease();
+        // }
     }
 
     public void OnDamageRelease()

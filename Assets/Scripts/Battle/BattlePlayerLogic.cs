@@ -1,4 +1,5 @@
 ﻿using Fantasy;
+using FixedPhysics.Fixed_pointNumber.Core;
 using FixMath;
 using Framework.GameManagerFramework.DataManagers;
 
@@ -20,7 +21,7 @@ namespace Battle
             if ((OperateTypeEnum)data.operateType == OperateTypeEnum.InputMove)
             {
                 var CSinputDir = data.inputDir;
-                FixIntVector3 inputDir = new FixIntVector3(new FixInt((long)CSinputDir.x) ,new FixInt((long)CSinputDir.y) ,new FixInt((long)CSinputDir.z));
+                FixedIntVector3 inputDir = new FixedIntVector3(new FixedInt((long)CSinputDir.x) ,new FixedInt((long)CSinputDir.y) ,new FixedInt((long)CSinputDir.z));
                 InputLogicFrameEvent(inputDir);
                 
                 //更新其他玩家渲染层输入

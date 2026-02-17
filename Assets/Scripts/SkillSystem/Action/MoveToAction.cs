@@ -2,9 +2,10 @@ using FixMath;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 /// <summary>
-/// ÒÆ¶¯ÀàĞÍ
+/// ç§»åŠ¨ç±»å‹
 /// </summary>
 public enum MoveType
 {
@@ -17,36 +18,36 @@ public enum MoveType
 public class MoveToAction : ActionBehaviour
 {
     private LogicObject mActionObj;
-    private FixIntVector3 mStartPos;
-    private FixInt mMoveTime;
+    private FixedIntVector3 mStartPos;
+    private FixedInt mMoveTime;
     private MoveType mMoveType;
     /// <summary>
-    /// ÒÆ¶¯µÄÏòÁ¿
+    /// ç§»åŠ¨çš„å‘é‡
     /// </summary>
-    private FixIntVector3 mMoveDistance;
+    private FixedIntVector3 mMoveDistance;
     /// <summary>
-    /// µ±Ç°ÀÛ¼ÆÔËĞĞµÄÊ±¼ä
+    /// å½“å‰ç´¯è®¡è¿è¡Œçš„æ—¶é—´
     /// </summary>
-    private FixInt mAccRumTime;
+    private FixedInt mAccRumTime;
     /// <summary>
-    /// µ±Ç°ÒÆ¶¯µÄÊ±¼äËõ·Å
+    /// å½“å‰ç§»åŠ¨çš„æ—¶é—´ç¼©æ”¾
     /// </summary>
-    private FixInt mTimeScale;
-    public MoveToAction(LogicObject actionObj,FixIntVector3 startPos,FixIntVector3 targerPos,
-        FixInt time,Action moveFinsihCallBack,Action updateCallBack,MoveType moveType)
+    private FixedInt mTimeScale;
+    public MoveToAction(LogicObject actionObj,FixedIntVector3 startPos,FixedIntVector3 targerPos,
+        FixedInt time,Action moveFinsihCallBack,Action updateCallBack,MoveType moveType)
     {
-        //½ÓÊÕ²ÎÊı
+        //æ¥æ”¶å‚æ•°
         mActionObj = actionObj;
         mStartPos = startPos;
-        mMoveTime = time==FixInt.Zero? 0.1f:time;
+        mMoveTime = time==0? 0.1f:time;
         mMoveType = moveType;
         mActionFinishCalllBack = moveFinsihCallBack;
         mUpdateActionCallBack = updateCallBack;
-        //Ä¿±êÎ»ÖÃ-ÆğÊ¼Î»ÖÃ=ÒÆ¶¯ÒÆ¶¯ÏòÁ¿
+        //ç›®æ ‡ä½ç½®-èµ·å§‹ä½ç½®=ç§»åŠ¨ç§»åŠ¨å‘é‡
         mMoveDistance = targerPos - startPos;
     }
     /// <summary>
-    /// ĞĞ¶¯Íê³É
+    /// è¡ŒåŠ¨å®Œæˆ
     /// </summary>
     public override void OnActionFinish()
     {
@@ -56,13 +57,13 @@ public class MoveToAction : ActionBehaviour
         }
     }
     /// <summary>
-    /// Âß¼­Ö¡¸üĞÂ
+    /// é€»è¾‘å¸§æ›´æ–°
     /// </summary>
     public override void OnLogicFrameUpdate()
     {
-        //¼ÆËãµ±Ç°ÀÛ¼ÆÔËĞĞÊ±¼ä
+        //è®¡ç®—å½“å‰ç´¯è®¡è¿è¡Œæ—¶é—´
         mAccRumTime += LogicFrameConfig.LogicFrameIntervalms;
-        //»ñÈ¡Ê±¼äËõ·Å±ÈÀı
+        //è·å–æ—¶é—´ç¼©æ”¾æ¯”ä¾‹
         mTimeScale = mAccRumTime / mMoveTime;
 
         if (mTimeScale>=1)
@@ -71,28 +72,28 @@ public class MoveToAction : ActionBehaviour
             actionFinsih = true;
         }
         mUpdateActionCallBack?.Invoke();
-        //¼ÆËã¶ÔÏóĞèÒªÒÆ¶¯µÄÎ»ÖÃ
-        FixIntVector3 addDistance=FixIntVector3.zero;//Ìí¼ÓµÄÒ»¸öÏòÁ¿¾àÀë
+        //è®¡ç®—å¯¹è±¡éœ€è¦ç§»åŠ¨çš„ä½ç½®
+        FixedIntVector3 addDistance=FixedIntVector3.zero;//æ·»åŠ çš„ä¸€ä¸ªå‘é‡è·ç¦»
         if (mMoveType== MoveType.target)
         {
             addDistance = mMoveDistance * mTimeScale;
             mActionObj.LogicPos = mStartPos + addDistance;
         }
-        else if (mMoveType== MoveType.X)
-        {
-            addDistance.x = mMoveDistance.x * mTimeScale;
-            mActionObj.LogicPos = new FixIntVector3(mStartPos.x + addDistance.x,mActionObj.LogicPos.y,mActionObj.LogicPos.z);
-        }
-        else if (mMoveType == MoveType.Y)
-        {
-            addDistance.y =  mMoveDistance.y * mTimeScale;
-            mActionObj.LogicPos = new FixIntVector3(mActionObj.LogicPos.x, mStartPos.y + addDistance.y, mActionObj.LogicPos.z);
-        }
-        else if (mMoveType == MoveType.Z)
-        {
-            addDistance.z = mMoveDistance.z * mTimeScale;
-            mActionObj.LogicPos = new FixIntVector3(mActionObj.LogicPos.x,mActionObj.LogicPos.y, mStartPos.z + addDistance.z);
-        }
+        // else if (mMoveType== MoveType.X)
+        // {
+        //     addDistance.X = mMoveDistance.x * mTimeScale;
+        //     mActionObj.LogicPos = new FixedIntVector3(mStartPos.x + addDistance.x,mActionObj.LogicPos.y,mActionObj.LogicPos.z);
+        // }
+        // else if (mMoveType == MoveType.Y)
+        // {
+        //     addDistance.y =  mMoveDistance.y * mTimeScale;
+        //     mActionObj.LogicPos = new FixedIntVector3(mActionObj.LogicPos.x, mStartPos.y + addDistance.y, mActionObj.LogicPos.z);
+        // }
+        // else if (mMoveType == MoveType.Z)
+        // {
+        //     addDistance.z = mMoveDistance.z * mTimeScale;
+        //     mActionObj.LogicPos = new FixedIntVector3(mActionObj.LogicPos.x,mActionObj.LogicPos.y, mStartPos.z + addDistance.z);
+        // }
        
     }
      

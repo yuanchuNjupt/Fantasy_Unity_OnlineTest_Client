@@ -1,4 +1,5 @@
-﻿using FixMath;
+﻿using FixedPhysics.Fixed_pointNumber.Core;
+using FixMath;
 using Framework.GameManagerFramework.LogicManagers;
 using UnityEngine;
 
@@ -89,9 +90,9 @@ namespace Battle
                 }
                 
                 if(LogicFrameConfig.IsUseLocalLogicFrame)
-                    _logicLayer.InputLogicFrameEvent(new FixIntVector3( _inputDir.x, 0 , _inputDir.y ));
+                    _logicLayer.InputLogicFrameEvent(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
                 else
-                    _battleLogicManager.MoveFrameDataInput(new FixIntVector3( _inputDir.x, 0 , _inputDir.y ));
+                    _battleLogicManager.MoveFrameDataInput(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
                 
                 
                 
@@ -127,7 +128,7 @@ namespace Battle
             }
         }
 
-        public override void UpdateNetInputDir(FixIntVector3 netInputDir)
+        public override void UpdateNetInputDir(FixedIntVector3 netInputDir)
         {
             if (_playerType != PlayerType.Self)
             {

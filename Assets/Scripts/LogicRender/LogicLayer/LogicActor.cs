@@ -1,6 +1,7 @@
 using FixMath;
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 
 public partial class LogicActor : LogicObject
@@ -20,7 +21,7 @@ public partial class LogicActor : LogicObject
         //更新重力帧
         OnLogicFrameUpdateGravity();
         //更新子弹帧
-        OnLogicFramUpdateBullet();
+        // OnLogicFramUpdateBullet();
     }
 
     public void PlayAnim(AnimationClip clip)
@@ -32,17 +33,17 @@ public partial class LogicActor : LogicObject
         Debug.Log("释放技能："+name);
         RenderObj.PlayAnim(name);
     }
-    public virtual void OnHit(string effectHitObjPath,int survivalTimeMs, LogicObject source,FixInt logicXAxis)
+    public virtual void OnHit(string effectHitObjPath,int survivalTimeMs, LogicObject source,FixedInt logicXAxis)
     {
         RenderObj.OnHit(effectHitObjPath, survivalTimeMs, source);
     }
-    public virtual void SkillDamage(FixInt hp,SkillDamageConfig damageConfig)
+    public virtual void SkillDamage(FixedInt hp,SkillDamageConfig damageConfig)
     {
         Debug.Log("SkillDamage hp:"+hp);
         CaculDamage(hp, DamageSource.SKill);
     }
 
-    public virtual void BuffDamage(FixInt hp, SkillDamageConfig damageConfig)
+    public virtual void BuffDamage(FixedInt hp, SkillDamageConfig damageConfig)
     {
         Debug.Log("BuffDamage hp:" + hp);
         CaculDamage(hp, DamageSource.SKill);
@@ -50,7 +51,7 @@ public partial class LogicActor : LogicObject
     /// <summary>
     /// 某个技能或buff会减少或阻挡子弹伤害
     /// </summary>
-    public virtual void BulletDamage(FixInt hp,SkillDamageConfig damageConfig)
+    public virtual void BulletDamage(FixedInt hp,SkillDamageConfig damageConfig)
     {
         Debug.Log("BulletDamage hp:" + hp);
         CaculDamage(hp, DamageSource.Bullet);
@@ -62,7 +63,7 @@ public partial class LogicActor : LogicObject
     /// </summary>
     /// <param name="hp"></param>
     /// <param name="source"></param>
-    public void CaculDamage(FixInt hp,DamageSource source)
+    public void CaculDamage(FixedInt hp,DamageSource source)
     {
         if (ObjectState== LogicObjectState.Survival)
         {
@@ -77,7 +78,7 @@ public partial class LogicActor : LogicObject
 
             }
             //3.进行伤害飘字渲染
-            RenderObj.Damage(hp.RawInt, source);
+            RenderObj.Damage(hp.RenderInt, source);
         }
     }
     /// <summary>
@@ -85,7 +86,7 @@ public partial class LogicActor : LogicObject
     /// </summary>
     public virtual void OnDeath()
     {
-        Collider.Active = false;
+        Collider.SetActive(false);
         ObjectState = LogicObjectState.Death;
         RenderObj.OnDeath();
         OnDeathCallBack?.Invoke();

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 using FixMath;
 public partial class LogicActor
@@ -27,7 +28,7 @@ public partial class LogicActor
     /// <summary>
     /// 当前对象持有的所有buff
     /// </summary>
-    private List<Buff> mBuffList = new List<Buff>();
+    // private List<Buff> mBuffList = new List<Buff>();
     /// <summary>
     /// 战斗逻辑层
     /// </summary>
@@ -68,7 +69,7 @@ public partial class LogicActor
     /// 释放对应的技能
     /// </summary>
     /// <param name="skillid"></param>
-    public void ReleaseSKill(int skillid,FixIntVector3 guidePos=default(FixIntVector3), Action<bool> releaseSkillCallBack = null)
+    public void ReleaseSKill(int skillid,FixedIntVector3 guidePos=default(FixedIntVector3), Action<bool> releaseSkillCallBack = null)
     {
         
         Skill skill = mSkillSystem.ReleaseSkill(skillid, guidePos,   OnSkillReleaseAfter, (skill)=> {
@@ -173,33 +174,5 @@ public partial class LogicActor
         }
         mSkillSystem?.OnLogicFrameUpdate();
     }
-    /// <summary>
-    /// 添加一个buff
-    /// </summary>
-    /// <param name="buff"></param>
-    public void AddBuff(Buff buff)
-    {
-        mBuffList.Add(buff);
-    }
-    /// <summary>
-    /// 移除一个buff
-    /// </summary>
-    /// <param name="buff"></param>
-    public void RemoveBuff(Buff buff)
-    {
-        if (mBuffList.Contains(buff))
-        {
-            mBuffList.Remove(buff);
-        }
-        if (ObjectState == LogicObjectState.Death)
-        {
-            return;
-        }
-
-        // if (mBuffList.Count == 0 && RenderObj.GetCurAnimName() != AnimationName.Anim_Getup)
-        // {
-        //     PlayAnim(AnimationName.Anim_Idle);
-        //     ActionSate = LogicObjectActionState.Idle;
-        // }
-    }
+   
 }

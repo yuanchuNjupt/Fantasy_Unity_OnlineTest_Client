@@ -2,6 +2,7 @@ using FixMath;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 
 public partial class Skill 
@@ -51,7 +52,7 @@ public partial class Skill
                         sKillGuidePos = logicMoveObj.LogicPos;
                         foreach (var buffid in item.actionFinishidList)
                         {
-                            BuffSystem.MainInstance.AttachBuff(buffid, mSkillCreater, mSkillCreater, this);
+                            // BuffSystem.MainInstance.AttachBuff(buffid, mSkillCreater, mSkillCreater, this);
                         }
                         // 1.能在指定地点生成 2.具有碰撞检测 3.能对多人造成伤害。
                         // 群体属性修改Buff
@@ -60,9 +61,9 @@ public partial class Skill
             }
         }
 
-        FixIntVector3 movePos = new FixIntVector3(item.movePos);
-        FixIntVector3 targetPos;
-        FixIntVector3 startPos = logicMoveObj.LogicPos;
+        FixedIntVector3 movePos = new FixedIntVector3(item.movePos.x,item.movePos.y,item.movePos.z);
+        FixedIntVector3 targetPos;
+        FixedIntVector3 startPos = logicMoveObj.LogicPos;
         targetPos = logicMoveObj.LogicPos + movePos* logicMoveObj.LogicXAxis; //-1 1
                                                                               //计算移动类型
         // MoveType moveType = MoveType.target;

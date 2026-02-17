@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Config;
+using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 
 public enum SkillState
@@ -59,7 +60,7 @@ public partial class Skill
     /// <summary>
     /// ��������λ��
     /// </summary>
-    public FixIntVector3 sKillGuidePos;
+    public FixedIntVector3 sKillGuidePos;
     /// <summary>
     /// ��ϼ���id
     /// </summary>
@@ -85,7 +86,7 @@ public partial class Skill
         // mSkillData = ZMAsset.LoadScriptableObject<SkillDataConfig>(AssetPathConfig.SKILL_DATA_PATH + skillid + ".asset");
     }
 
-    public void ReleaseSKill(Action<Skill> releaseAfterCallBack, FixIntVector3 guidePos, Action<Skill, bool> releaseSkillEnd)
+    public void ReleaseSKill(Action<Skill> releaseAfterCallBack, FixedIntVector3 guidePos, Action<Skill, bool> releaseSkillEnd)
     {
         OnReleaseAfter = releaseAfterCallBack;
         OnReleaseSkillEnd = releaseSkillEnd;
@@ -108,7 +109,7 @@ public partial class Skill
         mCombinationSkillid = mSkillData.skillCfg.ComobinationSkillid;
          if (mSkillData.character.customLogicFame != 0)
             mSkillData.character.logicFrame = mSkillData.character.customLogicFame;
-        OnBulletInit();
+        // OnBulletInit();
         OnInitDamage();
     }
 
@@ -123,7 +124,7 @@ public partial class Skill
         skillState = SkillState.End;
         OnReleaseSkillEnd?.Invoke(this, mSkillData.skillCfg.ComobinationSkillid != 0);
         ReleaseAllEffect();
-        OnBulletRelease();
+        // OnBulletRelease();
         OnDamageRelease();
         if (mCombinationSkillid != 0)
         {
@@ -149,8 +150,8 @@ public partial class Skill
         OnLogicFrameUpdateDamage();
         OnLogicFrameUpdateAction();
         OnLogicFrameUpdateAudio();
-        OnLogicFrameUpdateBullet();
-        OnLogicFrameUpdateBuff();
+        // OnLogicFrameUpdateBullet();
+        // OnLogicFrameUpdateBuff();
         
         if (mSkillData.skillCfg.skillType == SKillType.StockPile)
         {

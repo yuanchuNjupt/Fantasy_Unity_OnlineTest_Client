@@ -1,6 +1,7 @@
 using FixMath;
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 
 /// <summary>
@@ -92,7 +93,7 @@ public class RenderObject : MonoBehaviour
                         return;
                     }
                     //计算预测的增量位置
-                    Vector3 deltaPos = logicObject.LogicDir.ToVector3() * logicObject.LogicMoveSpeed.RawFloat * Time.deltaTime;
+                    Vector3 deltaPos = logicObject.LogicDir.ToVector3() * logicObject.LogicMoveSpeed.RenderFloat * Time.deltaTime;
                     mPreTargetPos += deltaPos;
                     mCurPreMoveCount++;
                     // Debuger.Log("PreMove mPreTargetPos:" + mPreTargetPos);
@@ -144,7 +145,7 @@ public class RenderObject : MonoBehaviour
     {
         return "";
     }
-    public virtual void UpdateNetInputDir(FixIntVector3 netInputDir)
+    public virtual void UpdateNetInputDir(FixedIntVector3 netInputDir)
     {
 
     }

@@ -19,7 +19,7 @@ public class SkillEffectPathEditor
             {
                 if (filePath.EndsWith(".asset"))
                 {
-                    if (i == 0)//ººƒ‹≈‰÷√
+                    if (i == 0)//ÊäÄËÉΩÈÖçÁΩÆ
                     {
                         SkillDataConfig skillData = AssetDatabase.LoadAssetAtPath<SkillDataConfig>(filePath);
                         skillData.skillCfg.GetObjectPath(skillData.skillCfg.skillHitEffect);
@@ -36,12 +36,12 @@ public class SkillEffectPathEditor
                     }
                     else
                     {
-                        //¥¶¿Ìbuff≈‰÷√
-                        BuffConfig buffData = AssetDatabase.LoadAssetAtPath<BuffConfig>(filePath);
-                        buffData.GetObjectPath(buffData.buffHitEffectObj);
-                        if (buffData.effectConfig!=null)
-                            buffData.effectConfig.GetObjectPath(buffData.effectConfig.effect);
-                        buffData.SaveAsset();
+                        //Â§ÑÁêÜbuffÈÖçÁΩÆ
+                        // BuffConfig buffData = AssetDatabase.LoadAssetAtPath<BuffConfig>(filePath);
+                        // buffData.GetObjectPath(buffData.buffHitEffectObj);
+                        // if (buffData.effectConfig!=null)
+                        //     buffData.effectConfig.GetObjectPath(buffData.effectConfig.effect);
+                        // buffData.SaveAsset();
                     }
                 }
             }

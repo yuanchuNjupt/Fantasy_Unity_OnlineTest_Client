@@ -1,63 +1,65 @@
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.Fixed_pointNumber.Core;
+using FixedPhysics.Fixed_pointNumber.FixedIntMath;
 using UnityEngine;
 using FixMath;
 /// <summary>
-/// ´¦ÀíÂß¼­¶ÔÏóÖØÁ¦
+/// å¤„ç†é€»è¾‘å¯¹è±¡é‡åŠ›
 /// </summary>
 public partial class LogicActor
 {
-    //ÊúÖ±ÉÏÅ×¹«Ê½ v=Vo-gt (VËÙ¶È vo£º³õÊ¼ËÙ¶È g£º±ê×¼ÖØÁ¦ t£ºÊ±¼ä)
-    protected FixInt gravity = 9.8; //±ê×¼ÖØÁ¦
+    //ç«–ç›´ä¸ŠæŠ›å…¬å¼ v=Vo-gt (Vé€Ÿåº¦ voï¼šåˆå§‹é€Ÿåº¦ gï¼šæ ‡å‡†é‡åŠ› tï¼šæ—¶é—´)
+    protected FixedInt gravity = 9.8; //æ ‡å‡†é‡åŠ›
 
-    public FixIntVector3 velocity;//³õÊ¼ËÙ¶È
-    //³õÊ¼ËÙ¶È
-    private FixInt mVo;
+    public FixedIntVector3 velocity;//åˆå§‹é€Ÿåº¦
+    //åˆå§‹é€Ÿåº¦
+    private FixedInt mVo;
     /// <summary>
-    /// ÉÏÉıÊ±¼ä
+    /// ä¸Šå‡æ—¶é—´
     /// </summary>
-    protected FixInt mRisingTime;
+    protected FixedInt mRisingTime;
 
-    public bool isAddForce;//ÊÇ·ñÌí¼ÓÒ»¸öÁ¦
+    public bool isAddForce;//æ˜¯å¦æ·»åŠ ä¸€ä¸ªåŠ›
     /// <summary>
-    /// ÊÇ·ñºöÂÔÖØÁ¦
+    /// æ˜¯å¦å¿½ç•¥é‡åŠ›
     /// </summary>
     private bool isIgnoreGravity;
     public bool IgnoreGravity { get { return isIgnoreGravity; } set { Debug.Log("isIgnoreGravity:"+value); isIgnoreGravity = value; } }
 
     /// <summary>
-    /// ´¦ÀíÂß¼­¶ÔÏóÖØÁ¦
+    /// å¤„ç†é€»è¾‘å¯¹è±¡é‡åŠ›
     /// </summary>
     public void OnLogicFrameUpdateGravity()
     {
         if (isAddForce)
         {
-            //1.ÈçºÎÈÃÒ»ÏÂµÄÂß¼­£¬Ò²¾ÍÊÇÉÏÉıºÍÏÂÂäµÄÒ»¸öÂß¼­£¬±£³ÖÔÚÎÒÃÇÅäÖÃµÄÒ»¸öÊ±¼äÄÚ¡£
-            //1.ÉÏ¸¡Ê±¼ä 2.ÏÂ¸¡Ê±¼ä 
+            //1.å¦‚ä½•è®©ä¸€ä¸‹çš„é€»è¾‘ï¼Œä¹Ÿå°±æ˜¯ä¸Šå‡å’Œä¸‹è½çš„ä¸€ä¸ªé€»è¾‘ï¼Œä¿æŒåœ¨æˆ‘ä»¬é…ç½®çš„ä¸€ä¸ªæ—¶é—´å†…ã€‚
+            //1.ä¸Šæµ®æ—¶é—´ 2.ä¸‹æµ®æ—¶é—´ 
 
-            //velocity.y ±íÊ¾yÖáµÄÒ»¸öÔË¶¯ËÙ¶È// 6   0.64  1´Î=1Ö¡£¬1Ö¡=0.066Ãë c*0.066=t t´ú±í¹ÖÎïÉÏ¸¡ËùĞèÒªµÄÊ±¼ä t
-            // 6/0.64=c c*L=t  (vo/gt)*L=t t=ÉÏÉı»òÏÂ½µËùÏûºÄµÄÊ±¼ä t*2=ÉÏÉı+ÏÂ½µËùĞèÒªµÄÊ±¼ä 
-            //ÒÔÖªÉÏÉıºÍÏÂÂäµÄÊ±¼ä£¬Çó£ºÈçºÎÈÃÂß¼­ÔÚ¹æ¶¨µÄÊ±¼äÄÚÅÜÍê x n 2 0.2f 2*2/0.2
+            //velocity.y è¡¨ç¤ºyè½´çš„ä¸€ä¸ªè¿åŠ¨é€Ÿåº¦// 6   0.64  1æ¬¡=1å¸§ï¼Œ1å¸§=0.066ç§’ c*0.066=t tä»£è¡¨æ€ªç‰©ä¸Šæµ®æ‰€éœ€è¦çš„æ—¶é—´ t
+            // 6/0.64=c c*L=t  (vo/gt)*L=t t=ä¸Šå‡æˆ–ä¸‹é™æ‰€æ¶ˆè€—çš„æ—¶é—´ t*2=ä¸Šå‡+ä¸‹é™æ‰€éœ€è¦çš„æ—¶é—´ 
+            //ä»¥çŸ¥ä¸Šå‡å’Œä¸‹è½çš„æ—¶é—´ï¼Œæ±‚ï¼šå¦‚ä½•è®©é€»è¾‘åœ¨è§„å®šçš„æ—¶é—´å†…è·‘å®Œ x n 2 0.2f 2*2/0.2
             //(vo/gt)*L=t (t*2)/risingtime=tRate 
             float logicFrameInterval= LogicFrameConfig.LogicFrameInterval;
-            FixInt gt = gravity * logicFrameInterval;
-            //¼ÆËãÉÏÉı»òÏÂ½µËùĞèÒªµÄÊ±¼ä
-            FixInt risingForceTime=(mVo / gt) * logicFrameInterval;
-            //»ñÈ¡Ê±¼äËõ·Å±¶ÂÊ
-            FixInt timeScale= (risingForceTime * 2) / mRisingTime;  
+            FixedInt gt = gravity * logicFrameInterval;
+            //è®¡ç®—ä¸Šå‡æˆ–ä¸‹é™æ‰€éœ€è¦çš„æ—¶é—´
+            FixedInt risingForceTime=(mVo / gt) * logicFrameInterval;
+            //è·å–æ—¶é—´ç¼©æ”¾å€ç‡
+            FixedInt timeScale= (risingForceTime * 2) / mRisingTime;  
 
-            velocity.y -= (gravity * logicFrameInterval) * timeScale;
+            velocity.Set(velocity.X , velocity.Y - (gravity * logicFrameInterval) * timeScale , velocity.Z);
 
-            //¼ÆËãÒªÒÆ¶¯µÄĞÂµÄÎ»ÖÃ
-            FixIntVector3 newPos = new FixIntVector3(LogicPos.x, FixMath.FixIntMath.Clamp(LogicPos.y + velocity.y * logicFrameInterval, 0, FixInt.MaxValue), LogicPos.z);
-            //Èç¹ûÒÑ¾­ºöÂÔÁËÖØÁ¦£¬¾Í²¿½øĞĞÖØÁ¦Î»ÖÃ¸üĞÂ
+            //è®¡ç®—è¦ç§»åŠ¨çš„æ–°çš„ä½ç½®
+            FixedIntVector3 newPos = new FixedIntVector3(LogicPos.X, FixedIntMathf.Clamp(LogicPos.Y + velocity.Y * logicFrameInterval, 0, FixedInt.MaxValue), LogicPos.Z);
+            //å¦‚æœå·²ç»å¿½ç•¥äº†é‡åŠ›ï¼Œå°±éƒ¨è¿›è¡Œé‡åŠ›ä½ç½®æ›´æ–°
             if (!IgnoreGravity)
             {
                 LogicPos = newPos;
             }
       
-            //±íÊ¾¶ÔÏóÂäµØÁË
-            if (newPos.y <= 0)
+            //è¡¨ç¤ºå¯¹è±¡è½åœ°äº†
+            if (newPos.Y <= 0)
             {
                 Debug.Log("EndTiem:" + Time.realtimeSinceStartup);
                 isAddForce = false;
@@ -65,8 +67,8 @@ public partial class LogicActor
              }
             else
             {
-                //ÅĞ¶Ï¶ÔÏóÊÇ·ñ´¦ÓÚÉÏÉı½×¶Î
-                if (velocity.y>=0)
+                //åˆ¤æ–­å¯¹è±¡æ˜¯å¦å¤„äºä¸Šå‡é˜¶æ®µ
+                if (velocity.Y>=0)
                 {
                     Floating(true);
                 }
@@ -79,14 +81,14 @@ public partial class LogicActor
         }
     }
      /// <summary>
-    /// Ìí¼ÓÉÏÉıÁ¦
+    /// æ·»åŠ ä¸Šå‡åŠ›
     /// </summary>
-    /// <param name="risingForceValue">ÉÏÉıÁ¦ÊıÖµ</param>
-    /// <param name="risingTime">ÉÏÉıÊ±¼ä</param>
-    public void AddRisingForce(FixInt risingForceValue,FixInt risingTime)
+    /// <param name="risingForceValue">ä¸Šå‡åŠ›æ•°å€¼</param>
+    /// <param name="risingTime">ä¸Šå‡æ—¶é—´</param>
+    public void AddRisingForce(FixedInt risingForceValue,FixedInt risingTime)
     {
         Debug.Log("StartTiem:"+Time.realtimeSinceStartup);
-        mVo=velocity.y = risingForceValue;
+        // mVo=velocity.Y = risingForceValue;
         mRisingTime = risingTime*1.0f/1000;
         isAddForce = true;
      }

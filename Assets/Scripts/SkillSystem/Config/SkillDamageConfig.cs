@@ -1,8 +1,8 @@
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.FixedCollider.Colliders._3D;
 using UnityEngine;
-using FixIntPhysics;
 
 [System.Serializable]
 public class SkillDamageConfig  
@@ -42,8 +42,8 @@ public class SkillDamageConfig
 #if UNITY_EDITOR
     private bool mShowBox3D;//是否显示3Dbox碰撞体
     private bool mShowShpere3D;//是否显示3D圆球碰撞体
-    private FixIntBoxCollider boxCollider;
-    private FixIntSphereCollider sphereCollider;
+    private FixedIntBoxCollider boxCollider;
+    private FixedIntSphereCollider sphereCollider;
     private int mCurLogicFrame=0;//当前执行到的逻辑帧
     /// <summary>
     /// 碰撞检测类型发生变化
@@ -61,34 +61,34 @@ public class SkillDamageConfig
     /// <param name="raduis"></param>
     public void OnRaduisValueChange(float raduis)
     {
-        if (sphereCollider!=null)
-            sphereCollider.SetBoxData(raduis, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
-        else
-            Debug.LogError("sphereCollider is Null！");
+        // if (sphereCollider!=null)
+        //     sphereCollider.SetBoxData(raduis, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
+        // else
+        //     Debug.LogError("sphereCollider is Null！");
     }
     /// <summary>
     /// 碰撞体中心点发生变化
     /// </summary>
     public void OnColliderOffsetChange(Vector3 conter)
     {
-        if (detectionMode == DamageDetectionMode.BOX3D&& boxCollider!=null)
-        {
-            boxCollider.SetBoxData(GetColliderOffsetPos(), boxSize, colliderPosType == ColliderPosType.FollowPos);
-        }
-        else if (detectionMode == DamageDetectionMode.Sphere3D&& sphereCollider!=null)
-        {
-            sphereCollider.SetBoxData(raduis, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
-        }
+        // if (detectionMode == DamageDetectionMode.BOX3D&& boxCollider!=null)
+        // {
+        //     boxCollider.SetBoxData(GetColliderOffsetPos(), boxSize, colliderPosType == ColliderPosType.FollowPos);
+        // }
+        // else if (detectionMode == DamageDetectionMode.Sphere3D&& sphereCollider!=null)
+        // {
+        //     sphereCollider.SetBoxData(raduis, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
+        // }
     }
     /// <summary>
     /// Box碰撞体宽高发生变化
     /// </summary>
     public void OnBoxValueChange(Vector3 size)
     {
-        if (boxCollider!=null)
-            boxCollider.SetBoxData(GetColliderOffsetPos(), size,colliderPosType == ColliderPosType.FollowPos);
-        else
-            Debug.LogError("boxCollider is Null！");
+        // if (boxCollider!=null)
+        //     boxCollider.SetBoxData(GetColliderOffsetPos(), size,colliderPosType == ColliderPosType.FollowPos);
+        // else
+        //     Debug.LogError("boxCollider is Null！");
     }
     /// <summary>
     /// 获取碰撞体的偏移值
@@ -112,28 +112,28 @@ public class SkillDamageConfig
     /// </summary>
     public void CreateCollider()
     {
-        DestroyCollider();
-        if (detectionMode== DamageDetectionMode.BOX3D)
-        {
-            boxCollider = new FixIntBoxCollider(boxSize, GetColliderOffsetPos());
-            boxCollider.SetBoxData(GetColliderOffsetPos(), boxSize,colliderPosType== ColliderPosType.FollowPos);
-        }
-        else if (detectionMode== DamageDetectionMode.Sphere3D)
-        {
-            sphereCollider = new FixIntSphereCollider(raduis, GetColliderOffsetPos());
-            sphereCollider.SetBoxData(raduis, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
-        }
+        // DestroyCollider();
+        // if (detectionMode== DamageDetectionMode.BOX3D)
+        // {
+        //     boxCollider = new FixIntBoxCollider(boxSize, GetColliderOffsetPos());
+        //     boxCollider.SetBoxData(GetColliderOffsetPos(), boxSize,colliderPosType== ColliderPosType.FollowPos);
+        // }
+        // else if (detectionMode== DamageDetectionMode.Sphere3D)
+        // {
+        //     sphereCollider = new FixIntSphereCollider(raduis, GetColliderOffsetPos());
+        //     sphereCollider.SetBoxData(raduis, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
+        // }
     }
     public void DestroyCollider()
     {
-        if (boxCollider != null)
-        {
-            boxCollider.OnRelease();
-        }
-        if (sphereCollider != null)
-        {
-            sphereCollider.OnRelease();
-        }
+        // if (boxCollider != null)
+        // {
+        //     boxCollider.OnRelease();
+        // }
+        // if (sphereCollider != null)
+        // {
+        //     sphereCollider.OnRelease();
+        // }
     }
     /// <summary>
     /// 当前窗口初始化

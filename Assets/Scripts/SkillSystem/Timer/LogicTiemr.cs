@@ -2,20 +2,21 @@ using FixMath;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 
 public class LogicTiemr : TimerBehaviour
 {
 
-    private FixInt mDelayTime;
+    private FixedInt mDelayTime;
     private int mLoopCount;
 
-    private FixInt mCurLogicFrameAccTime;
+    private FixedInt mCurLogicFrameAccTime;
     /// <summary>
     /// 总运行时间
     /// </summary>
-    private FixInt mTotalTime;
-    public LogicTiemr(FixInt delayTime,Action timerCallBack,int loopCount=1) //1,2
+    private FixedInt mTotalTime;
+    public LogicTiemr(FixedInt delayTime,Action timerCallBack,int loopCount=1) //1,2
     {
         this.mDelayTime = delayTime;
         this.mLoopCount = loopCount;

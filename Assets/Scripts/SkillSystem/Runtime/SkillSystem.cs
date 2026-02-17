@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 
 /// <summary>
@@ -51,7 +52,7 @@ public class SkillSystem
         }
         Debug.Log("技能初始化完成，技能个数:" + skillidArr.Length);
     }
-    public Skill ReleaseSkill(int skillid, FixIntVector3 guidePos,  Action<Skill> releaseAfterCallBack, Action<Skill> releaseSkillEnd )
+    public Skill ReleaseSkill(int skillid, FixedIntVector3 guidePos,  Action<Skill> releaseAfterCallBack, Action<Skill> releaseSkillEnd )
     {
         if (mCurReleasingSkill!=null&&(mCurReleasingSkill.skillState!= SkillState.End&&mCurReleasingSkill.skillState!= SkillState.After))
         {
