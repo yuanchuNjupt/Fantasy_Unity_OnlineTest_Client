@@ -29,7 +29,7 @@ public class MoveBezierAction : ActionBehaviour
         mHeightPos = heightPos;
         mEndPos = endPos;
         mMoveTime = time == 0 ? 0.1f : time;
-        mActionFinishCalllBack = moveFinsihCallBack;
+        mActionFinishCallBack = moveFinsihCallBack;
         mUpdateActionCallBack = updateCallBack;
     }
     /// <summary>
@@ -37,9 +37,9 @@ public class MoveBezierAction : ActionBehaviour
     /// </summary>
     public override void OnActionFinish()
     {
-        if (actionFinsih)
+        if (actionFinish)
         {
-            mActionFinishCalllBack?.Invoke();
+            mActionFinishCallBack?.Invoke();
         }
     }
     /// <summary>
@@ -55,7 +55,7 @@ public class MoveBezierAction : ActionBehaviour
         if (mTimeScale >= 1)
         {
             mTimeScale = 1;
-            actionFinsih = true;
+            actionFinish = true;
         }
         mUpdateActionCallBack?.Invoke();
         //计算对象需要移动的位置

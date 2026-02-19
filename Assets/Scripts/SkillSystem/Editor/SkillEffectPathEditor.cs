@@ -27,21 +27,7 @@ public class SkillEffectPathEditor
                         {
                             effectCfg.GetObjectPath(effectCfg.skillEffect);
                         }
-                        foreach (SkillBulletConfig bulletCfg in skillData.bulletCfgList)
-                        {
-                            bulletCfg.GetBulletObjectPath(bulletCfg.bulletPrefab);
-                            bulletCfg.GetHitEffectObjectPath(bulletCfg.hitEffect);
-                        }
                         skillData.SaveAsset();
-                    }
-                    else
-                    {
-                        //处理buff配置
-                        // BuffConfig buffData = AssetDatabase.LoadAssetAtPath<BuffConfig>(filePath);
-                        // buffData.GetObjectPath(buffData.buffHitEffectObj);
-                        // if (buffData.effectConfig!=null)
-                        //     buffData.effectConfig.GetObjectPath(buffData.effectConfig.effect);
-                        // buffData.SaveAsset();
                     }
                 }
             }

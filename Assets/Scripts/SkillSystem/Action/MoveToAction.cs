@@ -41,7 +41,7 @@ public class MoveToAction : ActionBehaviour
         mStartPos = startPos;
         mMoveTime = time==0? 0.1f:time;
         mMoveType = moveType;
-        mActionFinishCalllBack = moveFinsihCallBack;
+        mActionFinishCallBack = moveFinsihCallBack;
         mUpdateActionCallBack = updateCallBack;
         //目标位置-起始位置=移动移动向量
         mMoveDistance = targerPos - startPos;
@@ -51,9 +51,9 @@ public class MoveToAction : ActionBehaviour
     /// </summary>
     public override void OnActionFinish()
     {
-        if (actionFinsih)
+        if (actionFinish)
         {
-            mActionFinishCalllBack?.Invoke();
+            mActionFinishCallBack?.Invoke();
         }
     }
     /// <summary>
@@ -69,7 +69,7 @@ public class MoveToAction : ActionBehaviour
         if (mTimeScale>=1)
         {
             mTimeScale = 1;
-            actionFinsih = true;
+            actionFinish = true;
         }
         mUpdateActionCallBack?.Invoke();
         //计算对象需要移动的位置

@@ -15,7 +15,7 @@ public class LogicActionController:Singleton<LogicActionController>
     /// <param name="action"></param>
     public void RunAciton(ActionBehaviour action)
     {
-        action.actionFinsih = false;
+        action.actionFinish = false;
         mActionList.Add(action);
     }
     /// <summary>
@@ -27,7 +27,7 @@ public class LogicActionController:Singleton<LogicActionController>
         for (int i = mActionList.Count-1; i >=0 ; i--)
         {
            ActionBehaviour action=  mActionList[i];
-            if (action.actionFinsih)
+            if (action.actionFinish)
             {
                 action.OnActionFinish();
                 RemoveAction(action);

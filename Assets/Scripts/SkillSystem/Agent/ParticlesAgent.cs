@@ -25,7 +25,7 @@ public class ParticlesAgent //: MonoBehaviour
         {
             mLastRunTime = EditorApplication.timeSinceStartup;
         }
-        //»ñÈ¡µ±Ç°ÔËĞĞµÄÊ±¼ä
+        //è·å–å½“å‰è¿è¡Œçš„æ—¶é—´
         double curRunTime = EditorApplication.timeSinceStartup - mLastRunTime;
 
         if (mParticleArr!=null)
@@ -34,11 +34,11 @@ public class ParticlesAgent //: MonoBehaviour
             {
                 if (item!=null)
                 {
-                    //Í£Ö¹ËùÓĞÁ£×Ó¶¯Ğ§µÄ²¥·Å
+                    //åœæ­¢æ‰€æœ‰ç²’å­åŠ¨æ•ˆçš„æ’­æ”¾
                     item.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-                    //¹Ø±ÕÓÉËæ»úÖÖ×Ó²¥·ÅµÄÁ£×ÓÌØĞ§
+                    //å…³é—­ç”±éšæœºç§å­æ’­æ”¾çš„ç²’å­ç‰¹æ•ˆ
                     item.useAutoRandomSeed = false;
-                    //Ä£ÄâÁ£×Ó¶¯Ğ§µÄ²¥·Å
+                    //æ¨¡æ‹Ÿç²’å­åŠ¨æ•ˆçš„æ’­æ”¾
                     item.Simulate((float)curRunTime);
                 }
             }

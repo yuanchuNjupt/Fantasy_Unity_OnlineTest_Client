@@ -10,10 +10,12 @@
     <file url="file://$PROJECT_DIR$/Assets/Scripts/LogicRender/LogicLayer/LogicActorSkill.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/LogicRender/LogicLayer/LogicObject.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/LogicRender/RenderLayer/RenderObject.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Action/ActionBehaviour.cs" charset="GBK" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Action/LogicActionController.cs" charset="GBK" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Action/MoveBezierAction.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Action/MoveToAction.cs" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Agent/ParticlesAgent.cs" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Agent/AnimationAgnet.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/Agent/ParticlesAgent.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/BuffSystem/Buff/AttributeModify_Buff_Group.cs" charset="GBK" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/BuffSystem/Buff/Buff.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/Scripts/SkillSystem/BuffSystem/Buff/BuffRender.cs" charset="UTF-8" />
