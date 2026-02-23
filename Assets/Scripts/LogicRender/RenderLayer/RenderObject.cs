@@ -145,10 +145,6 @@ public class RenderObject : MonoBehaviour
     {
         return "";
     }
-    public virtual void UpdateNetInputDir(FixedIntVector3 netInputDir)
-    {
-
-    }
     /// <summary>
     /// 伤害
     /// </summary>

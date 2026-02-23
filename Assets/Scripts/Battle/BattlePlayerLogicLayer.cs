@@ -10,28 +10,41 @@ namespace Battle
         
         public BattlePlayerInstance instance;
         
-        public BattlePlayerLogicLayer()
+        public BattlePlayerLogicLayer(BattlePlayerInstance instance)
         {
+            this.instance = instance;
             ObjectType = LogicObjectType.Hero;
         }
 
-        public void InputFrameOperate(FrameOperationData data)
-        {
-            if ((OperateTypeEnum)data.operateType == OperateTypeEnum.InputMove)
-            {
-                var CSinputDir = data.inputDir;
-                FixedIntVector3 inputDir = new FixedIntVector3(new FixedInt((long)CSinputDir.x) ,new FixedInt((long)CSinputDir.y) ,new FixedInt((long)CSinputDir.z));
-                InputLogicFrameEvent(inputDir);
-                
-                //更新其他玩家渲染层输入
-                RenderObj.UpdateNetInputDir(inputDir);
+        // public void InputFrameOperate(FrameOperationData data)
+        // {
+        //     if ((OperateTypeEnum)data.operateType == OperateTypeEnum.InputMove)
+        //     {
+        //         var CSinputDir = data.inputDir;
+        //         FixedIntVector3 inputDir = new FixedIntVector3(new FixedInt((long)CSinputDir.x) ,new FixedInt((long)CSinputDir.y) ,new FixedInt((long)CSinputDir.z));
+        //         UpdateMoveDir(inputDir);
+        //         
+        //     }
+        //     else if((OperateTypeEnum)data.operateType == OperateTypeEnum.ReleaseSkill)
+        //     {
+        //         //TODO 释放技能逻辑
+        //     }
+        // }
 
-            }
-            else if((OperateTypeEnum)data.operateType == OperateTypeEnum.ReleaseSkill)
-            {
-                //TODO 释放技能逻辑
-            }
+        public void ApplyMoveOperation(CSFixIntVector3 csInputDir)
+        {
+            FixedIntVector3 inputDir = new FixedIntVector3(new FixedInt((long)csInputDir.x) ,new FixedInt((long)csInputDir.y) ,new FixedInt((long)csInputDir.z));
+            UpdateMoveDir(inputDir);
         }
+        
+        public void ApplyReleaseSkillOperation()
+        {
+            //TODO:释放技能逻辑
+            
+            
+        }
+        
+        
         
         
     }

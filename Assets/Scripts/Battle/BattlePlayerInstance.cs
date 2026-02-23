@@ -1,4 +1,5 @@
 ﻿using Config;
+using Fantasy;
 using Framework.GameManager.Core;
 using Framework.GameManagerFramework.DataManagers;
 using UnityEngine;
@@ -16,6 +17,8 @@ namespace Battle
         //唯一ID
         private readonly long _uid;
         
+        public readonly PlayerType playerType;
+        
         public BattlePlayerLogicLayer logicLayer;
         
         public BattlePlayerRenderLayer renderLayer;
@@ -25,22 +28,32 @@ namespace Battle
         private readonly UserDataManager _userDataManager;
         
         private readonly BattleDataManager _battleDataManager;
+        
+        private readonly TP_CameraLogicManager _cameraLogicManager;
 
         public BattlePlayerInstance(long uid)
         {
             _uid = uid;
             _userDataManager = World.GetExitsDataManager<UserDataManager>();
             _battleDataManager = World.GetExitsDataManager<BattleDataManager>();
+            _cameraLogicManager = World.GetExitsLogicManager<TP_CameraLogicManager>();
             
+            playerType = _userDataManager.UserData.AccountId == _uid ? PlayerType.Self : PlayerType.Other;
             
             CreateLogicLayer();
             CreateRenderLayer();
+            CreateTPCamera();
+            if (playerType == PlayerType.Self)
+            {
+                CreateInputSampleLayer();
+            }
+            
         }
         
         
         private void CreateLogicLayer()
         {
-            logicLayer = new BattlePlayerLogicLayer();
+            logicLayer = new BattlePlayerLogicLayer(this);
             logicLayer.OnCreate();
             
             var normalAttackConfigIdList = _battleDataManager.PlayerNormalAttackConfigIdList;
@@ -53,28 +66,36 @@ namespace Battle
             //实例化角色预制体
             GameObject go = Object.Instantiate(Resources.Load<GameObject>(LoadPathConfig.BattleModelName));
             renderLayer = go.GetComponent<BattlePlayerRenderLayer>();
-            
-            PlayerType playerType = _userDataManager.UserData.AccountId == _uid ? PlayerType.Self : PlayerType.Other;
-            renderLayer.Init(playerType , this);
+            renderLayer.Init(this);
             renderLayer.OnCreate();
-            
-            // if (World.GetExitsDataManager<UserDataManager>().UserData.AccountId == player.playerId)
-            // {
-            //     // 先初始化摄像机，再调用 OnCreate
-            //     World.GetExitsLogicManager<TP_CameraLogicManager>().InitTPCamera(renderLayerLayer.transform);
-            //     renderLayerLayer.OnCreate();
-            //     renderLayerLayer.Init(PlayerType.Self);
-            // }
-            // else
-            // {
-            //     renderLayerLayer.OnCreate();
-            //     renderLayerLayer.Init(PlayerType.Other);
-            // }
-            
-            
-            
-            
         }
+        
+        private void CreateTPCamera()
+        {
+            _cameraLogicManager.InitTPCamera(renderLayer.transform);
+        }
+        
+        private void CreateInputSampleLayer()
+        {
+            inputSampleLayer = renderLayer.gameObject.AddComponent<BattlePlayerInputSampleLayer>();
+            inputSampleLayer.Init(this);
+        }
+
+        //应用逻辑帧输入数据到角色实例
+        public void ApplyFrameInput(FrameOperationData data)
+        {
+            switch ((OperateTypeEnum)data.operateType)
+            {
+                case OperateTypeEnum.InputMove:
+                    logicLayer.ApplyMoveOperation(data.inputDir);
+                    renderLayer.UpdateInputDir(data.inputDir);
+                    break;
+                case OperateTypeEnum.ReleaseSkill:
+                    logicLayer.ApplyReleaseSkillOperation();
+                    break;
+            }
+        }
+        
         
         
         

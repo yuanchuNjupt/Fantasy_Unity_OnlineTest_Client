@@ -31,7 +31,7 @@ public partial class LogicActor
         }
     }
 
-    public void InputLogicFrameEvent(FixedIntVector3 inputDir)
+    public void UpdateMoveDir(FixedIntVector3 inputDir)
     {
         _inputMoveDir = inputDir;
     }

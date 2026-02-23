@@ -122,7 +122,7 @@ namespace Framework.GameManagerFramework.LogicManagers
             {
                 var player = _battlePlayerLogicManager.GetBattlePlayerInstance(data.playerId);
                 
-                player.logicLayer.InputFrameOperate(data);
+                player.ApplyFrameInput(data);
                 
             });
             
