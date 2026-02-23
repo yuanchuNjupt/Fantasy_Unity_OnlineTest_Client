@@ -6,177 +6,107 @@ using System.Linq;
 using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 
-/// <summary>
-/// ����ϵͳ
-/// </summary>
+
 public class SkillSystem
 {
 
-    private LogicActor mSkillCreater;
+    private readonly LogicActor _skillCharacter;
 
-    private List<Skill> mSkillArr = new List<Skill>();
+    private readonly List<Skill> _skillArr = new List<Skill>();
 
-    private Skill mCurReleasingSkill;
+    private Skill _curReleasingSkill;
 
-    private List<int> mCombinationSkillIdList = new List<int>();
+    private readonly List<int> _combinationSkillIdList = new List<int>();
     public SkillSystem(LogicActor logicActor)
     {
-        mSkillCreater = logicActor;
+        _skillCharacter = logicActor;
     }
 
-    public void InitSKills(int[] skillidArr)//1000 1001 1002
+    public void InitSKills(List<int> skillIdArr)//1000 1001 1002
     {
-        foreach (var skillid in skillidArr)
+        foreach (var skillid in skillIdArr)
         {
-            Skill skill = new Skill(skillid, mSkillCreater);
-            mSkillArr.Add(skill);
-            if (skill.SKillCfg.ComobinationSkillid != 0)
+            Skill skill = new Skill(skillid, _skillCharacter);
+            _skillArr.Add(skill);
+            if (skill.SKillCfg.combinationSkillId != 0)
             {
-                InitSKills(new int[] { skill.SKillCfg.ComobinationSkillid });
-            }
-            if (skill.SKillCfg.stockPileStageData.Count>0)
-            {
-                foreach (var item in skill.SKillCfg.stockPileStageData)
-                {
-                    InitSKills(new int[] { item.skillid });
-                }
-            }
-            if (skill.damageCfgList.Count > 0)
-            {
-                foreach (var item in skill.damageCfgList)
-                {
-                    if (item.triggerSkillid!=0)
-                        InitSKills(new int[] { item.triggerSkillid });
-                }
+                InitSKills(new List<int> { skill.SKillCfg.combinationSkillId });
             }
         }
-        Debug.Log("技能初始化完成，技能个数:" + skillidArr.Length);
+        Debug.Log("技能初始化完成，技能个数:" + skillIdArr.Count);
     }
-    public Skill ReleaseSkill(int skillid, FixedIntVector3 guidePos,  Action<Skill> releaseAfterCallBack, Action<Skill> releaseSkillEnd )
+    public Skill ReleaseSkill(int skillId, Action<Skill> releaseAfterCallBack, Action<Skill> releaseSkillEnd )
     {
-        if (mCurReleasingSkill!=null&&(mCurReleasingSkill.skillState!= SkillState.End&&mCurReleasingSkill.skillState!= SkillState.After))
+        //当前正在释放的技能不为空，并且技能状态不为结束或者后续，则无法释放新技能
+        if (_curReleasingSkill!=null&&(_curReleasingSkill.skillState!= SkillState.End&&_curReleasingSkill.skillState!= SkillState.After))
         {
             return null;
         }
-        if (mCombinationSkillIdList.Count>0&&!mCombinationSkillIdList.Contains(skillid))
+        
+        //如果当前技能组合列表不为空，并且不包含当前要释放的技能id，则无法释放
+        if (_combinationSkillIdList.Count>0&&!_combinationSkillIdList.Contains(skillId))
         {
             return null;
         }
         
         
-        var skill = mSkillArr.FirstOrDefault(x => x.skillid == skillid);
+        var skill = _skillArr.FirstOrDefault(x => x.skillId == skillId);
         if (skill == null)
         {
-            Debug.LogError("技能不存在，无法释放:" + skillid);
+            Debug.LogError("技能不存在，无法释放:" + skillId);
             return null;
         }
         
         if (skill.skillState != SkillState.None && skill.skillState != SkillState.End)
         {
-            Debug.Log("技能正在释放中，无法释放:" + skillid);
+            Debug.Log("技能正在释放中，无法释放:" + skillId);
             return null;
         }
-        if (skill.SKillCfg.ComobinationSkillid!=0)
+        
+        if (skill.SKillCfg.combinationSkillId!=0)
         {
-            CacleteCombinationSkillIdList(skill.SKillCfg.ComobinationSkillid);
+            CalculateCombinationSkillIdList(skill.SKillCfg.combinationSkillId);
         }
-        skill.ReleaseSKill(releaseAfterCallBack , guidePos, (skill, combinationSkill) =>
+        
+        skill.ReleaseSKill(releaseAfterCallBack , (skill, combinationSkill) =>
         {
             releaseSkillEnd?.Invoke(skill);
             if (!combinationSkill)
             {
-                mCurReleasingSkill = null;
-                if (skill.SKillCfg.ComobinationSkillid==0&&mCombinationSkillIdList.Count>0)
+                _curReleasingSkill = null;
+                if (skill.SKillCfg.combinationSkillId==0&&_combinationSkillIdList.Count>0)
                 {
-                    mCombinationSkillIdList.Clear();
+                    _combinationSkillIdList.Clear();
                 }
             }
         });
-        mCurReleasingSkill = skill;
+        
+        _curReleasingSkill = skill;
         return skill;
-        
-        
-        // foreach (var skill in mSkillArr)
-        // {
-        //     if (skill.skillid == skillid)
-        //     {
-        //         if (skill.skillState != SkillState.None && skill.skillState != SkillState.End)
-        //         {
-        //             Debug.Log("技能正在释放中，无法释放:" + skillid);
-        //             return null;
-        //         }
-        //         if (skill.SKillCfg.ComobinationSkillid!=0)
-        //         {
-        //             CacleteCombinationSkillIdList(skill.SKillCfg.ComobinationSkillid);
-        //         }
-        //         skill.ReleaseSKill(releaseAfterCallBack , guidePos, (skill, combinationSkill) =>
-        //         {
-        //             releaseSkillEnd?.Invoke(skill);
-        //             if (!combinationSkill)
-        //             {
-        //                 mCurReleasingSkill = null;
-        //                 if (skill.SKillCfg.ComobinationSkillid==0&&mCombinationSkillIdList.Count>0)
-        //                 {
-        //                     mCombinationSkillIdList.Clear();
-        //                 }
-        //             }
-        //         });
-        //         mCurReleasingSkill = skill;
-        //         return skill;
-        //     }
-        // }
     }
-
-    public void TriggerStockPileSkill(int skillid)
+    
+    public Skill GetSKill(int skillId)
     {
-        if (mCurReleasingSkill != null && mCurReleasingSkill.skillid!=skillid)
-        {
-            return;
-        }
-
-        if (mCombinationSkillIdList.Count > 0 && !mCombinationSkillIdList.Contains(skillid))
-        {
-            return;
-        }
-        Skill skill = GetSKill(skillid);
-        if (skill != null)
-        {
-            skill.TriggerStockPileSkill();
-        }
-    }
-    public Skill GetSKill(int skillid)
-    {
-        foreach (var item in mSkillArr)
-        {
-            if (item.skillid == skillid)
-            {
-                return item;
-            }
-        }
-        return null;
+        return _skillArr.FirstOrDefault(item => item.skillId == skillId);
     }
 
 
-    public void CacleteCombinationSkillIdList(int skillid) //1000,1001 ,1002
+    public void CalculateCombinationSkillIdList(int skillId) //1000,1001 ,1002
     {
-        if (skillid!=0)
+        if (skillId!=0)
         {
-            int combinationSkillId = skillid;
+            int combinationSkillId = skillId;
             while (combinationSkillId!=0)
             {
-                mCombinationSkillIdList.Add(combinationSkillId);
-                combinationSkillId= GetSKill(combinationSkillId).SKillCfg.ComobinationSkillid;
+                _combinationSkillIdList.Add(combinationSkillId);
+                combinationSkillId= GetSKill(combinationSkillId).SKillCfg.combinationSkillId;
             }
 
-        }
-        else
-        {
-            Debug.LogError("��Ч�ļ���id:"+skillid);
         }
     }
     public void OnLogicFrameUpdate()
     {
-        foreach (var item in mSkillArr)
+        foreach (var item in _skillArr)
         {
             item.OnLogicFrameUpdate();
         }

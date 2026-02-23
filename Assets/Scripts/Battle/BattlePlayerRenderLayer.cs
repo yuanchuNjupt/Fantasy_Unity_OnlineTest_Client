@@ -1,11 +1,11 @@
 ﻿using FixedPhysics.Fixed_pointNumber.Core;
-using FixMath;
+using Framework.GameManager.Core;
 using Framework.GameManagerFramework.LogicManagers;
 using UnityEngine;
 
 namespace Battle
 {
-    public class BattlePlayerRender : RenderObject
+    public class BattlePlayerRenderLayer : RenderObject
     {
         //在这里进行输入监听
         private Vector2 _inputDir = Vector2.zero;
@@ -14,7 +14,7 @@ namespace Battle
         
         private PlayerType _playerType;
 
-        private BattlePlayerLogic _logicLayer;
+        private BattlePlayerLogicLayer _logicLayerLayer;
         
         private PlayerMouseLogicManager _playerMouseLogicManager;
         
@@ -23,11 +23,14 @@ namespace Battle
         private PlayerState _renderState;
         
         private BattleLogicManager _battleLogicManager;
+
+        private BattlePlayerInstance _instance;
         
         
-        public void Init(PlayerType playerType)
+        public void Init(PlayerType playerType , BattlePlayerInstance instance)
         {
             _playerType = playerType;
+            _instance = instance;
             PlayAnim("Idle");
             _renderState = PlayerState.Idle;
         }
@@ -35,14 +38,19 @@ namespace Battle
         public override void OnCreate()
         {
             base.OnCreate();
-            _logicLayer = logicObject as BattlePlayerLogic;
-            _playerAnimator = GetComponent<Animator>();
-            _playerMouseLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<PlayerMouseLogicManager>();
-            _battleLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<BattleLogicManager>();
             
-            // 安全获取摄像机Transform
-            var cameraLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<TP_CameraLogicManager>();
-            if (cameraLogicManager != null && cameraLogicManager.cameraControl != null)
+            
+            
+            
+            _logicLayerLayer = logicObject as BattlePlayerLogicLayer;
+            _playerAnimator = GetComponent<Animator>();
+            _playerMouseLogicManager = World.GetExitsLogicManager<PlayerMouseLogicManager>();
+            _battleLogicManager = World.GetExitsLogicManager<BattleLogicManager>();
+            
+            //设置TP相机
+            var cameraLogicManager = World.GetExitsLogicManager<TP_CameraLogicManager>(); 
+            cameraLogicManager.InitTPCamera(transform);
+            if (cameraLogicManager.cameraControl != null)
             {
                 _playerCameraTransform = cameraLogicManager.cameraControl.transform;
             }
@@ -90,7 +98,7 @@ namespace Battle
                 }
                 
                 if(LogicFrameConfig.IsUseLocalLogicFrame)
-                    _logicLayer.InputLogicFrameEvent(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
+                    _logicLayerLayer.InputLogicFrameEvent(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
                 else
                     _battleLogicManager.MoveFrameDataInput(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
                 
@@ -101,7 +109,7 @@ namespace Battle
                 if (_playerMouseLogicManager.NormalAttack)
                 {
                     //释放技能
-                    _logicLayer.ReleaseNormalAttack();
+                    _logicLayerLayer.ReleaseNormalAttack();
                     
                 }
                 

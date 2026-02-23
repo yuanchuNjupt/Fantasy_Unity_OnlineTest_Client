@@ -20,8 +20,6 @@ public partial class LogicActor : LogicObject
         OnLogicFrameUpdateSkill();
         //更新重力帧
         OnLogicFrameUpdateGravity();
-        //更新子弹帧
-        // OnLogicFramUpdateBullet();
     }
 
     public void PlayAnim(AnimationClip clip)

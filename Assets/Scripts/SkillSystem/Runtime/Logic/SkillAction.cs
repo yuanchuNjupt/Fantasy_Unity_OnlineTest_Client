@@ -21,7 +21,7 @@ public partial class Skill
                 if (item.triggerFrame==mCurLogicFrame)
                 {
                     //触发行动
-                    AddMoveAction(item,mSkillCreater);
+                    AddMoveAction(item,mSkillCharacter);
                 }
             }
         }
@@ -45,17 +45,8 @@ public partial class Skill
                     case MoveActionFinishOpation.Skill://释放后续技能
                         foreach (var item in item.actionFinishidList)
                         {
-                            mSkillCreater.ReleaseSKill(item);
+                            mSkillCharacter.ReleaseSKill(item);
                         }
-                        break;
-                    case MoveActionFinishOpation.Buff://添加一个buff
-                        sKillGuidePos = logicMoveObj.LogicPos;
-                        foreach (var buffid in item.actionFinishidList)
-                        {
-                            // BuffSystem.MainInstance.AttachBuff(buffid, mSkillCreater, mSkillCreater, this);
-                        }
-                        // 1.能在指定地点生成 2.具有碰撞检测 3.能对多人造成伤害。
-                        // 群体属性修改Buff
                         break;
                 }
             }
@@ -88,22 +79,22 @@ public partial class Skill
         //     //目标位置
         //     targetPos = sKillGuidePos;
         //     //起始位置
-        //     startPos = targetPos + mSkillCreater.LogicXAxis * new FixIntVector3(offset);
+        //     startPos = targetPos + mSkillCharacter.LogicXAxis * new FixIntVector3(offset);
         //     startPos.y = FixIntMath.Abs(startPos.y);
         // }
         // else if (item.moveActionType == MoveActionType.BezierPos)
         // {
         //     //1.计算起始位置
-        //     startPos = mSkillCreater.LogicPos + mSkillCreater.LogicXAxis * new FixIntVector3 (offset);
+        //     startPos = mSkillCharacter.LogicPos + mSkillCharacter.LogicXAxis * new FixIntVector3 (offset);
         //     startPos.y = FixIntMath.Abs(startPos.y);//不让当前对象，y<0，否则就会跑到地下去
         //     //2.计算最高点位置
-        //     FixIntVector3 heightPosOffset = new FixIntVector3(item.heightPos) * mSkillCreater.LogicXAxis;
+        //     FixIntVector3 heightPosOffset = new FixIntVector3(item.heightPos) * mSkillCharacter.LogicXAxis;
         //     heightPosOffset.y = FixIntMath.Abs(heightPosOffset.y);
-        //     FixIntVector3 heightPos = mSkillCreater.LogicPos + heightPosOffset;
+        //     FixIntVector3 heightPos = mSkillCharacter.LogicPos + heightPosOffset;
         //     //3.计算结束位置
-        //     FixIntVector3 endPosOffset = new FixIntVector3(item.movePos) * mSkillCreater.LogicXAxis;
+        //     FixIntVector3 endPosOffset = new FixIntVector3(item.movePos) * mSkillCharacter.LogicXAxis;
         //     endPosOffset.y= FixIntMath.Abs(endPosOffset.y);
-        //     targetPos = mSkillCreater.LogicPos + endPosOffset;
+        //     targetPos = mSkillCharacter.LogicPos + endPosOffset;
         //     //3.执行贝塞尔运动
         //     // MoveBezierAction moveBezier = new MoveBezierAction(logicMoveObj,startPos,heightPos,targetPos,item.durationMs, OnActionFinish, moveUpdateCallBack);
         //     // LogicActionController.Instance.RunAciton(moveBezier);

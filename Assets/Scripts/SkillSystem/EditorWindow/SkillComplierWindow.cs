@@ -62,7 +62,7 @@ public class SkillComplierWindow : OdinEditorWindow
     /// 获取Editor模式下角色位置
     /// </summary>
     /// <returns></returns>
-    public static Vector3 GetCharaterPos()
+    public static Vector3 GetCharacterPos()
     {
         if (!HasOpenInstances<SkillComplierWindow>())
         {
@@ -123,13 +123,13 @@ public class SkillComplierWindow : OdinEditorWindow
         }
         foreach (var item in damageList)
         {
-            item.PlaySkilEnd();
+            item.PlaySkillEnd();
         }
     }
     /// <summary>
     /// 播放技能结束
     /// </summary>
-    public void PlaySkilEnd()
+    public void PlaySkillEnd()
     {
         foreach (var item in effectList)
         {
@@ -137,7 +137,7 @@ public class SkillComplierWindow : OdinEditorWindow
         }
         foreach (var item in damageList)
         {
-            item.PlaySkilEnd();
+            item.PlaySkillEnd();
         }
         isStartPlaySkill = false;
         mAccLogicRuntime = 0;

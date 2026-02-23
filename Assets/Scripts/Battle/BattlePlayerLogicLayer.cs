@@ -5,14 +5,13 @@ using Framework.GameManagerFramework.DataManagers;
 
 namespace Battle
 {
-    public class BattlePlayerLogic : LogicActor
+    public class BattlePlayerLogicLayer : LogicActor
     {
-        public long PlayerId;
         
-        public BattlePlayerLogic(long id , RenderObject renderObject)
+        public BattlePlayerInstance instance;
+        
+        public BattlePlayerLogicLayer()
         {
-            PlayerId = id;
-            RenderObj = renderObject;
             ObjectType = LogicObjectType.Hero;
         }
 

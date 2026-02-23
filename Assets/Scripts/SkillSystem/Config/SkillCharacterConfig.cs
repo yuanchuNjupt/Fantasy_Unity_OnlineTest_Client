@@ -24,14 +24,6 @@ public class SkillCharacterConfig
     [OnValueChanged("OnAnimProgressValueChange")]
     public int animProgress = 0;
     
-    [BoxGroup("动画数据")]
-    [LabelText("是否循环动画")]
-    public bool isLoopAnim = false;
-    
-    [LabelText("动画循环次数")][ShowIf("isLoopAnim")]
-    [BoxGroup("动画数据")]
-    public int animLoopCount;
-    
     [BoxGroup("动画数据")] 
     [LabelText("最大逻辑帧数")]
     [ReadOnly]
@@ -49,21 +41,17 @@ public class SkillCharacterConfig
     [LabelText("自定义逻辑帧数")]
     [BoxGroup("动画数据"),ShowIf("isSetCustomLogicFrame")]
     public int customLogicFame = 0;
-    
-    [LabelText("动画长度")]
-    [BoxGroup("动画数据")]
-    public float animLength = 0;
-    
-    [LabelText("技能推荐时长(毫秒ms)")]
-    [BoxGroup("动画数据")]
-    public float skillDurationMS = 0;
-
 
     private GameObject mTempCharacter;
+    
     private int _maxAnimationLength;
-    private bool mIsPlayAnim=false;//是否播放动画，用来控制暂停动画
-    private double mLastRunTime = 0;//上次运行的时间
+    
+    private bool _isPlayAnim=false;//是否播放动画，用来控制暂停动画
+    
+    private double _lastRunTime = 0;//上次运行的时间
+    
     private Animator _animator;
+
 #if UNITY_EDITOR
     [GUIColor(0.4f, 0.8f, 1)]
     [ButtonGroup("按钮数组")]
@@ -80,15 +68,12 @@ public class SkillCharacterConfig
                 mTempCharacter = GameObject.Instantiate(skillCharacter);
                 mTempCharacter.name= mTempCharacter.name.Replace("(Clone)","");
             }
-            //计算动画文件长度
-            animLength = isLoopAnim ? skillAnim.length * animLoopCount : skillAnim.length;
             //计算逻辑帧长度（个数）
-            logicFrame = (int)(isLoopAnim ? skillAnim.length / 0.066f * animLoopCount : skillAnim.length / 0.066f);
-            //计算技能推荐时长
-            skillDurationMS = (int)(isLoopAnim ? (skillAnim.length * animLoopCount) * 1000 : skillAnim.length * 1000);
-            mLastRunTime = 0;
+            logicFrame = (int)(skillAnim.length / LogicFrameConfig.LogicFrameInterval);
+            
+            _lastRunTime = 0;
             //开始播放角色动画
-            mIsPlayAnim = true;
+            _isPlayAnim = true;
             SkillComplierWindow window= SkillComplierWindow.GetWindow();
             window?.StartPlaySkill();
         }
@@ -97,7 +82,7 @@ public class SkillCharacterConfig
     [Button("暂停", ButtonSizes.Large)]
     public void Pause()
     {
-        mIsPlayAnim = false;
+        _isPlayAnim = false;
         SkillComplierWindow window = SkillComplierWindow.GetWindow();
         window?.SkillPause();
     }
@@ -111,14 +96,14 @@ public class SkillCharacterConfig
 
     public void OnUpdate(System.Action progressUpdateCallback)
     {
-        if (mIsPlayAnim)
+        if (_isPlayAnim)
         {
-            if (mLastRunTime==0)
+            if (_lastRunTime==0)
             {
-                mLastRunTime = EditorApplication.timeSinceStartup;
+                _lastRunTime = EditorApplication.timeSinceStartup;
             }
             //获取当前运行的时间
-            double curRunTime = EditorApplication.timeSinceStartup - mLastRunTime;
+            double curRunTime = EditorApplication.timeSinceStartup - _lastRunTime;
 
             //计算动画播放进度
             animProgress = Mathf.Clamp((int)(curRunTime * 1000f) , 0 , _maxAnimationLength);
@@ -143,8 +128,8 @@ public class SkillCharacterConfig
     public void OnAnimProgressValueChange(int value)
     {
         //先从场景中查找技能对象，如果查找不到，就主动克隆一个
-        string charactorName = skillCharacter.name;
-        mTempCharacter = GameObject.Find(charactorName);
+        string characterName = skillCharacter.name;
+        mTempCharacter = GameObject.Find(characterName);
         if (mTempCharacter == null)
         {
             mTempCharacter = GameObject.Instantiate(skillCharacter);
@@ -152,7 +137,7 @@ public class SkillCharacterConfig
         }
 
         //根据当前动画进度进行动画采样
-        logicFrame =(int) (value / LogicFrameConfig.LogicFrameIntervalms);
+        logicFrame = value / LogicFrameConfig.LogicFrameIntervalMs;
         //采样动画，进行动画播放
         skillAnim.SampleAnimation(mTempCharacter, value / 1000f);
     }
@@ -169,10 +154,10 @@ public class SkillCharacterConfig
     
     public void PlaySkillEnd()
     {
-        mIsPlayAnim = false;
+        _isPlayAnim = false;
 
         SkillComplierWindow window= SkillComplierWindow.GetWindow();
-        window?.PlaySkilEnd();
+        window?.PlaySkillEnd();
     }
 
     /// <summary>

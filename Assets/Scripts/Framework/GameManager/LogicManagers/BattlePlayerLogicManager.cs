@@ -2,6 +2,7 @@
 using System.Linq;
 using Battle;
 using Config;
+using Framework.GameManager.Base;
 using Framework.GameManager.Core;
 using Framework.GameManagerFramework.DataManagers;
 using Framework.GameManagerFramework.WorldScripts;
@@ -14,17 +15,16 @@ namespace Framework.GameManagerFramework.LogicManagers
     [WorldSource(typeof(BattleWorld))]
     public class BattlePlayerLogicManager : ILogicBehaviour
     {
-        private BattleDataManager _battleDataManager;
+        [Inject]private BattleDataManager _battleDataManager;
 
-        // public BattlePlayerLogic PlayerLogic;
 
-        public List<BattlePlayerLogic> BattlePlayerLogicList = new List<BattlePlayerLogic>();
+        private readonly Dictionary<long , BattlePlayerInstance> _battlePlayerList = new ();
         
         
 
         public void OnCreate()
         {
-            _battleDataManager = GameManager.Core.World.GetExitsDataManager<BattleDataManager>();
+            // _battleDataManager = GameManager.Core.World.GetExitsDataManager<BattleDataManager>();
             Debug.Log("BattlePlayerLogicManager 创建完成");
         }
 
@@ -32,41 +32,32 @@ namespace Framework.GameManagerFramework.LogicManagers
         {
             _battleDataManager.BattlePlayerDataList.ForEach(player =>
             {
-                GameObject go = Object.Instantiate(Resources.Load<GameObject>(LoadPathConfig.BattleModelName));
-                BattlePlayerRender renderLayer = go.GetComponent<BattlePlayerRender>();
-                var playerLogic = new BattlePlayerLogic(player.playerId, renderLayer);
-                playerLogic.PlayerId = player.playerId;
-                renderLayer.SetLogicObject(playerLogic);
-                //初始化
-                playerLogic.OnCreate();
-                playerLogic.InitActorSkill(_battleDataManager.PlayerNormalAttackConfigIdList,
-                    _battleDataManager.PLayerSkillConfigIdList);
-                BattlePlayerLogicList.Add(playerLogic);
-
-                if (GameManager.Core.World.GetExitsDataManager<UserDataManager>().UserData.AccountId == player.playerId)
-                {
-                    // 先初始化摄像机，再调用 OnCreate
-                    GameManager.Core.World.GetExitsLogicManager<TP_CameraLogicManager>().InitTPCamera(renderLayer.transform);
-                    renderLayer.OnCreate();
-                    renderLayer.Init(PlayerType.Self);
-                }
-                else
-                {
-                    renderLayer.OnCreate();
-                    renderLayer.Init(PlayerType.Other);
-                }
+                BattlePlayerInstance battlePlayer = new BattlePlayerInstance(player.playerId);
+                _battlePlayerList.Add(player.playerId , battlePlayer);
             });
         }
 
-        public BattlePlayerLogic GetBattlePlayerLogic(long playerId)
+        public BattlePlayerInstance GetBattlePlayerInstance(long playerId)
         {
-            return BattlePlayerLogicList.First(player => player.PlayerId == playerId);
+            if (_battlePlayerList.TryGetValue(playerId, out var battlePlayer))
+            {
+                return battlePlayer;
+            }
+            else
+            {
+                Debug.LogError("未找到玩家实例，玩家ID：" + playerId);
+                return null;
+            }
         }
         
 
         public void OnLogicFrameUpdate()
         {
-            BattlePlayerLogicList.ForEach(logic => logic.OnLogicFrameUpdate());
+            //每帧更新角色逻辑层
+            foreach (var battlePlayerInstance in _battlePlayerList.Values)
+            {
+                battlePlayerInstance.logicLayer.OnLogicFrameUpdate();
+            }
         }
 
 

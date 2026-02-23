@@ -5,17 +5,26 @@ using UnityEngine;
 public class LogicFrameConfig 
 {
     //逻辑帧id 自增
-    public static long LogicFrameid;
+    public static long LogicFrameId;
+    
     //实际逻辑帧间隔
-    public static float LogicFrameInterval = 0.066f;//一秒15帧
+    public const float LogicFrameInterval = 0.066f; //一秒15帧
+
     //毫秒级逻辑帧间隔，用来计算当前逻辑帧累加时间
-    public static int  LogicFrameIntervalms = 66;//一秒15帧
+    public const int LogicFrameIntervalMs = 66; //一秒15帧
+
+    public const float InputSampleInterval = 0.033f; //输入采样间隔，一秒30帧
+    
+    
+    
+    
     /// <summary>
     /// 是否使用本地逻辑帧
     /// </summary>
-    public static readonly bool IsUseLocalLogicFrame = false;
+    public const bool IsUseLocalLogicFrame = false;
+
     /// <summary>
     /// 最大预测逻辑帧次数
     /// </summary>
-    public static readonly int PreMaxMoveLogicFrameCount = 5;
+    public const int PreMaxMoveLogicFrameCount = 5;
 }

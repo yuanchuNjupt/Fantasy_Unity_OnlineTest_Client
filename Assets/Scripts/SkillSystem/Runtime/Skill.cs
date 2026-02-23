@@ -16,81 +16,57 @@ public enum SkillState
 
 public partial class Skill
 {
+    //技能ID
+    public int skillId;
 
-    public int skillid;
-    /// <summary>
-    /// ���ܴ�����
-    /// </summary>
-    public LogicActor mSkillCreater;
-    /// <summary>
-    /// ������������
-    /// </summary>
+    //释放技能的角色
+    public LogicActor mSkillCharacter;
+    
+    //技能数据
     private SkillDataConfig mSkillData;
 
+    //外界访问技能数据接口
     public SkillConfig SKillCfg { get { return mSkillData.skillCfg; } }
-    /// <summary>
-    /// �˺������б�
-    /// </summary>
-    public List<SkillDamageConfig> damageCfgList { get { return mSkillData.damageCfgList; } }
-     /// <summary>
-    /// �ͷż��ܺ�ҡ
-    /// </summary>
-    public Action<Skill> OnReleaseAfter;
-    /// <summary>
-    /// �ͷż��ܽ����ص�
-    /// </summary>
-    public Action<Skill, bool> OnReleaseSkillEnd;
-    /// <summary>
-    /// ����״̬
-    /// </summary>
-    public SkillState skillState = SkillState.None;
-    /// <summary>
-    /// ��ǰ�߼�֡
-    /// </summary>
-    private int mCurLogicFrame = 0;
-    /// <summary>
-    /// ��ǰ�ۼ�����ʱ��
-    /// </summary>
-    private int mCurLogicFrameAccTime = 0;
-    /// <summary>
-    /// �Ƿ��Զ�ƥ�������׶�
-    /// </summary>
-    private bool mAutoMacthStockStage;
 
-    /// <summary>
-    /// ��������λ��
-    /// </summary>
-    public FixedIntVector3 sKillGuidePos;
-    /// <summary>
-    /// ��ϼ���id
-    /// </summary>
+    public List<SkillDamageConfig> damageCfgList { get { return mSkillData.damageCfgList; } }
+
+    
+    public Action<Skill> OnReleaseAfter;
+
+    
+    public Action<Skill, bool> OnReleaseSkillEnd;
+
+    
+    public SkillState skillState = SkillState.None;
+
+    
+    private int mCurLogicFrame = 0;
+    
+    private int mCurLogicFrameAccTime = 0;
+    
     private int mCombinationSkillid;
-    /// <summary>
-    /// ��������
-    /// </summary>
-    /// <param name="skillid">����id</param>
-    /// <param name="skillCreater">���ܴ�����</param>
-    public Skill(int skillid, LogicActor skillCreater)
+
+    
+    public Skill(int skillId, LogicActor skillCharacter)
     {
-        this.skillid = skillid;
-        this.mSkillCreater = skillCreater;
+        this.skillId = skillId;
+        this.mSkillCharacter = skillCharacter;
         
         //加载技能数据
-        mSkillData = Resources.Load<ScriptableObject>(LoadPathConfig.SkillLoadPath + skillid) as SkillDataConfig;
+        mSkillData = Resources.Load<ScriptableObject>(LoadPathConfig.SkillLoadPath + skillId) as SkillDataConfig;
         
         // 检查加载是否成功
         if (mSkillData == null)
         {
-            Debug.LogError($"技能数据加载失败！技能ID: {skillid}");
+            Debug.LogError($"技能数据加载失败！技能ID: {skillId}");
         }
-        // mSkillData = ZMAsset.LoadScriptableObject<SkillDataConfig>(AssetPathConfig.SKILL_DATA_PATH + skillid + ".asset");
+        // mSkillData = ZMAsset.LoadScriptableObject<SkillDataConfig>(AssetPathConfig.SKILL_DATA_PATH + skillId + ".asset");
     }
 
-    public void ReleaseSKill(Action<Skill> releaseAfterCallBack, FixedIntVector3 guidePos, Action<Skill, bool> releaseSkillEnd)
+    public void ReleaseSKill(Action<Skill> releaseAfterCallBack , Action<Skill, bool> releaseSkillEnd)
     {
         OnReleaseAfter = releaseAfterCallBack;
         OnReleaseSkillEnd = releaseSkillEnd;
-        sKillGuidePos = guidePos;
         SkillStart();
         skillState = SkillState.Before;
         PlayAnim();
@@ -98,18 +74,16 @@ public partial class Skill
 
     public void PlayAnim()
     {
-        mSkillCreater.PlayAnim(mSkillData.skillCfg.skillid.ToString());
+        mSkillCharacter.PlayAnim(mSkillData.skillCfg.skillid.ToString());
     }
 
     public void SkillStart()
     {
         mCurLogicFrame = 0;
         mCurLogicFrameAccTime = 0;
-        mAutoMacthStockStage = false;
-        mCombinationSkillid = mSkillData.skillCfg.ComobinationSkillid;
+        mCombinationSkillid = mSkillData.skillCfg.combinationSkillId;
          if (mSkillData.character.customLogicFame != 0)
             mSkillData.character.logicFrame = mSkillData.character.customLogicFame;
-        // OnBulletInit();
         OnInitDamage();
     }
 
@@ -122,13 +96,12 @@ public partial class Skill
     public void SKillEnd()
     {
         skillState = SkillState.End;
-        OnReleaseSkillEnd?.Invoke(this, mSkillData.skillCfg.ComobinationSkillid != 0);
+        OnReleaseSkillEnd?.Invoke(this, mSkillData.skillCfg.combinationSkillId != 0);
         ReleaseAllEffect();
-        // OnBulletRelease();
         OnDamageRelease();
         if (mCombinationSkillid != 0)
         {
-            mSkillCreater.ReleaseSKill(mCombinationSkillid);
+            mSkillCharacter.ReleaseSKill(mCombinationSkillid);
         }
     }
 
@@ -139,9 +112,10 @@ public partial class Skill
         {
             return;
         }
-        mCurLogicFrameAccTime = mCurLogicFrame * LogicFrameConfig.LogicFrameIntervalms;
+        mCurLogicFrameAccTime = mCurLogicFrame * LogicFrameConfig.LogicFrameIntervalMs;
 
-        if (skillState == SkillState.Before && mCurLogicFrameAccTime >= mSkillData.skillCfg.skillShakeArfterMs&&mSkillData.skillCfg.skillType!= SKillType.StockPile)
+        //达到后摇关键帧 
+        if (mCurLogicFrame == mSkillData.skillCfg.skillShakeAfterFrame)
         {
             SkillAfter();
         }
@@ -150,70 +124,13 @@ public partial class Skill
         OnLogicFrameUpdateDamage();
         OnLogicFrameUpdateAction();
         OnLogicFrameUpdateAudio();
-        // OnLogicFrameUpdateBullet();
-        // OnLogicFrameUpdateBuff();
         
-        if (mSkillData.skillCfg.skillType == SKillType.StockPile)
+        
+        
+        if (mCurLogicFrame == mSkillData.character.MaxLogicFrame)
         {
-            int stockDataCount = mSkillData.skillCfg.stockPileStageData.Count;
-            if (stockDataCount > 0)
-            {
-                if (mAutoMacthStockStage)
-                {
-                    StockPileStageData stockData = mSkillData.skillCfg.stockPileStageData[0];
-                    if (mCurLogicFrameAccTime >= stockData.startTimeMs)
-                    {
-                        StockPileFinish(stockData);
-                    }
-                }
-                else
-                {
-                    StockPileStageData stockData = mSkillData.skillCfg.stockPileStageData[stockDataCount - 1];
-                    if (mCurLogicFrameAccTime >= stockData.endTimeMs)
-                    {
-                        StockPileFinish(stockData);
-                    }
-                }
-            }
-        }
-        else
-        {
-            if (mCurLogicFrame == mSkillData.character.MaxLogicFrame)
-            {
-                SKillEnd();
-            }
-        }
-
-        if (mSkillData.skillCfg.showSkillPortrait && mCurLogicFrame==0)
-        {
-            mSkillCreater.RenderObj.ShowSkillPortrait(mSkillData.skillCfg.skillProtraitObj);
+            SKillEnd();
         }
         mCurLogicFrame++;
-    }
-
-    public void TriggerStockPileSkill()
-    {
-        foreach (var item in mSkillData.skillCfg.stockPileStageData)
-        {
-            if (mCurLogicFrameAccTime>=item.startTimeMs&&mCurLogicFrameAccTime<=item.endTimeMs)
-            {
-                StockPileFinish(item);
-                return;
-            }
-        }
-        mAutoMacthStockStage = true;
-    }
-
-    public void StockPileFinish(StockPileStageData stockData)
-    {
-        SKillEnd();
-        if (stockData.skillid == 0)
-        {
-            Debug.LogError("");
-        }
-        else
-        {
-            mSkillCreater.ReleaseSKill(stockData.skillid);
-        }
     }
 }

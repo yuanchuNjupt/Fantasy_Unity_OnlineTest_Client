@@ -90,7 +90,7 @@ public class SkillEffectConfig
         if (skillEffect!=null)
         {
             mCloneEffect= GameObject.Instantiate(skillEffect);
-            mCloneEffect.transform.position = SkillComplierWindow.GetCharaterPos();
+            mCloneEffect.transform.position = SkillComplierWindow.GetCharacterPos();
             mAnimAgent = new AnimationAgnet();
             mAnimAgent.InitPlayAnim(mCloneEffect.transform);
 

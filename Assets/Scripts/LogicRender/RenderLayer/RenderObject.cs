@@ -78,10 +78,10 @@ public class RenderObject : MonoBehaviour
             //逻辑位置是否是最新，如果是，立马更新并回滚预测位置
             if (mIsUpdatePosAndRotation == true)
             {
-                if (logicObject.ObjectHasNewPos)//是否有最新的位置
+                if (logicObject.objectHasNewPos)//是否有最新的位置
                 {
                     mPreTargetPos = logicObject.LogicPos.ToVector3();
-                    logicObject.ObjectHasNewPos = false;
+                    logicObject.objectHasNewPos = false;
                     mCurPreMoveCount = 0;
                     // Debuger.Log("PreMove ForceUpdate Pos:" + mPreTargetPos);
                 }
@@ -93,7 +93,7 @@ public class RenderObject : MonoBehaviour
                         return;
                     }
                     //计算预测的增量位置
-                    Vector3 deltaPos = logicObject.LogicDir.ToVector3() * logicObject.LogicMoveSpeed.RenderFloat * Time.deltaTime;
+                    Vector3 deltaPos = logicObject.LogicDir.ToVector3() * (logicObject.LogicMoveSpeed.RenderFloat * Time.deltaTime);
                     mPreTargetPos += deltaPos;
                     mCurPreMoveCount++;
                     // Debuger.Log("PreMove mPreTargetPos:" + mPreTargetPos);
@@ -177,13 +177,4 @@ public class RenderObject : MonoBehaviour
     }
     public virtual Transform GetTransParent(TransParentType parentType) { return null; }
 
-    /// <summary>
-    /// 显示技能立绘
-    /// </summary>
-    /// <param name="portraitObj"></param>
-    public virtual void ShowSkillPortrait(GameObject portraitObj)
-    {
-        GameObject nPortraitObj = GameObject.Instantiate(portraitObj);
-        GameObject.Destroy(nPortraitObj, 3);
-    }
 }

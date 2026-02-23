@@ -1,52 +1,38 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 using FixMath;
 public partial class LogicActor
 {
-    /// <summary>
-    /// 技能系统
-    /// </summary>
-    private SkillSystem mSkillSystem;
-    /// <summary>
-    /// 普通攻击技能id数组
-    /// </summary>
-    private int[] _NormalSkillIdArr = new int[] { 1001, 1002};
+    
+    //技能系统
+    private SkillSystem _skillSystem;
+    
+    //普通攻击技能id数组
+    private List<int> _normalSkillIdArr = new List<int>() { 1001, 1002};
 
-    private int[] mSkillidArr = new int[] {};
+    private List<int> _skillIdArr = new List<int>() {};
 
-    /// <summary>
-    /// 正在释放技能的列表
-    /// </summary>
-    public List<Skill> releaseingSkillList = new List<Skill>();
-    /// <summary>
-    /// 当前普通攻击连击索引
-    /// </summary>
-    private int mCurNormalComboIndex = 0;
-    /// <summary>
-    /// 当前对象持有的所有buff
-    /// </summary>
-    // private List<Buff> mBuffList = new List<Buff>();
-    /// <summary>
-    /// 战斗逻辑层
-    /// </summary>
-    // private BattleLogicCtrl mBattleLogicLayer;
-    /// <summary>
-    /// 释放技能回调
-    /// </summary>
+    //正在释放技能的列表
+    public readonly List<Skill> releasingSkillList = new List<Skill>();
+    
+    //当前普通攻击连击索引
+    private int _curNormalComboIndex = 0;
+    
+    //释放技能回调
     public Action<bool, int> OnReleaseSkillCallBack;
-    /// <summary>
-    /// 初始化技能列表
-    /// </summary>
+    
+    //初始化技能列表
     public void InitActorSkill(List<int> normalAttackList , List<int> skillList)
     {
-        _NormalSkillIdArr = normalAttackList.ToArray();
-        mSkillidArr = skillList.ToArray();
-        mSkillSystem = new SkillSystem(this);
-        mSkillSystem.InitSKills(_NormalSkillIdArr);
-        mSkillSystem.InitSKills(mSkillidArr);
+        _normalSkillIdArr = normalAttackList;
+        _skillIdArr = skillList;
+        _skillSystem = new SkillSystem(this);
+        _skillSystem.InitSKills(_normalSkillIdArr);
+        _skillSystem.InitSKills(_skillIdArr);
     }
     /// <summary>
     /// 释放普通攻击
@@ -55,45 +41,36 @@ public partial class LogicActor
     {
         if (LogicFrameConfig.IsUseLocalLogicFrame)
         {
-            Debug.Log("释放普通攻击，当前连击索引：" + mCurNormalComboIndex);
+            Debug.Log("释放普通攻击，当前连击索引：" + _curNormalComboIndex);
             
-            ReleaseSKill(_NormalSkillIdArr[mCurNormalComboIndex]);
+            ReleaseSKill(_normalSkillIdArr[_curNormalComboIndex]);
         }
         else
         {
             //输入技能释放操作
-            // mBattleLogicLayer.ReleaseSkillInput(_NormalSkillIdArr[mCurNormalComboIndex]);
+            // mBattleLogicLayer.ReleaseSkillInput(_normalSkillIdArr[_curNormalComboIndex]);
         }
     }
     /// <summary>
     /// 释放对应的技能
     /// </summary>
     /// <param name="skillid"></param>
-    public void ReleaseSKill(int skillid,FixedIntVector3 guidePos=default(FixedIntVector3), Action<bool> releaseSkillCallBack = null)
+    public void ReleaseSKill(int skillid, Action<bool> releaseSkillCallBack = null)
     {
         
-        Skill skill = mSkillSystem.ReleaseSkill(skillid, guidePos,   OnSkillReleaseAfter, (skill)=> {
-            if (skill.SKillCfg.skillType== SKillType.StockPile)
-            {
-                releaseSkillCallBack?.Invoke(true);
-                OnReleaseSkillCallBack?.Invoke(true, skill.skillid);
-            }
-            OnSkillReleaseEnd(skill);
-        });
+        Skill skill = _skillSystem.ReleaseSkill(skillid,  OnSkillReleaseAfter, OnSkillReleaseEnd);
         //！=null 说明技能释放成功
         if (skill != null)
         {
-            releaseingSkillList.Add(skill);
-            if (!IsNormalAttackSkill(skill.skillid))
+            releasingSkillList.Add(skill);
+            if (!IsNormalAttackSkill(skill.skillId))
             {
-                mCurNormalComboIndex = 0;
+                _curNormalComboIndex = 0;
             }
             ActionSate = LogicObjectActionState.ReleasingSkill;
-            if (skill.SKillCfg.skillType!= SKillType.StockPile)
-            {
-                releaseSkillCallBack?.Invoke(true);
-                OnReleaseSkillCallBack?.Invoke(true, skill.skillid);
-            }
+
+            releaseSkillCallBack?.Invoke(true);
+            OnReleaseSkillCallBack?.Invoke(true, skill.skillId);
         }
         else
         {
@@ -102,28 +79,13 @@ public partial class LogicActor
         }
     }
     /// <summary>
-    /// 主动触发蓄力技能
-    /// </summary>
-    /// <param name="skillid"></param>
-    public void TriggerStockPileSkill(int skillid)
-    {
-        mSkillSystem.TriggerStockPileSkill(skillid);
-    }
-    /// <summary>
     /// 是否是普通攻击技能
     /// </summary>
-    /// <param name="skillid">校验的技能id</param>
+    /// <param name="skillId">校验的技能id</param>
     /// <returns></returns>
-    public bool IsNormalAttackSkill(int skillid)
+    public bool IsNormalAttackSkill(int skillId)
     {
-        foreach (var item in _NormalSkillIdArr)
-        {
-            if (skillid == item)
-            {
-                return true;
-            }
-        }
-        return false;
+        return _normalSkillIdArr.Any(item => skillId == item);
     }
     /// <summary>
     /// 技能释放后摇
@@ -131,17 +93,17 @@ public partial class LogicActor
     /// <param name="skill"></param>
     public void OnSkillReleaseAfter(Skill skill)
     {
-        if (!IsNormalAttackSkill(skill.skillid))
+        if (!IsNormalAttackSkill(skill.skillId))
         {
-            mCurNormalComboIndex = 0;
+            _curNormalComboIndex = 0;
         }
         else
         {
-            mCurNormalComboIndex++;
-            //如果当前普通攻击技能所以大于等级普通攻击技能数组长度，索引归0
-            if (mCurNormalComboIndex >= _NormalSkillIdArr.Length || skill.skillid == _NormalSkillIdArr[^1])
+            _curNormalComboIndex++;
+            //如果当前普通攻击技能索引大于等级普通攻击技能数组长度，索引归0
+            if (_curNormalComboIndex >= _normalSkillIdArr.Count || skill.skillId == _normalSkillIdArr[^1])
             {
-                mCurNormalComboIndex = 0;
+                _curNormalComboIndex = 0;
             }
         }
     }
@@ -151,28 +113,28 @@ public partial class LogicActor
     /// <param name="skill"></param>
     public void OnSkillReleaseEnd(Skill skill)
     {
-        releaseingSkillList.Remove(skill);
-        if (releaseingSkillList.Count == 0)
+        releasingSkillList.Remove(skill);
+        if (releasingSkillList.Count == 0)
         {
             ActionSate = LogicObjectActionState.Idle;
-            mCurNormalComboIndex = 0;
+            _curNormalComboIndex = 0;
         }
     }
 
-    public Skill GetSKill(int skillid)
+    public Skill GetSKill(int skillId)
     {
-        return mSkillSystem.GetSKill(skillid);
+        return _skillSystem.GetSKill(skillId);
     }
     /// <summary>
     /// 逻辑帧更新技能接口
     /// </summary>
     public void OnLogicFrameUpdateSkill()
     {
-        if (mSkillSystem==null)
+        if (_skillSystem==null)
         {
             return;
         }
-        mSkillSystem?.OnLogicFrameUpdate();
+        _skillSystem?.OnLogicFrameUpdate();
     }
    
 }

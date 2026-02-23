@@ -30,14 +30,6 @@ public class SkillEffectLogic : LogicObject
         {
             LogicPos = FixedIntVector3.zero;
         }
-        else if (effectCfg.effectPosType== EffectPosType.GuidePos)
-        {
-            //起始位置
-            FixedIntVector3 initPos= skill.sKillGuidePos + mSkillCreater.LogicXAxis * new FixedIntVector3(effectCfg.effectOffsetPos);
-            initPos.Y = FixedIntMathf.Abs(initPos.Y);
-            LogicPos = initPos;
-        }
- 
     }
 
     public void OnLogicFrameEffectUpdate(Skill skill, int curLogicFrame)
@@ -68,13 +60,13 @@ public class SkillEffectLogic : LogicObject
                 if (mEffectCfg.isAttachDamage)
                 {
                     //处理间隔性伤害
-                    if (mEffectCfg.damageConfig.triggerIntervalMs != 0 && mCollider != null)
+                    if (mEffectCfg.damageConfig.triggerIntervalFrame != 0 && mCollider != null)
                     {
-                        mAccRumtime += LogicFrameConfig.LogicFrameIntervalms;
-                        if (mAccRumtime >= mEffectCfg.damageConfig.triggerIntervalMs)
+                        mAccRumtime += LogicFrameConfig.LogicFrameIntervalMs;
+                        if (mAccRumtime >= mEffectCfg.damageConfig.triggerIntervalFrame)
                         {
                             skill.TriggerColliderDamage(mCollider, mEffectCfg.damageConfig);
-                            mAccRumtime -= mEffectCfg.damageConfig.triggerIntervalMs;
+                            mAccRumtime -= mEffectCfg.damageConfig.triggerIntervalFrame;
                         }
                     }
                 }
@@ -87,7 +79,7 @@ public class SkillEffectLogic : LogicObject
             if (mEffectCfg.damageConfig.triggerFrame == curLogicFrame)
             {
                 mCollider = skill.CreateOrUpdateCollider(mEffectCfg.damageConfig, null, this);
-                if (mEffectCfg.damageConfig.triggerIntervalMs == 0)
+                if (mEffectCfg.damageConfig.triggerIntervalFrame == 0)
                 {
                     skill.TriggerColliderDamage(mCollider, mEffectCfg.damageConfig);
                 }

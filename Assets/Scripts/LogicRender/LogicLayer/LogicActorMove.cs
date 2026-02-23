@@ -9,14 +9,12 @@ using UnityEngine;
 /// </summary>
 public partial class LogicActor
 {
-    private FixedIntVector3 mInputMoveDir;
-    private long testPlayerid;
+    private FixedIntVector3 _inputMoveDir;
     /// <summary>
     /// 逻辑帧位置更新
     /// </summary>
     public void OnLogicFrameUpdateMove()
     {
-        // Collider?.UpdateColliderInfo(LogicPos, Collider.Size);
         Collider?.UpdatePosition(LogicPos);
         
         if (ActionSate != LogicObjectActionState.Idle && ActionSate != LogicObjectActionState.Move && IsForceAllowMove==false)
@@ -24,18 +22,17 @@ public partial class LogicActor
             return;
         }
         //计算逻辑位置
-        LogicPos += mInputMoveDir* LogicMoveSpeed * (FixedInt)LogicFrameConfig.LogicFrameInterval;
+        LogicPos += _inputMoveDir* LogicMoveSpeed * (FixedInt)LogicFrameConfig.LogicFrameInterval;
 
         //计算逻辑对象的朝向
-        if (LogicDir!=mInputMoveDir && mInputMoveDir != FixedIntVector3.zero)
+        if (LogicDir!=_inputMoveDir && _inputMoveDir != FixedIntVector3.zero)
         {
-            LogicDir = mInputMoveDir;
+            LogicDir = _inputMoveDir;
         }
     }
 
-    public void InputLogicFrameEvent(FixedIntVector3 inputDir,long playerid=0)
+    public void InputLogicFrameEvent(FixedIntVector3 inputDir)
     {
-        mInputMoveDir = inputDir;
-        testPlayerid=playerid;
+        _inputMoveDir = inputDir;
     }
 }

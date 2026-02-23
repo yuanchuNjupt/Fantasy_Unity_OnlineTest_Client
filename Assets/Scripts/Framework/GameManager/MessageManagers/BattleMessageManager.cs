@@ -38,7 +38,7 @@ namespace Framework.MessageManagers
                 
                 if (_battleLogicManager == null)
                 {
-                    _battleLogicManager = GameManager.Core.World.GetExitsLogicManager<BattleLogicManager>();
+                    _battleLogicManager = World.GetExitsLogicManager<BattleLogicManager>();
                 }
                 _battleLogicManager.OnLogicFrameUpdateByServer(message);
 

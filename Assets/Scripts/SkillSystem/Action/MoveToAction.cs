@@ -62,7 +62,7 @@ public class MoveToAction : ActionBehaviour
     public override void OnLogicFrameUpdate()
     {
         //计算当前累计运行时间
-        mAccRumTime += LogicFrameConfig.LogicFrameIntervalms;
+        mAccRumTime += LogicFrameConfig.LogicFrameIntervalMs;
         //获取时间缩放比例
         mTimeScale = mAccRumTime / mMoveTime;
 

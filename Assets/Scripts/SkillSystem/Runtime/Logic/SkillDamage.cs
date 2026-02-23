@@ -70,7 +70,7 @@ public partial class Skill
                     FixedIntCollider3D collider = CreateOrUpdateCollider(item, null);
                     //创建字典缓存当前碰撞体
                     mColliderDic.Add(hashCode, collider);
-                    if (item.triggerIntervalMs == 0)
+                    if (item.triggerIntervalFrame == 0)
                     {
                         //触发一次伤害//TOOD
                         if (mColliderDic.ContainsKey(hashCode))
@@ -81,12 +81,12 @@ public partial class Skill
                 }
 
                 //处理碰撞体伤害检测
-                if (item.triggerIntervalMs != 0)
+                if (item.triggerIntervalFrame != 0)
                 {
                     //int mCurDamageAccTime = mCurDamageAccTimeList[i]; 值拷贝，非mCurDamageAccTimeList[i]对应的一个值
-                    mCurDamageAccTimeList[i] += LogicFrameConfig.LogicFrameIntervalms;
+                    mCurDamageAccTimeList[i] += LogicFrameConfig.LogicFrameIntervalMs;
                     //如果当前累加时间大于触发伤害间隔，那就造成伤害检测
-                    if (mCurDamageAccTimeList[i] >= item.triggerIntervalMs)
+                    if (mCurDamageAccTimeList[i] >= item.triggerIntervalFrame)
                     {
                         //触发一次伤害//TOOD
                         mCurDamageAccTimeList[i] = 0;
@@ -111,7 +111,7 @@ public partial class Skill
     public void TriggerColliderDamage(FixedIntCollider3D collider, SkillDamageConfig config)
     {
         //1.获取敌人目标列表 敌人 英雄
-        // List<LogicActor> enemyList = BattleWorld.GetExitsLogicCtrl<BattleLogicCtrl>().GetEnemyList(mSkillCreater.ObjectType);
+        // List<LogicActor> enemyList = BattleWorld.GetExitsLogicCtrl<BattleLogicCtrl>().GetEnemyList(mSkillCharacter.ObjectType);
 
         //2.通过碰撞检测逻辑，去检测碰撞到的敌人
         List<LogicActor> damageTargetList = new List<LogicActor>();
@@ -140,24 +140,10 @@ public partial class Skill
         foreach (var target in damageTargetList)
         {
             //造成伤害
-            // target.SkillDamage(DamageCalcuCenter.CaclulateDamage(config,mSkillCreater,target), config);
-
-            //添加Buff 
-            if (config.addBuffs != null && config.addBuffs.Length > 0)
-            {
-                foreach (var buffid in config.addBuffs)
-                {
-                    // BuffSystem.MainInstance.AttachBuff(buffid, mSkillCreater, target, this, null);
-                }
-            }
-            //触发对应的后续技能 
-            if (config.triggerSkillid != 0)
-            {
-                //预释放技能 这个技能会在当前技能释放完成后 立即进行释放
-                mCombinationSkillid = config.triggerSkillid;
-            }
+            // target.SkillDamage(DamageCalcuCenter.CaclulateDamage(config,mSkillCharacter,target), config);
+            
             //添加击中特效
-            AddHitEffect(target, config.targetType == TargetType.Self ? mSkillCreater : target);
+            AddHitEffect(target, config.targetType == TargetType.Self ? mSkillCharacter : target);
             //播放击中音效
             PlayHitAudio();
 
@@ -170,7 +156,7 @@ public partial class Skill
     {
         if (mSkillData.skillCfg.skillHitEffect != null)
         {
-            targetObj.OnHit(mSkillData.skillCfg.skillHitEffectPath, mSkillData.skillCfg.hitEffectSurvivalTimeMs, source, mSkillCreater.LogicXAxis);
+            targetObj.OnHit(mSkillData.skillCfg.skillHitEffectPath, mSkillData.skillCfg.hitEffectSurvivalTimeMs, source, mSkillCharacter.LogicXAxis);
         }
     }
     /// <summary>
@@ -179,9 +165,9 @@ public partial class Skill
     public FixedIntCollider3D CreateOrUpdateCollider(SkillDamageConfig item, FixedIntCollider3D damageCollider, LogicObject followObj = null)
     {
         // FixedIntCollider3D collider = damageCollider;
-        // LogicObject followTragetObj = followObj == null ? mSkillCreater : followObj;
+        // LogicObject followTragetObj = followObj == null ? mSkillCharacter : followObj;
         // //创建对应的定点数碰撞体
-        // if (item.detectionMode == DamageDetectionMode.BOX3D)
+        // if (item.detectionMode == DamageDetectionMode.Box3D)
         // {
         //     FixedIntVector3 boxSize = new FixedIntVector3(item.boxSize);
         //     FixedIntVector3 offset = new FixedIntVector3(item.boxOffset) * followTragetObj.LogicXAxis;
@@ -201,10 +187,10 @@ public partial class Skill
         //     offset.y = FixedIntMathf.Abs(offset.y);
         //
         //     if (damageCollider == null)
-        //         collider = new FixIntSphereCollider(item.raduis, offset);
+        //         collider = new FixIntSphereCollider(item.radius, offset);
         //     
-        //     collider.SetBoxData(item.raduis, offset);
-        //     collider.UpdateColliderInfo(followTragetObj.LogicPos, FixIntVector3.zero, item.raduis);
+        //     collider.SetBoxData(item.radius, offset);
+        //     collider.UpdateColliderInfo(followTragetObj.LogicPos, FixIntVector3.zero, item.radius);
         // }
         // return collider;
         return null;

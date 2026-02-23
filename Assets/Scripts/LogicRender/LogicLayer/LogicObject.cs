@@ -12,24 +12,42 @@ using FixedPhysics.FixedCollider.Colliders._3D;
 /// </summary>
 public abstract class LogicObject
 {
-    private FixedIntVector3 logicPos;//逻辑对象逻辑位置
-    private FixedIntVector3 logicDir = new FixedIntVector3(0,0,1);//逻辑对象朝向
-    private FixedIntVector3 logicAngle;//逻辑对象旋转角度
-    private FixedInt logicMoveSpeed=3;//逻辑对象移动速度
-    private FixedInt logicXAxis = 1;//逻辑轴向
-    private FixedIntVector3 isActive;//当前逻辑对象是否激活
-    private bool isForceAllowMove = false;//是否强制允许移动
-    private bool isForceNotAllowModifyDir = false;//是否允许修改朝向
-    public bool ObjectHasNewPos=false;//对象是否有新位置
+    
+    private FixedIntVector3 _logicPos;
+    private FixedIntVector3 _logicDir = new FixedIntVector3(0,0,1);
+    private FixedInt _logicMoveSpeed=3;
+    private FixedInt _logicXAxis = 1;
+    private FixedIntVector3 _isActive;
+    private bool _isForceAllowMove = false;
+    private bool _isForceNotAllowModifyDir = false;
+    
+    
+    //对象是否有新位置
+    public bool objectHasNewPos=false;
+    
+    
+    
     //公开属性
-    public FixedIntVector3 LogicPos { get { return logicPos; } set { logicPos = value; ObjectHasNewPos = true; } }//逻辑对象逻辑位置
-    public FixedIntVector3 LogicDir { get { return logicDir; } set { logicDir = value; } }//逻辑对象朝向
-    public FixedIntVector3 LogicAngle { get { return logicAngle; } set { logicAngle = value; } }//逻辑对象旋转角度
-    public FixedInt LogicMoveSpeed { get { return logicMoveSpeed; } set { logicMoveSpeed = value; } }//逻辑对象移动速度
-    public FixedInt LogicXAxis { get { return logicXAxis; } set { logicXAxis = value; } }//逻辑轴向
-    public FixedIntVector3 IsActive { get { return isActive; } set { isActive = value; } }//当前逻辑对象是否激活
-    public bool IsForceAllowMove { get { return isForceAllowMove; } set { Debug.Log("isForceAllowMove:"+ isForceAllowMove); isForceAllowMove = value; } }//是否强制允许移动
-    public bool IsForceNotAlllowModifyDir { get { return isForceNotAllowModifyDir; } set { Debug.Log("isForceAlllowModifyDir:" + isForceAllowMove); isForceNotAllowModifyDir = value; } }//是否允许修改朝向
+    //逻辑对象逻辑位置
+    public FixedIntVector3 LogicPos { get { return _logicPos; } set { _logicPos = value; objectHasNewPos = true; } }//逻辑对象逻辑位置
+    
+    //逻辑对象朝向
+    public FixedIntVector3 LogicDir { get { return _logicDir; } set { _logicDir = value; } }//逻辑对象朝向
+    
+    //逻辑对象移动速度
+    public FixedInt LogicMoveSpeed { get { return _logicMoveSpeed; } set { _logicMoveSpeed = value; } }//逻辑对象移动速度
+    
+    //逻辑轴向
+    public FixedInt LogicXAxis { get { return _logicXAxis; } set { _logicXAxis = value; } }//逻辑轴向
+    
+    //当前逻辑对象是否激活
+    public FixedIntVector3 IsActive { get { return _isActive; } set { _isActive = value; } }//当前逻辑对象是否激活
+    
+    //是否强制允许移动
+    public bool IsForceAllowMove { get { return _isForceAllowMove; } set { Debug.Log("isForceAllowMove:"+ _isForceAllowMove); _isForceAllowMove = value; } }//是否强制允许移动
+    
+    //是否允许修改朝向
+    public bool IsForceNotAllowModifyDir { get { return _isForceNotAllowModifyDir; } set { Debug.Log("isForceAlllowModifyDir:" + _isForceAllowMove); _isForceNotAllowModifyDir = value; } }//是否允许修改朝向
 
     /// <summary>
     /// 渲染对象

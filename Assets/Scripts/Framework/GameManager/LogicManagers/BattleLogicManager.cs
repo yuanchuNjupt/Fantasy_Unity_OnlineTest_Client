@@ -22,9 +22,9 @@ namespace Framework.GameManagerFramework.LogicManagers
         public void OnCreate()
         {
             
-            _battleDataManager = GameManager.Core.World.GetExitsDataManager<BattleDataManager>();
-            _battlePlayerLogicManager = GameManager.Core.World.GetExitsLogicManager<BattlePlayerLogicManager>();
-            _battleMessageManager = GameManager.Core.World.GetExitsMessageManager<BattleMessageManager>();
+            _battleDataManager = World.GetExitsDataManager<BattleDataManager>();
+            _battlePlayerLogicManager = World.GetExitsLogicManager<BattlePlayerLogicManager>();
+            _battleMessageManager = World.GetExitsMessageManager<BattleMessageManager>();
             Debug.Log("BattleLogicManager创建完成");
         }
         
@@ -85,7 +85,7 @@ namespace Framework.GameManagerFramework.LogicManagers
             
             FrameOperationData frameOperationData = new FrameOperationData();
             frameOperationData.operateType = (int)operateType;
-            frameOperationData.playerId = GameManager.Core.World.GetExitsDataManager<UserDataManager>().UserData.AccountId;
+            frameOperationData.playerId = World.GetExitsDataManager<UserDataManager>().UserData.AccountId;
             switch (operateType)
             {
                 case OperateTypeEnum.None:
@@ -105,20 +105,24 @@ namespace Framework.GameManagerFramework.LogicManagers
            
         }
         
+        //服务器下发收集到的所有玩家的上一帧的操作帧，将这些操作帧应用到玩家逻辑层，并调用逻辑帧更新接口
         public void OnLogicFrameUpdateByServer(FrameOperateEventMessage_G2C message)
         {
-            //将玩家当前的操作数据发送给服务器
+            //将玩家这一帧的操作数据发送给服务器
             SendFrameOperateData();
-            LogicFrameConfig.LogicFrameid = message.logicFrameId;
+            
+            LogicFrameConfig.LogicFrameId = message.logicFrameId;
+            
             _battleDataManager.BattleState = BattleStateEnum.Start;
+            
             _battleDataManager.BattleId = message.battleId;
             
             //更新玩家输入
             message.frameOperateDataList.ForEach(data =>
             {
-                var player = _battlePlayerLogicManager.GetBattlePlayerLogic(data.playerId);
+                var player = _battlePlayerLogicManager.GetBattlePlayerInstance(data.playerId);
                 
-                player.InputFrameOperate(data);
+                player.logicLayer.InputFrameOperate(data);
                 
             });
             

@@ -9,6 +9,7 @@ namespace Framework.GameManagerFramework.DataManagers
     public class BattleDataManager : IDataBehaviour
     {
         
+        //战斗中玩家的数据列表,由服务器下发
         public List<BattlePlayerData> BattlePlayerDataList { get; private set; }
         
         //角色的普通攻击列表

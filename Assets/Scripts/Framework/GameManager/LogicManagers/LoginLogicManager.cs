@@ -1,4 +1,5 @@
 ﻿using System;
+using Framework.GameManager.Base;
 using Framework.GameManager.Core;
 using Framework.GameManagerFramework.DataManagers;
 using Framework.GameManagerFramework.WorldScripts;
@@ -14,13 +15,13 @@ namespace Framework.GameManagerFramework.LogicManagers
     [WorldSource(typeof(LoginWorld))]
     public class LoginLogicManager : ILogicBehaviour
     {
-        private LoginMessageManager _loginMessageManager;
-        private UserDataManager _userDataManager;
+        [Inject]private LoginMessageManager _loginMessageManager;
+        [Inject]private UserDataManager _userDataManager;
         
         public void OnCreate()
         {
-            _userDataManager = GameManager.Core.World.GetExitsDataManager<UserDataManager>();
-            _loginMessageManager = GameManager.Core.World.GetExitsMessageManager<LoginMessageManager>();
+            // _userDataManager = GameManager.Core.World.GetExitsDataManager<UserDataManager>();
+            // _loginMessageManager = GameManager.Core.World.GetExitsMessageManager<LoginMessageManager>();
         }
 
         public async void RegisterAccount(string account, string password)
