@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-
-namespace BloodAwakening.Global
+namespace Framework.AdvancedLog
 {
     /// <summary>
     /// 增强版日志工具类

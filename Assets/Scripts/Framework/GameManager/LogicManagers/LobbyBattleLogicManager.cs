@@ -1,4 +1,5 @@
-﻿using Framework.GameManager.Core;
+﻿using Framework.GameManager.Base;
+using Framework.GameManager.Core;
 using Framework.GameManagerFramework.DataManagers;
 using Framework.GameManagerFramework.WorldScripts;
 using Framework.MessageManagers;
@@ -9,13 +10,13 @@ namespace Framework.GameManagerFramework.LogicManagers
     public class LobbyBattleLogicManager : ILogicBehaviour
     {
         
-        private LobbyTeamDataManager _lobbyTeamDataManager;
-        private LobbyBattleMessageManager _lobbyBattleMessageManager;
+        [Inject] private LobbyTeamDataManager _lobbyTeamDataManager;
+        [Inject] private LobbyBattleMessageManager _lobbyBattleMessageManager;
         
         public void OnCreate()
         {
-            _lobbyBattleMessageManager = GameManager.Core.World.GetExitsMessageManager<LobbyBattleMessageManager>();
-            _lobbyTeamDataManager = GameManager.Core.World.GetExitsDataManager<LobbyTeamDataManager>();
+            // _lobbyBattleMessageManager = GameManager.Core.World.GetExitsMessageManager<LobbyBattleMessageManager>();
+            // _lobbyTeamDataManager = GameManager.Core.World.GetExitsDataManager<LobbyTeamDataManager>();
         }
         
         /// <summary>
@@ -32,7 +33,7 @@ namespace Framework.GameManagerFramework.LogicManagers
             }
 
             if (_lobbyTeamDataManager.TeamInfo.TeamOwner.accountId !=
-                GameManager.Core.World.GetExitsDataManager<UserDataManager>().UserData.AccountId)
+                World.GetExitsDataManager<UserDataManager>().UserData.AccountId)
             {
                 UnityEngine.Debug.LogWarning("只有队长才能进入副本!");
                 return;

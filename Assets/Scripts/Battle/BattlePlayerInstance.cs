@@ -2,6 +2,7 @@
 using Fantasy;
 using Framework.GameManager.Core;
 using Framework.GameManagerFramework.DataManagers;
+using Lobby;
 using UnityEngine;
 
 namespace Battle
@@ -15,7 +16,10 @@ namespace Battle
     public class BattlePlayerInstance
     {
         //唯一ID
-        private readonly long _uid;
+        public readonly long uid;
+        
+        //角色昵称
+        public readonly string playerName;
         
         public readonly PlayerType playerType;
         
@@ -31,14 +35,15 @@ namespace Battle
         
         private readonly TP_CameraLogicManager _cameraLogicManager;
 
-        public BattlePlayerInstance(long uid)
+        public BattlePlayerInstance(long uid , string playerName)
         {
-            _uid = uid;
+            this.uid = uid;
+            this.playerName = playerName;
             _userDataManager = World.GetExitsDataManager<UserDataManager>();
             _battleDataManager = World.GetExitsDataManager<BattleDataManager>();
             _cameraLogicManager = World.GetExitsLogicManager<TP_CameraLogicManager>();
             
-            playerType = _userDataManager.UserData.AccountId == _uid ? PlayerType.Self : PlayerType.Other;
+            playerType = _userDataManager.UserData.AccountId == this.uid ? PlayerType.Self : PlayerType.Other;
             
             CreateLogicLayer();
             CreateRenderLayer();
@@ -67,6 +72,7 @@ namespace Battle
             GameObject go = Object.Instantiate(Resources.Load<GameObject>(LoadPathConfig.BattleModelName));
             renderLayer = go.GetComponent<BattlePlayerRenderLayer>();
             renderLayer.Init(this);
+            InitPlayerName();
             renderLayer.OnCreate();
         }
         
@@ -79,6 +85,12 @@ namespace Battle
         {
             inputSampleLayer = renderLayer.gameObject.AddComponent<BattlePlayerInputSampleLayer>();
             inputSampleLayer.Init(this);
+        }
+
+        private void InitPlayerName()
+        {
+            LobbyPlayerName playerNameInstance = renderLayer.gameObject.GetComponent<LobbyPlayerName>();
+            playerNameInstance.Init(playerName , _cameraLogicManager.cameraControl.transform);
         }
 
         //应用逻辑帧输入数据到角色实例

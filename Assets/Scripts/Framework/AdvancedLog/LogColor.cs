@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BloodAwakening.Global
+namespace Framework.AdvancedLog
 {
     /// <summary>
     /// 日志颜色枚举

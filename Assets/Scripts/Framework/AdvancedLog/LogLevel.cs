@@ -1,4 +1,4 @@
-﻿namespace BloodAwakening.Global
+﻿namespace Framework.AdvancedLog
 {
     /// <summary>
     /// 日志级别

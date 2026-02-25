@@ -32,7 +32,7 @@ namespace Framework.GameManagerFramework.LogicManagers
         {
             _battleDataManager.BattlePlayerDataList.ForEach(player =>
             {
-                BattlePlayerInstance battlePlayer = new BattlePlayerInstance(player.playerId);
+                BattlePlayerInstance battlePlayer = new BattlePlayerInstance(player.playerId, player.playerName);
                 _battlePlayerList.Add(player.playerId , battlePlayer);
             });
         }

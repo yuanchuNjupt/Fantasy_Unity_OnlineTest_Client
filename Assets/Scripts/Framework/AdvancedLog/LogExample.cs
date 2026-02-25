@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
+
 using UnityEngine;
 
-namespace BloodAwakening.Global
+namespace Framework.AdvancedLog
 {
     /// <summary>
     /// 日志工具类使用示例

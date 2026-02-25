@@ -1,7 +1,7 @@
 
 using System;
-using BloodAwakening.Global;
 using Fantasy.Async;
+using Framework.AdvancedLog;
 using Framework.GameManager.Core;
 using Framework.GameManagerFramework.WorldScripts;
 using Generate;
