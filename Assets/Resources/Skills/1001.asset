@@ -15,55 +15,37 @@ MonoBehaviour:
   character:
     skillCharacter: {fileID: 0}
     skillAnim: {fileID: 7400002, guid: 165130b8a71020641b870cab32d18c5e, type: 3}
-    animProgress: 0
-    isLoopAnim: 0
-    animLoopCount: 0
+    animProgress: 74
     MaxLogicFrame: 32
-    logicFrame: 0
+    logicFrame: 1
     isSetCustomLogicFrame: 0
     customLogicFame: 0
-    animLength: 2.166667
-    skillDurationMS: 2166
   skillCfg:
-    showStockPileData: 0
-    showSkillGuide: 0
     skillIcon: {fileID: 0}
     skillid: 1001
     skillName: NormalSkill01
-    needMgicValue: 100
-    skillShakeBeforeTimeMs: 330
-    skillAttackDurationMs: 2166
-    skillShakeArfterMs: 700
-    skillCDTimeMs: 0
-    skillType: 0
-    stockPileStageData: []
-    skillGuideObj: {fileID: 0}
-    skillGuideRange: 0
-    ComobinationSkillid: 0
+    skillShakeAfterFrame: 0
+    skillCdTime: 0
+    combinationSkillId: 0
     skillHitEffect: {fileID: 0}
     skillHitEffectPath: 
     hitEffectSurvivalTimeMs: 100
     skillHitAudio: {fileID: 0}
-    showSkillPortrait: 0
-    skillProtraitObj: {fileID: 0}
     skillDes: 
   damageCfgList:
   - triggerFrame: 5
     endFrame: 6
-    triggerIntervalMs: 0
+    triggerIntervalFrame: 0
     isFollowEffect: 0
-    damageType: 0
     damageRate: 0
     detectionMode: 1
     boxSize: {x: 1, y: 1, z: 1}
     boxOffset: {x: 0, y: 0.5, z: 1}
     sphereOffset: {x: 0, y: 0.9, z: 0}
-    raduis: 1
-    raduisHeight: 0
+    radius: 1
+    radiusHeight: 0
     colliderPosType: 0
     targetType: 2
-    addBuffs: 
-    triggerSkillid: 0
   effectCfgList:
   - skillEffect: {fileID: 1872147318604286, guid: 5bea49531fc500c408823a2e2863106f,
       type: 3}
@@ -79,20 +61,17 @@ MonoBehaviour:
     damageConfig:
       triggerFrame: 0
       endFrame: 0
-      triggerIntervalMs: 0
+      triggerIntervalFrame: 0
       isFollowEffect: 0
-      damageType: 0
       damageRate: 0
       detectionMode: 0
       boxSize: {x: 1, y: 1, z: 1}
       boxOffset: {x: 0, y: 0, z: 0}
       sphereOffset: {x: 0, y: 0.9, z: 0}
-      raduis: 1
-      raduisHeight: 0
+      radius: 1
+      radiusHeight: 0
       colliderPosType: 0
       targetType: 0
-      addBuffs: 
-      triggerSkillid: 0
     isAttachAction: 0
     actionConfig:
       triggerFrame: 0
@@ -104,7 +83,6 @@ MonoBehaviour:
       actionFinishidList: 
     GameEffectObj: {fileID: 0}
   audioCfgList: []
-  bulletCfgList: []
   actionCfgList:
   - triggerFrame: 3
     moveActionType: 0
@@ -113,4 +91,3 @@ MonoBehaviour:
     durationMs: 300
     actionFinishOpation: 0
     actionFinishidList: 
-  buffCfgList: []

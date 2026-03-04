@@ -5,7 +5,7 @@ using UnityEngine;
 namespace FixedPhysics.Bounds
 {
     [ExecuteInEditMode]
-    public class SphereColliderBounds : MonoBehaviour
+    public class SphereColliderBounds : MonoBehaviour , IColliderBounds
     {
         private Vector3 _offset;
         private float _radius;

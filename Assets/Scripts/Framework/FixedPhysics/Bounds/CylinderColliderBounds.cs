@@ -5,21 +5,21 @@ using UnityEngine;
 namespace FixedPhysics.Bounds
 {
     [ExecuteInEditMode]
-    public class CylinderColliderBounds : MonoBehaviour
+    public class CylinderColliderBounds : MonoBehaviour , IColliderBounds
     {
-        public Vector3 mCenter;
-        public float mRadius;
-        public float mHeight;
+        public Vector3 offset;
+        public float radius;
+        public float height;
         public Color color = new Color(1, 0, 0.1f);
-        private static Material mMaterial;
+        private static Material _material;
 
         public void SyncRenderData(FixedIntVector3 logicPos, FixedInt radius, FixedInt height, FixedIntVector3 offset)
         {
-            mCenter = Vector3.zero;
-            mRadius = radius.RenderFloat;
-            mHeight = height.RenderFloat;
+            this.offset = Vector3.zero;
+            this.radius = radius.RenderFloat;
+            this.height = height.RenderFloat;
             transform.position = logicPos.ToVector3();
-            transform.localScale = new Vector3(mRadius * 2, mHeight / 2, mRadius * 2); // Adjust scale to fit the cylinder dimensions
+            transform.localScale = new Vector3(this.radius * 2, this.height / 2, this.radius * 2); // Adjust scale to fit the cylinder dimensions
         }
         
         
@@ -28,17 +28,17 @@ namespace FixedPhysics.Bounds
         void OnRenderObject()
         {
             GL.PushMatrix();
-            if (mMaterial == null)
+            if (_material == null)
             {
-                mMaterial = new Material(Shader.Find("Hidden/Internal-Colored"));
-                mMaterial.color = color;
+                _material = new Material(Shader.Find("Hidden/Internal-Colored"));
+                _material.color = color;
             }
 
-            mMaterial.SetPass(0);
+            _material.SetPass(0);
             GL.MultMatrix(transform.localToWorldMatrix);
 
-            DrawCylinderSides(mRadius, mHeight, 20);
-            DrawCylinderCaps(mRadius, mHeight, 20);
+            DrawCylinderSides(radius, height, 20);
+            DrawCylinderCaps(radius, height, 20);
 
             GL.PopMatrix();
         }
@@ -53,9 +53,9 @@ namespace FixedPhysics.Bounds
 
                 // Calculate points on the circle at the top and bottom of the cylinder
                 Vector3 topPoint = new Vector3(Mathf.Cos(theta) * radius, height / 2, Mathf.Sin(theta) * radius) +
-                                   mCenter;
+                                   offset;
                 Vector3 bottomPoint = new Vector3(Mathf.Cos(theta) * radius, -height / 2, Mathf.Sin(theta) * radius) +
-                                      mCenter;
+                                      offset;
 
                 GL.Begin(GL.LINES);
                 GL.Vertex(topPoint);
@@ -65,9 +65,9 @@ namespace FixedPhysics.Bounds
                 if (i < segments)
                 {
                     Vector3 nextTopPoint = new Vector3(Mathf.Cos(theta + thetaSegment) * radius, height / 2,
-                        Mathf.Sin(theta + thetaSegment) * radius) + mCenter;
+                        Mathf.Sin(theta + thetaSegment) * radius) + offset;
                     Vector3 nextBottomPoint = new Vector3(Mathf.Cos(theta + thetaSegment) * radius, -height / 2,
-                        Mathf.Sin(theta + thetaSegment) * radius) + mCenter;
+                        Mathf.Sin(theta + thetaSegment) * radius) + offset;
 
                     GL.Begin(GL.LINES);
                     GL.Vertex(topPoint);
@@ -89,13 +89,13 @@ namespace FixedPhysics.Bounds
 
                 // Top cap
                 Vector3 topPoint = new Vector3(Mathf.Cos(theta) * radius, height / 2, Mathf.Sin(theta) * radius) +
-                                   mCenter;
+                                   offset;
                 if (i < segments)
                 {
                     Vector3 nextTopPoint = new Vector3(Mathf.Cos(theta + thetaSegment) * radius, height / 2,
-                        Mathf.Sin(theta + thetaSegment) * radius) + mCenter;
+                        Mathf.Sin(theta + thetaSegment) * radius) + offset;
                     GL.Begin(GL.LINES);
-                    GL.Vertex(new Vector3(mCenter.x, height / 2 + mCenter.y, mCenter.z));
+                    GL.Vertex(new Vector3(offset.x, height / 2 + offset.y, offset.z));
                     GL.Vertex(topPoint);
                     GL.Vertex(topPoint);
                     GL.Vertex(nextTopPoint);
@@ -104,13 +104,13 @@ namespace FixedPhysics.Bounds
 
                 // Bottom cap
                 Vector3 bottomPoint = new Vector3(Mathf.Cos(theta) * radius, -height / 2, Mathf.Sin(theta) * radius) +
-                                      mCenter;
+                                      offset;
                 if (i < segments)
                 {
                     Vector3 nextBottomPoint = new Vector3(Mathf.Cos(theta + thetaSegment) * radius, -height / 2,
-                        Mathf.Sin(theta + thetaSegment) * radius) + mCenter;
+                        Mathf.Sin(theta + thetaSegment) * radius) + offset;
                     GL.Begin(GL.LINES);
-                    GL.Vertex(new Vector3(mCenter.x, -height / 2 + mCenter.y, mCenter.z));
+                    GL.Vertex(new Vector3(offset.x, -height / 2 + offset.y, offset.z));
                     GL.Vertex(bottomPoint);
                     GL.Vertex(bottomPoint);
                     GL.Vertex(nextBottomPoint);

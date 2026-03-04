@@ -605,10 +605,9 @@ namespace FixedPhysics.Fixed_pointNumber.Core
     
     public static bool operator ==(FixedIntVector3 lhs, FixedIntVector3 rhs)
     {
-      FixedInt num1 = lhs.X - rhs.X;
-      FixedInt num2 = lhs.Y - rhs.Y;
-      FixedInt num3 = lhs.Z - rhs.Z;
-      return  num1 *  num1 +  num2 *  num2 +  num3 *  num3 < 9.999999439624929E-11;
+      return lhs.X.Magnification == rhs.X.Magnification &&
+             lhs.Y.Magnification == rhs.Y.Magnification &&
+             lhs.Z.Magnification == rhs.Z.Magnification;
     }
 
     
@@ -650,7 +649,6 @@ namespace FixedPhysics.Fixed_pointNumber.Core
     /// Vector3仅用于渲染，不可用于逻辑运算
     /// </summary>
     /// <returns></returns>
-    [Obsolete("Vector3仅用于渲染，不可用于逻辑运算", false)]
     public Vector3 ToVector3()
     {
       return new Vector3(X.RenderFloat, Y.RenderFloat, Z.RenderFloat);

@@ -2,6 +2,7 @@ using FixMath;
 using System.Collections;
 using System.Collections.Generic;
 using FixedPhysics.Fixed_pointNumber.Core;
+using Framework.AdvancedLog;
 using UnityEngine;
 
 /// <summary>
@@ -34,5 +35,6 @@ public partial class LogicActor
     public void UpdateMoveDir(FixedIntVector3 inputDir)
     {
         _inputMoveDir = inputDir;
+        
     }
 }

@@ -2,7 +2,7 @@
     "name": "GameInputAction",
     "maps": [
         {
-            "name": "CharacterInput",
+            "name": "LobbyPlayerInputMap",
             "id": "22914133-17c8-4188-800c-69b6d054db52",
             "actions": [
                 {
@@ -45,6 +45,15 @@
                     "name": "RAttack",
                     "type": "Button",
                     "id": "562d68e3-dc7c-445f-b4c7-2e6545caf068",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CallMouse",
+                    "type": "Button",
+                    "id": "d939609a-a27e-4d35-b0c4-3f86f8263bcb",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -205,17 +214,46 @@
                     "action": "RAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5404735e-98cc-4848-9d5c-18474c0a6ddf",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CallMouse",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
         {
-            "name": "CallMouse",
-            "id": "c458b011-18ee-4049-ada3-66f45fde1d4d",
+            "name": "BattlePlayerInputMap",
+            "id": "b8d8650e-64e1-4a20-ac8d-107588117899",
             "actions": [
                 {
-                    "name": "CallMouse",
+                    "name": "Movement",
+                    "type": "Value",
+                    "id": "ec33d96b-249b-4462-bb49-9e7649dd19ac",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "CameraLook",
+                    "type": "Value",
+                    "id": "9f61f13e-424e-431c-b6c6-2cf7a99f874e",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "LAttack",
                     "type": "Button",
-                    "id": "5326611a-300c-4e1b-8fbc-6d2d3af739fe",
+                    "id": "e9b26942-80dd-434f-a5d2-6086e6739895",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -224,13 +262,112 @@
             ],
             "bindings": [
                 {
-                    "name": "",
-                    "id": "09450096-e3bf-4c70-8603-f5c2cadc4bc2",
-                    "path": "<Keyboard>/tab",
+                    "name": "2D Vector",
+                    "id": "f19c0d20-1e74-4e4f-9741-afe32efdfea6",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "NormalizeVector2",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "729fa7dc-d64a-4e10-b7fd-2141b1ee7c62",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "CallMouse",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "4fe2e9bb-8537-421e-8062-71e76e0cd888",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "62f81fee-a632-411f-a52e-c8c7a12e8303",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "1d1137d0-0fc6-49b6-bfe7-288bcf4c6492",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "d6eec5a2-0c32-419e-b643-1c661c8f1b5c",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "NormalizeVector2",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e7f3d62c-6bd7-4145-875f-3d558cf8a3cd",
+                    "path": "<Pointer>/delta",
+                    "interactions": "",
+                    "processors": "ScaleVector2(x=0.15,y=0.15)",
+                    "groups": "",
+                    "action": "CameraLook",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "73378c5b-cff9-4821-a400-9cb4803463b4",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "ScaleVector2(x=0.75,y=0.75)",
+                    "groups": "",
+                    "action": "CameraLook",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5a661879-74a9-4e94-a33d-628050541688",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LAttack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7bef9a38-410e-42dc-b1de-ed049e6091ae",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

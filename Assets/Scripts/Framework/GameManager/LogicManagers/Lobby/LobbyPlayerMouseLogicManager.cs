@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 namespace Framework.GameManagerFramework.LogicManagers
 {
     [WorldSource(typeof(LobbyWorld))]
-    public class PlayerMouseLogicManager : ILogicBehaviour
+    public class LobbyPlayerMouseLogicManager : ILogicBehaviour
     {
         
         //管理角色的鼠标操作逻辑
@@ -15,24 +15,23 @@ namespace Framework.GameManagerFramework.LogicManagers
         private int _showMouseCount;
         
         
-        public Vector2 MoveInput => _gameInputAction.CharacterInput.Movement.ReadValue<Vector2>();
+        public Vector2 MoveInput => _gameInputAction.LobbyPlayerInputMap.Movement.ReadValue<Vector2>();
         
-        public Vector2 CameraLook => _gameInputAction.CharacterInput.CameraLook.ReadValue<Vector2>();
+        /// <summary>
+        /// 当前大厅场景的 CameraLook InputAction，供 TP_CameraControl 直接绑定
+        /// </summary>
+        public InputAction CameraLookAction => _gameInputAction.LobbyPlayerInputMap.CameraLook;
 
-        public bool Run => _gameInputAction.CharacterInput.Run.phase == InputActionPhase.Performed;
+        public bool Run => _gameInputAction.LobbyPlayerInputMap.Run.phase == InputActionPhase.Performed;
 
-        public bool NormalAttack => _gameInputAction.CharacterInput.LAttack.triggered;
-        
-        
         public void OnCreate()
         {
-            _gameInputAction = GameManager.Core.World.GetExitsLogicManager<UserMouseLogicManager>().GameInput;
-            _gameInputAction.CharacterInput.Enable();
-            _gameInputAction.CallMouse.Enable();
+            _gameInputAction = World.GetExitsLogicManager<UserMouseLogicManager>().GameInput;
+            _gameInputAction.LobbyPlayerInputMap.Enable();
             
             // 订阅 CallMouse 按键事件
-            _gameInputAction.CallMouse.CallMouse.started += OnCallMousePressed;
-            _gameInputAction.CallMouse.CallMouse.canceled += OnCallMouseReleased;
+            _gameInputAction.LobbyPlayerInputMap.CallMouse.started += OnCallMousePressed;
+            _gameInputAction.LobbyPlayerInputMap.CallMouse.canceled += OnCallMouseReleased;
             
             _showMouseCount = 0;
             Cursor.lockState = CursorLockMode.Locked;
@@ -59,7 +58,7 @@ namespace Framework.GameManagerFramework.LogicManagers
             if(_showMouseCount > 1)
                 return;
             
-            _gameInputAction.CharacterInput.Disable();
+            _gameInputAction.LobbyPlayerInputMap.Disable();
             
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -74,7 +73,7 @@ namespace Framework.GameManagerFramework.LogicManagers
             if(_showMouseCount > 0)
                 return;
             
-            _gameInputAction.CharacterInput.Enable();
+            _gameInputAction.LobbyPlayerInputMap.Enable();
             
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -84,11 +83,9 @@ namespace Framework.GameManagerFramework.LogicManagers
         public void OnDestroy()
         {
             // 取消订阅 CallMouse 按键事件
-            _gameInputAction.CallMouse.CallMouse.started -= OnCallMousePressed;
-            _gameInputAction.CallMouse.CallMouse.canceled -= OnCallMouseReleased;
-            
-            _gameInputAction.CharacterInput.Disable();
-            _gameInputAction.CallMouse.Disable();
+            _gameInputAction.LobbyPlayerInputMap.CallMouse.started -= OnCallMousePressed;
+            _gameInputAction.LobbyPlayerInputMap.CallMouse.canceled -= OnCallMouseReleased;
+            _gameInputAction.LobbyPlayerInputMap.Disable();
         }
         
     }

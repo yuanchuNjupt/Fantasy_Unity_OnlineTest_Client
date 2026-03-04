@@ -11,6 +11,7 @@ namespace Framework.GameManagerFramework.LogicManagers
         public GameInputAction GameInput { get; private set; }
         
         
+        
         public void OnCreate()
         {
             GameInput = new GameInputAction();

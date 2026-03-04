@@ -1,4 +1,5 @@
 ﻿using Battle;
+using Framework.AdvancedLog;
 using Framework.GameManagerFramework.LogicManagers;
 using UnityEngine;
 
@@ -43,7 +44,8 @@ namespace Framework.GameManagerFramework.WorldScripts
 
         private void OnLogicFrameUpdate()
         {
-            GameManager.Core.World.GetExitsLogicManager<BattlePlayerLogicManager>().OnLogicFrameUpdate();
+            GetExitsLogicManager<BattlePlayerLogicManager>().OnLogicFrameUpdate();
+            Log.Info(LogColor.Cyan , "本地模拟逻辑帧更新，当前逻辑帧ID：" + LogicFrameConfig.LogicFrameId);
         }
     }
 }

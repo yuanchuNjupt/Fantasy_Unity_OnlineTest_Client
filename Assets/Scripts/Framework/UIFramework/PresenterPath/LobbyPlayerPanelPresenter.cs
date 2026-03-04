@@ -12,7 +12,7 @@ using UnityEngine;
 public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
 {
     private bool _showTeamPanel = false;
-    private PlayerMouseLogicManager _playerMouseLogicManager;
+    private LobbyPlayerMouseLogicManager _lobbyPlayerMouseLogicManager;
     private LobbyTeamLogicManager _lobbyTeamLogicManager;
     private UserDataManager _userDataManager;
     
@@ -30,7 +30,7 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
     private void Start()
     {
         _userDataManager = Framework.GameManager.Core.World.GetExitsDataManager<UserDataManager>();
-        _playerMouseLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<PlayerMouseLogicManager>();
+        _lobbyPlayerMouseLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<LobbyPlayerMouseLogicManager>();
         _lobbyTeamLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<LobbyTeamLogicManager>();
     }
 
@@ -55,13 +55,13 @@ public class LobbyPlayerPanelPresenter : BasePresenter<LobbyPlayerPanelView>
         {
             View.TeamBackground.gameObject.SetActive(_showTeamPanel);
             //显示鼠标
-            _playerMouseLogicManager.ShowMousePartial();
+            _lobbyPlayerMouseLogicManager.ShowMousePartial();
         }
         else
         {
             View.TeamBackground.gameObject.SetActive(_showTeamPanel);
             //隐藏鼠标
-            _playerMouseLogicManager.HideMousePartial();
+            _lobbyPlayerMouseLogicManager.HideMousePartial();
         }
     }
 

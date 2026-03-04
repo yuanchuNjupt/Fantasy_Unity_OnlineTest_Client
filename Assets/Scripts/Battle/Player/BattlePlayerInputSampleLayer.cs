@@ -1,4 +1,5 @@
 ﻿using System;
+using Fantasy;
 using FixedPhysics.Fixed_pointNumber.Core;
 using Framework.GameManager.Core;
 using Framework.GameManagerFramework.LogicManagers;
@@ -19,11 +20,13 @@ namespace Battle
         //输入采样累计运行时间
         private float _accInputSampleRuntime;
 
-        private PlayerMouseLogicManager _playerMouseLogicManager;
+        private BattlePlayerMouseLogicManager _battlePlayerMouseLogicManager;
         private BattleLogicManager _battleLogicManager;
         
 
         private BattlePlayerInstance _instance;
+
+        private Vector2 newInput;
         
 
 
@@ -33,7 +36,7 @@ namespace Battle
             _instance = instance;
             _accInputSampleRuntime = 0f;
             
-            _playerMouseLogicManager = World.GetExitsLogicManager<PlayerMouseLogicManager>();
+            _battlePlayerMouseLogicManager = World.GetExitsLogicManager<BattlePlayerMouseLogicManager>();
             _battleLogicManager = World.GetExitsLogicManager<BattleLogicManager>();
             var cameraLogicManager = World.GetExitsLogicManager<TP_CameraLogicManager>(); 
             if (cameraLogicManager.cameraControl != null)
@@ -45,8 +48,8 @@ namespace Battle
 
         private void OnInputSampleFrameUpdate()
         {
-            Vector2 input = _playerMouseLogicManager.MoveInput;
-            if (input != Vector2.zero && _playerCameraTransform != null)
+            newInput = _battlePlayerMouseLogicManager.MoveInput;
+            if (newInput != Vector2.zero && _playerCameraTransform != null)
             {
                 // 获取相机前方向（XZ平面投影）
                 Vector3 cameraForward = _playerCameraTransform.forward;
@@ -60,7 +63,7 @@ namespace Battle
             
                 // 基于相机坐标系计算移动方向
                 // input.y = 前后(W/S), input.x = 左右(A/D)
-                Vector3 moveDirection = cameraForward * input.y + cameraRight * input.x;
+                Vector3 moveDirection = cameraForward * newInput.y + cameraRight * newInput.x;
             
                 // 转换为Vector2（XZ平面）
                 _inputDir = new Vector2(moveDirection.x, moveDirection.z);
@@ -69,9 +72,12 @@ namespace Battle
             {
                 _inputDir = Vector2.zero;
             }
-                
-            if(LogicFrameConfig.IsUseLocalLogicFrame)
+
+            if (LogicFrameConfig.IsUseLocalLogicFrame)
+            {
                 _instance.logicLayer.UpdateMoveDir(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
+                _instance.renderLayer.UpdateInputDir(_inputDir);  // 传入XZ平面方向向量
+            }
             else
                 _battleLogicManager.MoveFrameDataInput(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
                 
@@ -79,7 +85,7 @@ namespace Battle
                 
                 
             //检测攻击
-            if (_playerMouseLogicManager.NormalAttack)
+            if (_battlePlayerMouseLogicManager.NormalAttack)
             {
                 // 释放技能
                  _instance.logicLayer.ReleaseNormalAttack();

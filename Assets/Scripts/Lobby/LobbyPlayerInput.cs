@@ -5,7 +5,7 @@ using UnityEngine;
 
 public partial class LobbyPlayer
 {
-    private PlayerMouseLogicManager _playerMouseLogicManager;
+    private LobbyPlayerMouseLogicManager _lobbyPlayerMouseLogicManager;
     private List<Vector2> _inputDirList = new List<Vector2>();
     private List<bool> _inputRunList = new List<bool>();
     
@@ -13,7 +13,7 @@ public partial class LobbyPlayer
 
     private void OnLobbyPlayerInputInit()
     {
-        _playerMouseLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<PlayerMouseLogicManager>();
+        _lobbyPlayerMouseLogicManager = Framework.GameManager.Core.World.GetExitsLogicManager<LobbyPlayerMouseLogicManager>();
     }
     
     
@@ -21,7 +21,7 @@ public partial class LobbyPlayer
     {
         if(playerType is PlayerType.Self)
         {
-            Vector2 input = _playerMouseLogicManager.MoveInput;
+            Vector2 input = _lobbyPlayerMouseLogicManager.MoveInput;
             if (input != Vector2.zero)
             {
                 // 获取相机前方向（XZ平面投影）
@@ -52,7 +52,7 @@ public partial class LobbyPlayer
     //收集跑步状态输入
     private void UpdateInputState()
     {
-        bool isRun = _playerMouseLogicManager.Run;
+        bool isRun = _lobbyPlayerMouseLogicManager.Run;
         _inputRunList.Add(isRun);
             
     }

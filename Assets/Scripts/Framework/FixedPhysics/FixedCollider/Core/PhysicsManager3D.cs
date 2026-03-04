@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FixedPhysics.Bounds;
 using FixedPhysics.Fixed_pointNumber.Core;
 using FixedPhysics.FixedCollider.Algorithm;
 using FixedPhysics.FixedCollider.Colliders._3D;
@@ -366,6 +367,18 @@ namespace FixedPhysics.FixedCollider.Core
             var fixedHeight = new FixedInt(height);
 
             var collider = new FixedIntCylinderCollider(fixedRadius, fixedHeight, position, fixedOffset);
+
+            if (isManagerCollider)
+            {
+                AddCollider3D(collider);
+            }
+
+            return collider;
+        }
+
+        public FixedIntCylinderCollider CreateFixedIntCylinderColliderByBound(CylinderColliderBounds bound , bool isManagerCollider = true)
+        {
+            var collider = new FixedIntCylinderCollider(bound.radius, bound.height, bound.transform.position, bound.offset);
 
             if (isManagerCollider)
             {

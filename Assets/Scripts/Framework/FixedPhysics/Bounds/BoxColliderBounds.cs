@@ -5,7 +5,7 @@ using UnityEngine;
 namespace FixedPhysics.Bounds
 {
     [ExecuteInEditMode]
-    public class BoxColliderBounds : MonoBehaviour
+    public class BoxColliderBounds : MonoBehaviour , IColliderBounds
     {
         private static Material _lineMaterial;
         private Vector3 _offset;

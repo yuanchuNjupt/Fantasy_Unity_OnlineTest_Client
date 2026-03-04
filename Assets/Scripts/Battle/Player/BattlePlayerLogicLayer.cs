@@ -1,7 +1,10 @@
-﻿using Fantasy;
+﻿using Battle.CustomCollider;
+using Fantasy;
+using FixedPhysics.Bounds;
 using FixedPhysics.Fixed_pointNumber.Core;
 using FixMath;
 using Framework.GameManagerFramework.DataManagers;
+using UnityEngine;
 
 namespace Battle
 {
@@ -14,6 +17,7 @@ namespace Battle
         {
             this.instance = instance;
             ObjectType = LogicObjectType.Hero;
+            LogicPos = new FixedIntVector3(0, 0, 0);
         }
 
         // public void InputFrameOperate(FrameOperationData data)
@@ -27,22 +31,33 @@ namespace Battle
         //     }
         //     else if((OperateTypeEnum)data.operateType == OperateTypeEnum.ReleaseSkill)
         //     {
-        //         //TODO 释放技能逻辑
+        //         
         //     }
         // }
 
         public void ApplyMoveOperation(CSFixIntVector3 csInputDir)
         {
-            FixedIntVector3 inputDir = new FixedIntVector3(new FixedInt((long)csInputDir.x) ,new FixedInt((long)csInputDir.y) ,new FixedInt((long)csInputDir.z));
+            FixedIntVector3 inputDir = new FixedIntVector3(
+                FixedInt.ConstructFromMagnification(csInputDir.x),
+                FixedInt.ConstructFromMagnification(csInputDir.y),
+                FixedInt.ConstructFromMagnification(csInputDir.z));
             UpdateMoveDir(inputDir);
         }
         
         public void ApplyReleaseSkillOperation()
         {
             //TODO:释放技能逻辑
-            
-            
         }
+
+        public void InitCollider(CylinderColliderBounds bound)
+        {
+            Collider = new BattlePlayerCollider(bound.radius,bound.height,LogicPos,bound.offset , this);
+            
+            Debug.Assert(Collider != null , "Collider != null");
+            (Collider as BattlePlayerCollider).HostingCollider();
+        }
+        
+        
         
         
         

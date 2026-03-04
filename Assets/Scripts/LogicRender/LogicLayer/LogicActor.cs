@@ -1,13 +1,19 @@
 using FixMath;
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.Bounds;
 using FixedPhysics.Fixed_pointNumber.Core;
+using FixedPhysics.FixedCollider.Core;
 using UnityEngine;
 
 public partial class LogicActor : LogicObject
 {
     public override void OnCreate()
     {
+        //
+        
+        
+        
         base.OnCreate();
     }
  
@@ -40,22 +46,7 @@ public partial class LogicActor : LogicObject
         Debug.Log("SkillDamage hp:"+hp);
         CaculDamage(hp, DamageSource.SKill);
     }
-
-    public virtual void BuffDamage(FixedInt hp, SkillDamageConfig damageConfig)
-    {
-        Debug.Log("BuffDamage hp:" + hp);
-        CaculDamage(hp, DamageSource.SKill);
-    }
-    /// <summary>
-    /// 某个技能或buff会减少或阻挡子弹伤害
-    /// </summary>
-    public virtual void BulletDamage(FixedInt hp,SkillDamageConfig damageConfig)
-    {
-        Debug.Log("BulletDamage hp:" + hp);
-        CaculDamage(hp, DamageSource.Bullet);
-    }
-
-
+    
     /// <summary>
     /// 计算伤害
     /// </summary>
@@ -103,4 +94,5 @@ public partial class LogicActor : LogicObject
     {
         base.OnDestroy();
     }
+    
 }

@@ -2,6 +2,7 @@
 using Fantasy;
 using Framework.GameManager.Core;
 using Framework.GameManagerFramework.DataManagers;
+using Framework.GameManagerFramework.LogicManagers;
 using Lobby;
 using UnityEngine;
 
@@ -34,6 +35,8 @@ namespace Battle
         private readonly BattleDataManager _battleDataManager;
         
         private readonly TP_CameraLogicManager _cameraLogicManager;
+        
+        private readonly BattlePlayerMouseLogicManager _battleMouseLogicManager;
 
         public BattlePlayerInstance(long uid , string playerName)
         {
@@ -42,16 +45,18 @@ namespace Battle
             _userDataManager = World.GetExitsDataManager<UserDataManager>();
             _battleDataManager = World.GetExitsDataManager<BattleDataManager>();
             _cameraLogicManager = World.GetExitsLogicManager<TP_CameraLogicManager>();
+            _battleMouseLogicManager = World.GetExitsLogicManager<BattlePlayerMouseLogicManager>();
             
             playerType = _userDataManager.UserData.AccountId == this.uid ? PlayerType.Self : PlayerType.Other;
             
             CreateLogicLayer();
             CreateRenderLayer();
-            CreateTPCamera();
             if (playerType == PlayerType.Self)
             {
+                CreateTPCamera();   // 只有本地玩家才创建跟随相机
                 CreateInputSampleLayer();
             }
+            InitPlayerName();       // 相机已创建后再初始化头顶名字（依赖 cameraControl）
             
         }
         
@@ -71,14 +76,15 @@ namespace Battle
             //实例化角色预制体
             GameObject go = Object.Instantiate(Resources.Load<GameObject>(LoadPathConfig.BattleModelName));
             renderLayer = go.GetComponent<BattlePlayerRenderLayer>();
-            renderLayer.Init(this);
-            InitPlayerName();
-            renderLayer.OnCreate();
+            renderLayer.OnCreate();  // 先调用OnCreate，确保_playerAnimator等组件引用已初始化
+            renderLayer.Init(this);  // 再调用Init，此时PlayAnim可以安全使用_playerAnimator
         }
         
         private void CreateTPCamera()
         {
-            _cameraLogicManager.InitTPCamera(renderLayer.transform);
+            // 传入战斗场景对应的 CameraLook Action
+            var cameraLookAction = _battleMouseLogicManager.CameraLookAction;
+            _cameraLogicManager.InitTPCamera(renderLayer.transform, cameraLookAction);
         }
         
         private void CreateInputSampleLayer()
@@ -90,6 +96,8 @@ namespace Battle
         private void InitPlayerName()
         {
             LobbyPlayerName playerNameInstance = renderLayer.gameObject.GetComponent<LobbyPlayerName>();
+            // cameraControl 只有本地玩家才会初始化，非本地玩家时跳过头顶名字朝向绑定
+            if (_cameraLogicManager.cameraControl == null) return;
             playerNameInstance.Init(playerName , _cameraLogicManager.cameraControl.transform);
         }
 

@@ -449,9 +449,8 @@ namespace FixedPhysics.Fixed_pointNumber.Core
   
     public static bool operator ==(FixedIntVector2 lhs, FixedIntVector2 rhs)
     {
-      FixedInt num1 = lhs.X - rhs.X;
-      FixedInt num2 = lhs.Y - rhs.Y;
-      return  num1 *  num1 +  num2 *  num2 < 9.999999439624929E-11;
+      return lhs.X.Magnification == rhs.X.Magnification &&
+             lhs.Y.Magnification == rhs.Y.Magnification;
     }
 
   

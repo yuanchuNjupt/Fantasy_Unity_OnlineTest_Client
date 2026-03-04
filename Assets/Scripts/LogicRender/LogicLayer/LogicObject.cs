@@ -13,7 +13,7 @@ using FixedPhysics.FixedCollider.Colliders._3D;
 public abstract class LogicObject
 {
     
-    private FixedIntVector3 _logicPos;
+    private FixedIntVector3 _logicPos = new FixedIntVector3(0,0,0);
     private FixedIntVector3 _logicDir = new FixedIntVector3(0,0,1);
     private FixedInt _logicMoveSpeed=3;
     private FixedInt _logicXAxis = 1;
@@ -56,7 +56,7 @@ public abstract class LogicObject
     /// <summary>
     /// 定点数碰撞体
     /// </summary>
-    public FixedIntBoxCollider Collider { get; protected set; }
+    public FixedIntCollider3D Collider { get; protected set; }
     /// <summary>
     /// 逻辑对象状态
     /// </summary>
@@ -92,7 +92,7 @@ public abstract class LogicObject
     /// </summary>
     public virtual void OnDestroy()
     {
-
+        
     }
 }
 public enum LogicObjectActionState

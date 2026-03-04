@@ -91,11 +91,21 @@ namespace Framework.GameManagerFramework.LogicManagers
                 case OperateTypeEnum.None:
                     break;
                 case OperateTypeEnum.InputMove:
-                    frameOperationData.inputDir = new CSFixIntVector3(){x = inputDir.X.RenderInt, y = inputDir.Y.RenderInt, z = inputDir.Z.RenderInt};
+                    frameOperationData.inputDir = new CSFixIntVector3()
+                    {
+                        x = (int)inputDir.X.Magnification,
+                        y = (int)inputDir.Y.Magnification,
+                        z = (int)inputDir.Z.Magnification
+                    };
                     break;
                 case OperateTypeEnum.ReleaseSkill:
                     frameOperationData.skillId = skillId;
-                    frameOperationData.skillPos = new CSFixIntVector3(){x =  inputDir.X.RenderInt, y = inputDir.Y.RenderInt, z = inputDir.Z.RenderInt};
+                    frameOperationData.skillPos = new CSFixIntVector3()
+                    {
+                        x = (int)skillPos.X.Magnification,
+                        y = (int)skillPos.Y.Magnification,
+                        z = (int)skillPos.Z.Magnification
+                    };
                     frameOperationData.skillType = (int)skillType;
                     break;
                 default:

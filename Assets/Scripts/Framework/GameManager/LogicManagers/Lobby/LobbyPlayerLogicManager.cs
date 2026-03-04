@@ -62,8 +62,10 @@ namespace Framework.GameManagerFramework.LogicManagers
             GameObject go = Resources.Load<GameObject>(LoadPathConfig.LobbyModelName);
             GameObject player = Object.Instantiate(go);
             
-            //初始化相机
-            GameManager.Core.World.GetExitsLogicManager<TP_CameraLogicManager>().InitTPCamera(player.transform);
+            //初始化相机，传入大厅场景的 CameraLook Action
+            var lobbyMouseMgr = World.GetExitsLogicManager<LobbyPlayerMouseLogicManager>();
+            World.GetExitsLogicManager<TP_CameraLogicManager>()
+                .InitTPCamera(player.transform, lobbyMouseMgr.CameraLookAction);
             
             _lobbyPlayerDataManager.SetSelfPlayer(player.AddComponent<LobbyPlayer>());
             _lobbyPlayerDataManager.SelfPlayer.InitPos(selfData.position , selfData.inputDir);

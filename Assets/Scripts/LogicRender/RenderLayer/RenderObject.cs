@@ -58,6 +58,7 @@ public class RenderObject : MonoBehaviour
     /// </summary>
     public virtual void Update()
     {
+        if (logicObject == null) return;
         UpdatePosition();
         UpdateDir();
     }
@@ -66,7 +67,7 @@ public class RenderObject : MonoBehaviour
     /// </summary>
     public virtual void UpdatePosition()
     {
-        if (mIsUpdatePosAndRotation == false)
+        if (logicObject == null || mIsUpdatePosAndRotation == false)
         {
             return;
         }
@@ -113,20 +114,19 @@ public class RenderObject : MonoBehaviour
     /// </summary>
     public virtual void UpdateDir()
     {
-        if (mIsUpdatePosAndRotation == false)
+        if (logicObject == null || mIsUpdatePosAndRotation == false)
         {
             return;
         }
-        //mRenderDir.x = logicObject.LogicXAxis >= 0 ? 0 : -20;
+
         mRenderDir = logicObject.LogicDir.ToVector3();
         
+
         // 计算目标旋转角度（朝向移动方向）
         Quaternion targetRotation = Quaternion.LookRotation(mRenderDir);
         
         // 平滑插值到目标旋转
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10);
-
-        
     }
     public virtual void OnDeath()
     {
