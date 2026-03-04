@@ -130,6 +130,44 @@ namespace FixedPhysics.FixedCollider.Core
         }
 
         /// <summary>
+        /// 检测两个圆柱碰撞器的碰撞
+        /// </summary>
+        public bool DetectCollision(FixedIntCylinderCollider cylinderA, FixedIntCylinderCollider cylinderB)
+        {
+            return AABBCollisionDetection.DetectCollision(cylinderA, cylinderB);
+        }
+
+        /// <summary>
+        /// 检测圆柱碰撞器与盒体碰撞器的碰撞。
+        /// 若盒体有Y轴旋转则使用SAT（精确），否则使用AABB（快速）。
+        /// </summary>
+        public bool DetectCollision(FixedIntCylinderCollider cylinderCollider, FixedIntBoxCollider boxCollider)
+        {
+
+            if (boxCollider.ColliderType is FixedIntCollider3DType.OnlyYRotation)
+            {
+                return SATCollisionDetection.DetectCollision(boxCollider, cylinderCollider);
+            }
+            else if(boxCollider.ColliderType is FixedIntCollider3DType.AABB)
+            {
+                return AABBCollisionDetection.DetectCollision(cylinderCollider, boxCollider);
+            }
+            else
+            {
+                throw new System.NotSupportedException("不支持的碰撞体类型: " + boxCollider.ColliderType);
+            }
+            
+        }
+
+        /// <summary>
+        /// 检测圆柱碰撞器与球体碰撞器的碰撞
+        /// </summary>
+        public bool DetectCollision(FixedIntCylinderCollider cylinderCollider, FixedIntSphereCollider sphereCollider)
+        {
+            return AABBCollisionDetection.DetectCollision(cylinderCollider, sphereCollider);
+        }
+
+        /// <summary>
         /// 检测所有碰撞体之间的碰撞并触发相应的生命周期回调
         /// </summary>
         private void DetectAllCollider()
@@ -164,6 +202,31 @@ namespace FixedPhysics.FixedCollider.Core
                              colliderB is FixedIntSphereCollider sphereCollider2)
                     {
                         result = DetectCollision(sphereCollider2, boxCollider2);
+                    }
+                    else if (colliderA is FixedIntCylinderCollider cylA &&
+                             colliderB is FixedIntCylinderCollider cylB)
+                    {
+                        result = DetectCollision(cylA, cylB);
+                    }
+                    else if (colliderA is FixedIntCylinderCollider cylA2 &&
+                             colliderB is FixedIntBoxCollider boxC)
+                    {
+                        result = DetectCollision(cylA2, boxC);
+                    }
+                    else if (colliderA is FixedIntBoxCollider boxC2 &&
+                             colliderB is FixedIntCylinderCollider cylB2)
+                    {
+                        result = DetectCollision(cylB2, boxC2);
+                    }
+                    else if (colliderA is FixedIntCylinderCollider cylA3 &&
+                             colliderB is FixedIntSphereCollider sphereC)
+                    {
+                        result = DetectCollision(cylA3, sphereC);
+                    }
+                    else if (colliderA is FixedIntSphereCollider sphereC2 &&
+                             colliderB is FixedIntCylinderCollider cylB3)
+                    {
+                        result = DetectCollision(cylB3, sphereC2);
                     }
 
                     // 创建碰撞对
@@ -257,6 +320,53 @@ namespace FixedPhysics.FixedCollider.Core
 
             var collider = new FixedIntSphereCollider(position, offset, radius);
             
+            if (isManagerCollider)
+            {
+                AddCollider3D(collider);
+            }
+
+            return collider;
+        }
+
+        /// <summary>
+        /// 创建FixedIntCylinderCollider（圆柱碰撞体不可旋转，为AABB）
+        /// </summary>
+        /// <param name="position">中心位置</param>
+        /// <param name="offset">偏移量</param>
+        /// <param name="radius">圆柱半径</param>
+        /// <param name="height">圆柱高度</param>
+        /// <param name="isManagerCollider">是否由管理器管理</param>
+        public FixedIntCylinderCollider CreateFixedIntCylinderCollider(FixedIntVector3 position,
+            FixedIntVector3 offset, FixedInt radius, FixedInt height, bool isManagerCollider = true)
+        {
+            var collider = new FixedIntCylinderCollider(radius, height, position, offset);
+
+            if (isManagerCollider)
+            {
+                AddCollider3D(collider);
+            }
+
+            return collider;
+        }
+
+        /// <summary>
+        /// 根据Unity Transform创建FixedIntCylinderCollider（圆柱碰撞体不可旋转，为AABB）
+        /// </summary>
+        /// <param name="transform">Unity Transform，用于获取世界坐标</param>
+        /// <param name="offset">碰撞体本地偏移</param>
+        /// <param name="radius">圆柱半径</param>
+        /// <param name="height">圆柱高度</param>
+        /// <param name="isManagerCollider">是否由管理器管理</param>
+        public FixedIntCylinderCollider CreateFixedIntCylinderColliderByUnity(Transform transform,
+            Vector3 offset, float radius, float height, bool isManagerCollider = true)
+        {
+            FixedIntVector3 position = transform.position;
+            FixedIntVector3 fixedOffset = offset;
+            var fixedRadius = new FixedInt(radius);
+            var fixedHeight = new FixedInt(height);
+
+            var collider = new FixedIntCylinderCollider(fixedRadius, fixedHeight, position, fixedOffset);
+
             if (isManagerCollider)
             {
                 AddCollider3D(collider);

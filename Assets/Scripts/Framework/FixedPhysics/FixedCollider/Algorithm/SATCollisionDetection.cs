@@ -159,6 +159,53 @@ namespace FixedPhysics.FixedCollider.Algorithm
             return DetectCollision(sphereCollider, boxCollider);
         }
 
+        /// <summary>
+        /// 检测带Y轴旋转的长方体碰撞器与圆柱碰撞器之间的碰撞。
+        /// 算法：Y轴区间重叠检测 + XZ平面将圆柱轴心变换到Box局部坐标系后做"圆-矩形"检测。
+        /// </summary>
+        public static bool DetectCollision(FixedIntBoxCollider boxCollider, FixedIntCylinderCollider cylinderCollider)
+        {
+            if (!boxCollider.Active || !cylinderCollider.Active)
+                return false;
+
+            // 1. Y轴区间重叠检测
+            FixedInt boxMinY = boxCollider.Y - boxCollider.HalfHeight;
+            FixedInt boxMaxY = boxCollider.Y + boxCollider.HalfHeight;
+            FixedInt cylMinY = cylinderCollider.Y - cylinderCollider.HalfHeight;
+            FixedInt cylMaxY = cylinderCollider.Y + cylinderCollider.HalfHeight;
+            if (boxMaxY < cylMinY || cylMaxY < boxMinY)
+                return false;
+
+            // 2. XZ平面：将圆柱轴心变换到Box的局部坐标系（反向Y轴旋转）
+            FixedInt rotY = boxCollider.Rotation.Y;
+            FixedInt cos = FixedIntMathf.Cos(-rotY * FixedIntMathf.Deg2Rad);
+            FixedInt sin = FixedIntMathf.Sin(-rotY * FixedIntMathf.Deg2Rad);
+
+            FixedInt dx = cylinderCollider.X - boxCollider.X;
+            FixedInt dz = cylinderCollider.Z - boxCollider.Z;
+
+            // 旋转到局部坐标系
+            FixedInt localX = dx * cos - dz * sin;
+            FixedInt localZ = dx * sin + dz * cos;
+
+            // 3. Clamp到Box的半宽/半深范围，找到最近点
+            FixedInt closestX = FixedIntMathf.Clamp(localX, -boxCollider.HalfWidth, boxCollider.HalfWidth);
+            FixedInt closestZ = FixedIntMathf.Clamp(localZ, -boxCollider.HalfDepth, boxCollider.HalfDepth);
+
+            // 4. 局部坐标系下圆心到最近点的距离与圆柱半径比较
+            FixedInt diffX = localX - closestX;
+            FixedInt diffZ = localZ - closestZ;
+            return (diffX * diffX + diffZ * diffZ) <= (cylinderCollider.Radius * cylinderCollider.Radius);
+        }
+
+        /// <summary>
+        /// 检测圆柱碰撞器与带Y轴旋转的长方体碰撞器之间的碰撞（调用顺序相反的重载）
+        /// </summary>
+        public static bool DetectCollision(FixedIntCylinderCollider cylinderCollider, FixedIntBoxCollider boxCollider)
+        {
+            return DetectCollision(boxCollider, cylinderCollider);
+        }
+
 
 
         #endregion

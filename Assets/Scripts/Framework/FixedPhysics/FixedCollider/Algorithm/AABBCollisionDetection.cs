@@ -1,4 +1,4 @@
-﻿using FixedPhysics.Fixed_pointNumber.Core;
+﻿﻿using FixedPhysics.Fixed_pointNumber.Core;
 using FixedPhysics.Fixed_pointNumber.FixedIntMath;
 using FixedPhysics.FixedCollider.Colliders._2D;
 using FixedPhysics.FixedCollider.Colliders._3D;
@@ -125,6 +125,108 @@ namespace FixedPhysics.FixedCollider.Algorithm
         public static bool DetectCollision(FixedIntSphereCollider sphereCollider, FixedIntBoxCollider boxCollider)
         {
             return DetectCollision(boxCollider, sphereCollider);
+        }
+
+        /// <summary>
+        /// 检测两个圆柱碰撞器之间的碰撞（AABB，无旋转）
+        /// XZ平面做圆与圆检测，Y轴做区间重叠检测
+        /// </summary>
+        public static bool DetectCollision(FixedIntCylinderCollider cylinderA, FixedIntCylinderCollider cylinderB)
+        {
+            if (!cylinderA.Active || !cylinderB.Active)
+                return false;
+
+            // Y轴区间重叠检测
+            FixedInt aMinY = cylinderA.Y - cylinderA.HalfHeight;
+            FixedInt aMaxY = cylinderA.Y + cylinderA.HalfHeight;
+            FixedInt bMinY = cylinderB.Y - cylinderB.HalfHeight;
+            FixedInt bMaxY = cylinderB.Y + cylinderB.HalfHeight;
+            if (aMaxY < bMinY || bMaxY < aMinY)
+                return false;
+
+            // XZ平面圆圆检测
+            FixedInt dx = cylinderA.X - cylinderB.X;
+            FixedInt dz = cylinderA.Z - cylinderB.Z;
+            FixedInt radiusSum = cylinderA.Radius + cylinderB.Radius;
+            return (dx * dx + dz * dz) <= (radiusSum * radiusSum);
+        }
+
+        /// <summary>
+        /// 检测圆柱碰撞器与盒体碰撞器之间的碰撞（AABB，无旋转）
+        /// XZ平面做圆与矩形检测，Y轴做区间重叠检测
+        /// </summary>
+        public static bool DetectCollision(FixedIntCylinderCollider cylinderCollider, FixedIntBoxCollider boxCollider)
+        {
+            if (!cylinderCollider.Active || !boxCollider.Active)
+                return false;
+
+            // Y轴区间重叠检测
+            FixedInt cylMinY = cylinderCollider.Y - cylinderCollider.HalfHeight;
+            FixedInt cylMaxY = cylinderCollider.Y + cylinderCollider.HalfHeight;
+            FixedInt boxMinY = boxCollider.Y - boxCollider.HalfHeight;
+            FixedInt boxMaxY = boxCollider.Y + boxCollider.HalfHeight;
+            if (cylMaxY < boxMinY || boxMaxY < cylMinY)
+                return false;
+
+            // XZ平面：圆心到矩形最近点距离检测
+            FixedInt dx = cylinderCollider.X - boxCollider.X;
+            FixedInt dz = cylinderCollider.Z - boxCollider.Z;
+            FixedInt closestX = FixedIntMathf.Clamp(dx, -boxCollider.HalfWidth, boxCollider.HalfWidth);
+            FixedInt closestZ = FixedIntMathf.Clamp(dz, -boxCollider.HalfDepth, boxCollider.HalfDepth);
+            dx -= closestX;
+            dz -= closestZ;
+            return (dx * dx + dz * dz) <= (cylinderCollider.Radius * cylinderCollider.Radius);
+        }
+
+        /// <summary>
+        /// 检测盒体碰撞器与圆柱碰撞器之间的碰撞（调用顺序相反的重载）
+        /// </summary>
+        public static bool DetectCollision(FixedIntBoxCollider boxCollider, FixedIntCylinderCollider cylinderCollider)
+        {
+            return DetectCollision(cylinderCollider, boxCollider);
+        }
+
+        /// <summary>
+        /// 检测圆柱碰撞器与球体碰撞器之间的碰撞（AABB，无旋转）
+        /// 将球体与圆柱表面的最近点距离和球半径比较
+        /// </summary>
+        public static bool DetectCollision(FixedIntCylinderCollider cylinderCollider, FixedIntSphereCollider sphereCollider)
+        {
+            if (!cylinderCollider.Active || !sphereCollider.Active)
+                return false;
+
+            // Y轴：球心到圆柱Y范围最近点的距离
+            FixedInt cylMinY = cylinderCollider.Y - cylinderCollider.HalfHeight;
+            FixedInt cylMaxY = cylinderCollider.Y + cylinderCollider.HalfHeight;
+            FixedInt closestY = FixedIntMathf.Clamp(sphereCollider.Y, cylMinY, cylMaxY);
+            FixedInt dy = sphereCollider.Y - closestY;
+
+            // XZ平面：球心到圆柱轴的距离，再减去圆柱半径得到最近点
+            FixedInt dx = sphereCollider.X - cylinderCollider.X;
+            FixedInt dz = sphereCollider.Z - cylinderCollider.Z;
+            FixedInt zero = new FixedInt(0);
+            FixedInt xzDistSq = dx * dx + dz * dz;
+            FixedInt xzDelta;
+            if (xzDistSq > zero)
+            {
+                FixedInt xzDist = FixedIntMathf.Sqrt(xzDistSq);
+                xzDelta = xzDist - cylinderCollider.Radius;
+                if (xzDelta < zero) xzDelta = zero;
+            }
+            else
+            {
+                xzDelta = zero;
+            }
+
+            return (xzDelta * xzDelta + dy * dy) <= (sphereCollider.Radius * sphereCollider.Radius);
+        }
+
+        /// <summary>
+        /// 检测球体碰撞器与圆柱碰撞器之间的碰撞（调用顺序相反的重载）
+        /// </summary>
+        public static bool DetectCollision(FixedIntSphereCollider sphereCollider, FixedIntCylinderCollider cylinderCollider)
+        {
+            return DetectCollision(cylinderCollider, sphereCollider);
         }
 
         #endregion
