@@ -14,14 +14,14 @@ public partial class Skill
     public void OnLogicFrameUpdateAction()
     {
         //处理行动配置
-        if (mSkillData.actionCfgList != null && mSkillData.actionCfgList.Count > 0)
+        if (_skillData.actionCfgList != null && _skillData.actionCfgList.Count > 0)
         {
-            foreach (var item in mSkillData.actionCfgList)
+            foreach (var item in _skillData.actionCfgList)
             {
                 if (item.triggerFrame==mCurLogicFrame)
                 {
                     //触发行动
-                    AddMoveAction(item,mSkillCharacter);
+                    AddMoveAction(item,skillCharacter);
                 }
             }
         }
@@ -45,7 +45,7 @@ public partial class Skill
                     case MoveActionFinishOpation.Skill://释放后续技能
                         foreach (var item in item.actionFinishidList)
                         {
-                            mSkillCharacter.ReleaseSKill(item);
+                            skillCharacter.ReleaseSKill(item);
                         }
                         break;
                 }
@@ -55,7 +55,7 @@ public partial class Skill
         FixedIntVector3 movePos = new FixedIntVector3(item.movePos.x,item.movePos.y,item.movePos.z);
         FixedIntVector3 targetPos;
         FixedIntVector3 startPos = logicMoveObj.LogicPos;
-        targetPos = logicMoveObj.LogicPos + movePos* logicMoveObj.LogicXAxis; //-1 1
+        targetPos = logicMoveObj.LogicPos + movePos; // * logicMoveObj.LogicXAxis; -1 1
                                                                               //计算移动类型
         // MoveType moveType = MoveType.target;
         // if (item.moveActionType == MoveActionType.TargetPos)
@@ -79,22 +79,22 @@ public partial class Skill
         //     //目标位置
         //     targetPos = sKillGuidePos;
         //     //起始位置
-        //     startPos = targetPos + mSkillCharacter.LogicXAxis * new FixIntVector3(offset);
+        //     startPos = targetPos + skillCharacter.LogicXAxis * new FixIntVector3(offset);
         //     startPos.y = FixIntMath.Abs(startPos.y);
         // }
         // else if (item.moveActionType == MoveActionType.BezierPos)
         // {
         //     //1.计算起始位置
-        //     startPos = mSkillCharacter.LogicPos + mSkillCharacter.LogicXAxis * new FixIntVector3 (offset);
+        //     startPos = skillCharacter.LogicPos + skillCharacter.LogicXAxis * new FixIntVector3 (offset);
         //     startPos.y = FixIntMath.Abs(startPos.y);//不让当前对象，y<0，否则就会跑到地下去
         //     //2.计算最高点位置
-        //     FixIntVector3 heightPosOffset = new FixIntVector3(item.heightPos) * mSkillCharacter.LogicXAxis;
+        //     FixIntVector3 heightPosOffset = new FixIntVector3(item.heightPos) * skillCharacter.LogicXAxis;
         //     heightPosOffset.y = FixIntMath.Abs(heightPosOffset.y);
-        //     FixIntVector3 heightPos = mSkillCharacter.LogicPos + heightPosOffset;
+        //     FixIntVector3 heightPos = skillCharacter.LogicPos + heightPosOffset;
         //     //3.计算结束位置
-        //     FixIntVector3 endPosOffset = new FixIntVector3(item.movePos) * mSkillCharacter.LogicXAxis;
+        //     FixIntVector3 endPosOffset = new FixIntVector3(item.movePos) * skillCharacter.LogicXAxis;
         //     endPosOffset.y= FixIntMath.Abs(endPosOffset.y);
-        //     targetPos = mSkillCharacter.LogicPos + endPosOffset;
+        //     targetPos = skillCharacter.LogicPos + endPosOffset;
         //     //3.执行贝塞尔运动
         //     // MoveBezierAction moveBezier = new MoveBezierAction(logicMoveObj,startPos,heightPos,targetPos,item.durationMs, OnActionFinish, moveUpdateCallBack);
         //     // LogicActionController.Instance.RunAciton(moveBezier);

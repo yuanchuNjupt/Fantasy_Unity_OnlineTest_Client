@@ -1,7 +1,9 @@
 ﻿using Battle;
+using FixedPhysics.FixedCollider.Core;
 using Framework.AdvancedLog;
 using Framework.GameManagerFramework.LogicManagers;
 using UnityEngine;
+using Logger = Framework.AdvancedLog.Logger;
 
 namespace Framework.GameManagerFramework.WorldScripts
 {
@@ -27,6 +29,9 @@ namespace Framework.GameManagerFramework.WorldScripts
             {
                 //更新逻辑帧
                 OnLogicFrameUpdate();
+                PhysicsManager3D.Instance.OnLogicFrameUpdate();
+                
+                
                 //计算下一个逻辑帧运行的时间
                 _nextLogicFrameTime += LogicFrameConfig.LogicFrameInterval;
                 //逻辑帧ID进行自增
@@ -45,7 +50,6 @@ namespace Framework.GameManagerFramework.WorldScripts
         private void OnLogicFrameUpdate()
         {
             GetExitsLogicManager<BattlePlayerLogicManager>().OnLogicFrameUpdate();
-            Log.Info(LogColor.Cyan , "本地模拟逻辑帧更新，当前逻辑帧ID：" + LogicFrameConfig.LogicFrameId);
         }
     }
 }

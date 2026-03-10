@@ -151,6 +151,15 @@ namespace FixedPhysics.FixedCollider.Algorithm
 
         public static bool DetectCollision(FixedIntSphereCollider sphereCollider, FixedIntBoxCollider boxCollider)
         {
+            if (!boxCollider.Active || !sphereCollider.Active)
+            {
+                return false;
+            }
+
+            if (boxCollider.Rotation == 0)
+            {
+                return AABBCollisionDetection.DetectCollision(sphereCollider, boxCollider);
+            }
             return false;
         }
         
@@ -162,6 +171,7 @@ namespace FixedPhysics.FixedCollider.Algorithm
         /// <summary>
         /// 检测带Y轴旋转的长方体碰撞器与圆柱碰撞器之间的碰撞。
         /// 算法：Y轴区间重叠检测 + XZ平面将圆柱轴心变换到Box局部坐标系后做"圆-矩形"检测。
+        /// 逻辑与2D版 GetClosestPointOnRotatedBox 完全一致。
         /// </summary>
         public static bool DetectCollision(FixedIntBoxCollider boxCollider, FixedIntCylinderCollider cylinderCollider)
         {
@@ -176,26 +186,16 @@ namespace FixedPhysics.FixedCollider.Algorithm
             if (boxMaxY < cylMinY || cylMaxY < boxMinY)
                 return false;
 
-            // 2. XZ平面：将圆柱轴心变换到Box的局部坐标系（反向Y轴旋转）
-            FixedInt rotY = boxCollider.Rotation.Y;
-            FixedInt cos = FixedIntMathf.Cos(-rotY * FixedIntMathf.Deg2Rad);
-            FixedInt sin = FixedIntMathf.Sin(-rotY * FixedIntMathf.Deg2Rad);
+            
+            // 1. 找到矩形上距离圆心最近的点
+            var circleCenter = new FixedIntVector2(cylinderCollider.Position.X, cylinderCollider.Position.Z);
+            FixedIntVector2 closestPoint = GetClosestPointOnRotatedBox(boxCollider, circleCenter);
 
-            FixedInt dx = cylinderCollider.X - boxCollider.X;
-            FixedInt dz = cylinderCollider.Z - boxCollider.Z;
+            // 2. 计算圆心到最近点的距离
+            FixedInt distanceSquared = (circleCenter - closestPoint).sqrMagnitude;
 
-            // 旋转到局部坐标系
-            FixedInt localX = dx * cos - dz * sin;
-            FixedInt localZ = dx * sin + dz * cos;
-
-            // 3. Clamp到Box的半宽/半深范围，找到最近点
-            FixedInt closestX = FixedIntMathf.Clamp(localX, -boxCollider.HalfWidth, boxCollider.HalfWidth);
-            FixedInt closestZ = FixedIntMathf.Clamp(localZ, -boxCollider.HalfDepth, boxCollider.HalfDepth);
-
-            // 4. 局部坐标系下圆心到最近点的距离与圆柱半径比较
-            FixedInt diffX = localX - closestX;
-            FixedInt diffZ = localZ - closestZ;
-            return (diffX * diffX + diffZ * diffZ) <= (cylinderCollider.Radius * cylinderCollider.Radius);
+            // 3. 如果距离小于等于半径，则发生碰撞
+            return distanceSquared <= cylinderCollider.Radius * cylinderCollider.Radius;
         }
 
         /// <summary>
@@ -224,9 +224,9 @@ namespace FixedPhysics.FixedCollider.Algorithm
             FixedInt halfHeight = boxCollider.HalfHeight;
             FixedInt rotation = boxCollider.Rotation;
 
-            // 计算旋转的sin和cos值
-            FixedInt cos = FixedIntMathf.Cos(rotation * FixedIntMathf.Deg2Rad);
-            FixedInt sin = FixedIntMathf.Sin(rotation * FixedIntMathf.Deg2Rad);
+            // 直接用角度查表，避免 Deg2Rad 精度损失
+            FixedInt cos = FixedIntMathf.CosDeg(rotation);
+            FixedInt sin = FixedIntMathf.SinDeg(rotation);
 
             // 四个未旋转的顶点（相对于中心）
             FixedIntVector2[] localVertices = new FixedIntVector2[4]
@@ -271,11 +271,11 @@ namespace FixedPhysics.FixedCollider.Algorithm
             FixedIntVector2 center = new FixedIntVector2(boxCollider.Position.X, boxCollider.Position.Z);
             FixedInt halfWidth = boxCollider.HalfWidth;
             FixedInt halfDepth = boxCollider.HalfDepth;
-            FixedInt rotation = boxCollider.Rotation.Y;
+            FixedInt rotation = boxCollider.Rotation;
 
-            // 计算旋转的sin和cos值
-            FixedInt cos = FixedIntMathf.Cos(rotation * FixedIntMathf.Deg2Rad);
-            FixedInt sin = FixedIntMathf.Sin(rotation * FixedIntMathf.Deg2Rad);
+            // 直接用角度查表，避免 Deg2Rad 精度损失
+            FixedInt cos = FixedIntMathf.CosDeg(rotation);
+            FixedInt sin = FixedIntMathf.SinDeg(rotation);
 
             // 四个未旋转的顶点（相对于中心）
             FixedIntVector2[] localVertices = new FixedIntVector2[4]
@@ -386,8 +386,9 @@ namespace FixedPhysics.FixedCollider.Algorithm
             // 1. 将点转换到盒体的局部坐标系（反向旋转）
             FixedIntVector2 center = boxCollider.Position;
             FixedInt rotation = -boxCollider.Rotation; // 反向旋转
-            FixedInt cos = FixedIntMathf.Cos(rotation * FixedIntMathf.Deg2Rad);
-            FixedInt sin = FixedIntMathf.Sin(rotation * FixedIntMathf.Deg2Rad);
+            // 直接用角度查表，避免 Deg2Rad 精度损失
+            FixedInt cos = FixedIntMathf.CosDeg(rotation);
+            FixedInt sin = FixedIntMathf.SinDeg(rotation);
 
             // 点相对于盒体中心的位置
             FixedInt dx = point.X - center.X;
@@ -403,14 +404,50 @@ namespace FixedPhysics.FixedCollider.Algorithm
 
             // 3. 将最近点转换回世界坐标系（正向旋转）
             rotation = boxCollider.Rotation;
-            cos = FixedIntMathf.Cos(rotation * FixedIntMathf.Deg2Rad);
-            sin = FixedIntMathf.Sin(rotation * FixedIntMathf.Deg2Rad);
+            cos = FixedIntMathf.CosDeg(rotation);
+            sin = FixedIntMathf.SinDeg(rotation);
 
             FixedInt worldX = clampedX * cos - clampedY * sin + center.X;
             FixedInt worldY = clampedX * sin + clampedY * cos + center.Y;
 
             return new FixedIntVector2(worldX, worldY);
         }
+
+        private static FixedIntVector2 GetClosestPointOnRotatedBox(FixedIntBoxCollider boxCollider, FixedIntVector2 point)
+        {
+            FixedIntVector2 center = new FixedIntVector2(boxCollider.Position.X, boxCollider.Position.Z);
+            FixedInt rotation = -boxCollider.Rotation; // 反向旋转
+
+            // 直接用角度查表，避免 Deg2Rad 精度损失
+            FixedInt cos = FixedIntMathf.CosDeg(rotation);
+            FixedInt sin = FixedIntMathf.SinDeg(rotation);
+
+            // 点相对于盒体中心的位置
+            FixedInt dx = point.X - center.X;
+            FixedInt dy = point.Y - center.Y;
+
+            // 旋转到盒体的局部坐标系
+            FixedInt localX = dx * cos - dy * sin;
+            FixedInt localY = dx * sin + dy * cos;
+
+            // 2. 在局部坐标系中，将点限制在盒体范围内
+            // 注意：这里是 XZ 平面检测，localY 对应 Z 轴，应使用 HalfDepth
+            FixedInt clampedX = FixedIntMathf.Clamp(localX, -boxCollider.HalfWidth, boxCollider.HalfWidth);
+            FixedInt clampedY = FixedIntMathf.Clamp(localY, -boxCollider.HalfDepth, boxCollider.HalfDepth);
+
+            // 3. 将最近点转换回世界坐标系（正向旋转）
+            rotation = boxCollider.Rotation;
+            cos = FixedIntMathf.CosDeg(rotation);
+            sin = FixedIntMathf.SinDeg(rotation);
+
+            FixedInt worldX = clampedX * cos - clampedY * sin + center.X;
+            FixedInt worldY = clampedX * sin + clampedY * cos + center.Y;
+
+            return new FixedIntVector2(worldX, worldY);
+        }
+        
+        
+        
 
         /// <summary>
         /// 计算两个向量的点积
@@ -423,3 +460,4 @@ namespace FixedPhysics.FixedCollider.Algorithm
         #endregion
     }
 }
+

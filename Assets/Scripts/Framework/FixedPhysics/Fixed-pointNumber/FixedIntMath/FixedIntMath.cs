@@ -18,11 +18,6 @@ namespace FixedPhysics.Fixed_pointNumber.FixedIntMath
         private const int Multiple = 1024;
         
         /// <summary>
-        /// 角度转弧度系数 (π / 180 ≈ 0.01745329)
-        /// </summary>
-        public static readonly FixedInt Deg2Rad = 0.01745329f;
-        
-        /// <summary>
         /// 弧度转角度系数 (180 / π ≈ 57.29578)
         /// </summary>
         public static readonly FixedInt Rad2Deg = 57.29578f;
@@ -175,6 +170,36 @@ namespace FixedPhysics.Fixed_pointNumber.FixedIntMath
         }
 
         /// <summary>
+        /// 四象限反正切（定点数版本，全程整数运算，保证帧同步确定性）
+        /// </summary>
+        public static FixedInt Atan2(FixedInt fy, FixedInt fx)
+        {
+            int y = (int)fy.Magnification;
+            int x = (int)fx.Magnification;
+            int num;
+            int num2;
+            if (x < 0)
+            {
+                if (y < 0) { x = -x; y = -y; num = 1; }
+                else        { x = -x;           num = -1; }
+                num2 = -31416;
+            }
+            else
+            {
+                if (y < 0) { y = -y; num = -1; }
+                else        {          num =  1; }
+                num2 = 0;
+            }
+            int dIM = Atan2LookupTable.DIM;
+            long num3 = (long)(dIM - 1);
+            long b = (long)((x >= y) ? x : y);
+            int num4 = (int)Divide((long)x * num3, b);
+            int num5 = (int)Divide((long)y * num3, b);
+            int num6 = Atan2LookupTable.table[num5 * dIM + num4];
+            return ((num6 + num2) * num) / 10000f;
+        }
+
+        /// <summary>
         /// 四象限反正切
         /// </summary>
         /// <param name="y"></param>
@@ -263,6 +288,36 @@ namespace FixedPhysics.Fixed_pointNumber.FixedIntMath
         {
             int index = SinCosLookupTable.getIndex(nom.Magnification, FixedInt.Multiple);
             return (SinCosLookupTable.cos_table[index] / 10000f);
+        }
+
+        /// <summary>
+        /// 直接以角度（度）为输入的正弦函数。
+        /// 用整数除法精确换算查找表索引，避免 Deg2Rad 精度损失。
+        /// index = deg_magnification * COUNT / (360 * Multiple)
+        /// </summary>
+        public static FixedInt SinDeg(FixedInt deg)
+        {
+            long count = SinCosLookupTable.COUNT;
+            long multiple = FixedInt.Multiple;
+            long raw = deg.Magnification * count;
+            int index = (int)(raw / (360L * multiple));
+            index = ((index % SinCosLookupTable.COUNT) + SinCosLookupTable.COUNT) % SinCosLookupTable.COUNT;
+            return SinCosLookupTable.sin_table[index] / 10000f;
+        }
+
+        /// <summary>
+        /// 直接以角度（度）为输入的余弦函数。
+        /// 用整数除法精确换算查找表索引，避免 Deg2Rad 精度损失。
+        /// index = deg_magnification * COUNT / (360 * Multiple)
+        /// </summary>
+        public static FixedInt CosDeg(FixedInt deg)
+        {
+            long count = SinCosLookupTable.COUNT;
+            long multiple = FixedInt.Multiple;
+            long raw = deg.Magnification * count;
+            int index = (int)(raw / (360L * multiple));
+            index = ((index % SinCosLookupTable.COUNT) + SinCosLookupTable.COUNT) % SinCosLookupTable.COUNT;
+            return SinCosLookupTable.cos_table[index] / 10000f;
         }
         /// <summary>
         /// 插值运算

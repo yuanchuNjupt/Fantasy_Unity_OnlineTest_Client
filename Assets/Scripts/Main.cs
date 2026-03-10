@@ -6,6 +6,7 @@ using Framework.GameManager.Core;
 using Framework.GameManagerFramework.WorldScripts;
 using Generate;
 using UnityEngine;
+using Logger = Framework.AdvancedLog.Logger;
 
 /// <summary>
 /// 全局唯一的游戏入口，负责游戏的初始化和全局管理
@@ -38,7 +39,7 @@ public class Main : MonoBehaviour
 
         await NetWorkManager.Instance.Initlization();
 
-        Log.Info(LogColor.Blue , "网络层初始化完成");
+        Logger.Info(LogColor.Blue , "网络层初始化完成");
         Application.targetFrameRate = FPS;
         
         //全局配置

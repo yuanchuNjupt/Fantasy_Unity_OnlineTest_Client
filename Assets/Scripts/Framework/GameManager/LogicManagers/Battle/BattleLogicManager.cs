@@ -40,38 +40,66 @@ namespace Framework.GameManagerFramework.LogicManagers
         {
             CacheFrameOperateData(OperateTypeEnum.InputMove, inputDir ,0 ,FixedIntVector3.zero , SkillTypeEnum.None);
         }
+        
+        public void ReleaseSkillFrameData(int skillId , FixedIntVector3 skillPos , SkillTypeEnum skillType)
+        {
+            CacheFrameOperateData(OperateTypeEnum.ReleaseSkill, FixedIntVector3.zero , skillId , skillPos , skillType);
+        }
 
 
-        //接收到服务器的逻辑帧更新消息后，发送当前帧的操作数据给服务器
+        /// <summary>
+        /// 操作类型权重，数值越大优先级越高
+        /// ReleaseSkill(攻击) > InputMove(移动) > None
+        /// </summary>
+        private static int GetOperateWeight(OperateTypeEnum type)
+        {
+            switch (type)
+            {
+                case OperateTypeEnum.ReleaseSkill: return 2;
+                case OperateTypeEnum.InputMove:    return 1;
+                default:                           return 0;
+            }
+        }
+
+        // 接收到服务器的逻辑帧更新消息后，发送当前帧的操作数据给服务器
         public void SendFrameOperateData()
         {
-            
             if (_battleDataManager.BattleState != BattleStateEnum.Start)
             {
-                //战斗未开始 / 已结束 不发送操作数据
+                // 战斗未开始 / 已结束 不发送操作数据
                 return;
             }
-            
+
+            var best = GetBestOperateData();
+
+            _battleMessageManager.SendFrameOperateEventMessage(
+                _battleDataManager.BattleId,
+                new List<FrameOperationData>() { best });
+            _battleDataManager.FrameOperationDataList.Clear();
+        }
+
+        private FrameOperationData GetBestOperateData()
+        {
             var operateDataList = _battleDataManager.FrameOperationDataList;
-            //将最权威的数据发送给服务器
-            //找到权重最高的操作数据
-            for (int i = operateDataList.Count - 1; i >= 0; i--)
+
+            // 遍历找到权重最高的操作数据
+            // 同权重时取最新（靠后）的一条
+            FrameOperationData best = operateDataList[0];
+            int bestWeight = GetOperateWeight((OperateTypeEnum)best.operateType);
+
+            for (int i = 1; i < operateDataList.Count; i++)
             {
-                if (operateDataList[i].operateType != (int)OperateTypeEnum.None)
+                int w = GetOperateWeight((OperateTypeEnum)operateDataList[i].operateType);
+                if (w >= bestWeight)
                 {
-                    //找到了最新的操作数据
-                    _battleMessageManager.SendFrameOperateEventMessage(_battleDataManager.BattleId ,new List<FrameOperationData>() {operateDataList[i]});
-                    _battleDataManager.FrameOperationDataList.Clear();
-                    return;
+                    best = operateDataList[i];
+                    bestWeight = w;
                 }
             }
             
-            //没有任何操作数据
-            _battleMessageManager.SendFrameOperateEventMessage(_battleDataManager.BattleId ,new List<FrameOperationData>(){operateDataList[0]});
-            _battleDataManager.FrameOperationDataList.Clear();
-            
-            
+            return  best;
         }
+        
         
         
 
@@ -113,6 +141,13 @@ namespace Framework.GameManagerFramework.LogicManagers
             }
             _battleDataManager.FrameOperationDataList.Add(frameOperationData);
            
+        }
+
+
+        public void ModifyLogicFrameUpdate()
+        {
+            SendFrameOperateData();
+            
         }
         
         //服务器下发收集到的所有玩家的上一帧的操作帧，将这些操作帧应用到玩家逻辑层，并调用逻辑帧更新接口

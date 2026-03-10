@@ -57,6 +57,11 @@ namespace FixedPhysics.Fixed_pointNumber.Core
 
         }
 
+        public FixedInt(long value)
+        {
+            this.Magnification = value << Shift;
+        }
+
         private FixedInt(long value , bool isDirectly)
         {
             this.Magnification = value;

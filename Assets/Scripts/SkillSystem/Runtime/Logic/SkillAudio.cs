@@ -10,9 +10,9 @@ public partial class Skill
     /// </summary>
     public void OnLogicFrameUpdateAudio()
     {
-        if (mSkillData.audioCfgList!=null&&mSkillData.audioCfgList.Count>0)
+        if (_skillData.audioCfgList!=null&&_skillData.audioCfgList.Count>0)
         {
-            foreach (var item in mSkillData.audioCfgList)
+            foreach (var item in _skillData.audioCfgList)
             {
                 //是否达到了当前音效配置的播放触发帧
                 if (item.triggerFrame==mCurLogicFrame)
@@ -36,6 +36,6 @@ public partial class Skill
     public void PlayHitAudio()
     {
         //播放音效
-        // AudioController.GetInstance().PlaySoundByAudioClip(mSkillData.skillCfg.skillHitAudio, false, 100);
+        // AudioController.GetInstance().PlaySoundByAudioClip(_skillData.skillCfg.skillHitAudio, false, 100);
     }
 }

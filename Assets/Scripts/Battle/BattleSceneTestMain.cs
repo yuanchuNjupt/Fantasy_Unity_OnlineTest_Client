@@ -29,7 +29,12 @@ public class BattleSceneTestMain : MonoBehaviour
         {
             playerId = 1000,
             playerName = "TestPlayer"
-        }});
+        } , new BattlePlayerData()
+        {
+            playerId =  1001,
+            playerName = "OtherPlayer"
+        }
+        });
         World.GetExitsLogicManager<BattleLogicManager>().OnStartBattle();
         
         

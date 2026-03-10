@@ -19,8 +19,31 @@ namespace FixedPhysics.Bounds
             this.radius = radius.RenderFloat;
             this.height = height.RenderFloat;
             transform.position = logicPos.ToVector3();
-            transform.localScale = new Vector3(this.radius * 2, this.height / 2, this.radius * 2); // Adjust scale to fit the cylinder dimensions
+            transform.localScale = Vector3.one; // 不用 localScale 缩放，直接用 radius/height 绘制
         }
+        
+        public void UpdateRenderOffset(FixedIntVector3 newOffset)
+        {
+            this.offset = newOffset.ToVector3();
+        }
+        
+        public void UpdateRenderPosition(FixedIntVector3 logicPos)
+        {
+            transform.position = logicPos.ToVector3();
+        }
+
+        public void UpdateRenderRadius(FixedInt newRadius)
+        {
+            this.radius = newRadius.RenderFloat;
+        }
+
+        public void UpdateRenderHeight(FixedInt newHeight)
+        {
+            this.height = newHeight.RenderFloat;
+        }
+        
+        
+        
         
         
         

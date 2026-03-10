@@ -84,7 +84,7 @@ public class RenderObject : MonoBehaviour
                     mPreTargetPos = logicObject.LogicPos.ToVector3();
                     logicObject.objectHasNewPos = false;
                     mCurPreMoveCount = 0;
-                    // Debuger.Log("PreMove ForceUpdate Pos:" + mPreTargetPos);
+                    // Debuger.Logger("PreMove ForceUpdate Pos:" + mPreTargetPos);
                 }
                 else
                 {
@@ -94,10 +94,10 @@ public class RenderObject : MonoBehaviour
                         return;
                     }
                     //计算预测的增量位置
-                    Vector3 deltaPos = logicObject.LogicDir.ToVector3() * (logicObject.LogicMoveSpeed.RenderFloat * Time.deltaTime);
+                    Vector3 deltaPos = logicObject.LogicForwardDir.ToVector3() * (logicObject.LogicMoveSpeed.RenderFloat * Time.deltaTime);
                     mPreTargetPos += deltaPos;
                     mCurPreMoveCount++;
-                    // Debuger.Log("PreMove mPreTargetPos:" + mPreTargetPos);
+                    // Debuger.Logger("PreMove mPreTargetPos:" + mPreTargetPos);
                 }
                 //更新位置
                 transform.position = Vector3.Lerp(transform.position, mPreTargetPos, Time.deltaTime * mSmoothPosSpeed);
@@ -119,7 +119,7 @@ public class RenderObject : MonoBehaviour
             return;
         }
 
-        mRenderDir = logicObject.LogicDir.ToVector3();
+        mRenderDir = logicObject.LogicForwardDir.ToVector3();
         
 
         // 计算目标旋转角度（朝向移动方向）

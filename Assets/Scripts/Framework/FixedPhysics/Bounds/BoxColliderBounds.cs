@@ -8,8 +8,8 @@ namespace FixedPhysics.Bounds
     public class BoxColliderBounds : MonoBehaviour , IColliderBounds
     {
         private static Material _lineMaterial;
-        private Vector3 _offset;
-        private Vector3 _size;
+        public Vector3 offset;
+        public Vector3 size;
         
         public void UpdateRenderPosition(FixedIntVector3 logicPos)
         {
@@ -18,17 +18,17 @@ namespace FixedPhysics.Bounds
 
         public void UpdateRenderSize(FixedIntVector3 size)
         {
-            _size = size.ToVector3();
+            this.size = size.ToVector3();
         }
 
         public void UpdateRenderOffset(FixedIntVector3 offset)
         {
-            _offset = offset.ToVector3();
+            this.offset = offset.ToVector3();
         }
         
-        public void UpdateRenderRotation(FixedIntVector3 rotation)
+        public void UpdateRenderRotation(FixedInt rotation)
         {
-            transform.rotation = Quaternion.Euler(rotation.ToVector3());
+            transform.rotation = Quaternion.Euler(0, rotation.RenderFloat, 0);
         }
         
         
@@ -44,8 +44,8 @@ namespace FixedPhysics.Bounds
             GL.PushMatrix();
             GL.MultMatrix(transform.localToWorldMatrix);
 
-            var c = _offset;
-            var size = _size;
+            var c = offset;
+            var size = this.size;
             float rx = size.x / 2f;
             float ry = size.y / 2f;
             float rz = size.z / 2f;

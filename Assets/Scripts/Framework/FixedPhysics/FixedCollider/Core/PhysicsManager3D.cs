@@ -82,6 +82,16 @@ namespace FixedPhysics.FixedCollider.Core
         }
 
         /// <summary>
+        /// 清空所有碰撞体和碰撞历史，用于场景切换/重新进入时重置状态
+        /// </summary>
+        public void Reset()
+        {
+            _collidersList.Clear();
+            _lastFrameCollisions.Clear();
+            _currentFrameCollisions.Clear();
+        }
+
+        /// <summary>
         /// 逻辑帧更新，进行碰撞检测
         /// </summary>
         public void OnLogicFrameUpdate()
@@ -296,7 +306,7 @@ namespace FixedPhysics.FixedCollider.Core
             FixedIntVector3 position = uCollider.transform.position;
             FixedIntVector3 offset = uCollider.center;
             FixedIntVector3 size = uCollider.size;
-            FixedIntVector3 rotation = uCollider.transform.eulerAngles;
+            FixedInt rotation = uCollider.transform.eulerAngles.y;
 
             var collider = new FixedIntBoxCollider(position, offset, size, rotation, type);
             

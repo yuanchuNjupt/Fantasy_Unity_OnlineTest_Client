@@ -17,23 +17,8 @@ namespace Battle
         {
             this.instance = instance;
             ObjectType = LogicObjectType.Hero;
-            LogicPos = new FixedIntVector3(0, 0, 0);
         }
-
-        // public void InputFrameOperate(FrameOperationData data)
-        // {
-        //     if ((OperateTypeEnum)data.operateType == OperateTypeEnum.InputMove)
-        //     {
-        //         var CSinputDir = data.inputDir;
-        //         FixedIntVector3 inputDir = new FixedIntVector3(new FixedInt((long)CSinputDir.x) ,new FixedInt((long)CSinputDir.y) ,new FixedInt((long)CSinputDir.z));
-        //         UpdateMoveDir(inputDir);
-        //         
-        //     }
-        //     else if((OperateTypeEnum)data.operateType == OperateTypeEnum.ReleaseSkill)
-        //     {
-        //         
-        //     }
-        // }
+        
 
         public void ApplyMoveOperation(CSFixIntVector3 csInputDir)
         {

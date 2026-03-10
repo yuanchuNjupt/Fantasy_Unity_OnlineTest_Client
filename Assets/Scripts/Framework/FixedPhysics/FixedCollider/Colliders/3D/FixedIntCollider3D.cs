@@ -8,7 +8,7 @@ namespace FixedPhysics.FixedCollider.Colliders._3D
     public class FixedIntCollider3D
     {
         
-        public FixedIntVector3 Position { get; private set; }
+        public FixedIntVector3 Position { get; protected set; }
         
         public FixedIntVector3 Offset { get; private set; }
         
@@ -28,12 +28,13 @@ namespace FixedPhysics.FixedCollider.Colliders._3D
             Active = true; // 默认激活碰撞体
         }
         
-        public void UpdatePosition(FixedIntVector3 newPosition)
+        
+        public virtual void UpdatePosition(FixedIntVector3 newPosition)
         {
             Position = newPosition + Offset;
         }
         
-        public void UpdateOffset(FixedIntVector3 newOffset)
+        public virtual void UpdateOffset(FixedIntVector3 newOffset)
         {
             Offset = newOffset;
         }
@@ -84,7 +85,17 @@ namespace FixedPhysics.FixedCollider.Colliders._3D
             OnCollisionExitCallBack?.Invoke(other);
         }
         
-        #endregion        
+        #endregion      
+        
+        public virtual void OnDestroy()
+        {
+            // 清理回调，避免内存泄漏
+            OnCollisionEnterCallBack = null;
+            OnCollisionStayCallBack = null;
+            OnCollisionExitCallBack = null;
+        }
+        
+        
         
     }
 }

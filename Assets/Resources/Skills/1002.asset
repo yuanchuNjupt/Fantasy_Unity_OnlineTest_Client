@@ -15,16 +15,16 @@ MonoBehaviour:
   character:
     skillCharacter: {fileID: 0}
     skillAnim: {fileID: 7400002, guid: b285d65889a8c414784007cbd6eb7bcc, type: 3}
-    animProgress: 867
+    animProgress: 1068
     MaxLogicFrame: 29
-    logicFrame: 14
+    logicFrame: 16
     isSetCustomLogicFrame: 0
     customLogicFame: 0
   skillCfg:
     skillIcon: {fileID: 0}
     skillid: 1002
     skillName: NormalSkill02
-    skillShakeAfterFrame: 0
+    skillShakeAfterFrame: 12
     skillCdTime: 0
     combinationSkillId: 0
     skillHitEffect: {fileID: 0}
@@ -33,16 +33,18 @@ MonoBehaviour:
     skillHitAudio: {fileID: 0}
     skillDes: 
   damageCfgList:
-  - triggerFrame: 5
-    endFrame: 6
-    triggerIntervalFrame: 0
+  - triggerFrame: 2
+    endFrame: 12
     isFollowEffect: 0
     damageRate: 0
     detectionMode: 1
-    boxSize: {x: 1, y: 1, z: 1}
-    boxOffset: {x: 0, y: 0, z: 0}
+    boxSize: {x: 1, y: 2, z: 1}
+    boxOffset: {x: 0, y: 1, z: 1}
     sphereOffset: {x: 0, y: 0.9, z: 0}
-    radius: 1
+    sphereRadius: 1
+    cylinderOffset: {x: 0, y: 0.9, z: 0}
+    cylinderRadius: 1
+    cylinderHeight: 1
     radiusHeight: 0
     colliderPosType: 0
     targetType: 2
@@ -61,14 +63,16 @@ MonoBehaviour:
     damageConfig:
       triggerFrame: 0
       endFrame: 0
-      triggerIntervalFrame: 0
       isFollowEffect: 0
       damageRate: 0
       detectionMode: 0
       boxSize: {x: 1, y: 1, z: 1}
       boxOffset: {x: 0, y: 0, z: 0}
       sphereOffset: {x: 0, y: 0.9, z: 0}
-      radius: 1
+      sphereRadius: 1
+      cylinderOffset: {x: 0, y: 0.9, z: 0}
+      cylinderRadius: 1
+      cylinderHeight: 1
       radiusHeight: 0
       colliderPosType: 0
       targetType: 0

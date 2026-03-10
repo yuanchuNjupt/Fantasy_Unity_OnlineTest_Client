@@ -1,5 +1,6 @@
 ﻿using Config;
 using Fantasy;
+using FixedPhysics.Bounds;
 using Framework.GameManager.Core;
 using Framework.GameManagerFramework.DataManagers;
 using Framework.GameManagerFramework.LogicManagers;
@@ -51,6 +52,11 @@ namespace Battle
             
             CreateLogicLayer();
             CreateRenderLayer();
+            
+            logicLayer.SetRenderObj(renderLayer);
+            logicLayer.InitCollider(renderLayer.gameObject.GetComponent<CylinderColliderBounds>());
+            
+            
             if (playerType == PlayerType.Self)
             {
                 CreateTPCamera();   // 只有本地玩家才创建跟随相机
@@ -108,7 +114,6 @@ namespace Battle
             {
                 case OperateTypeEnum.InputMove:
                     logicLayer.ApplyMoveOperation(data.inputDir);
-                    renderLayer.UpdateInputDir(data.inputDir);
                     break;
                 case OperateTypeEnum.ReleaseSkill:
                     logicLayer.ApplyReleaseSkillOperation();

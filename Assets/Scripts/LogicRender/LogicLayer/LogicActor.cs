@@ -10,7 +10,6 @@ public partial class LogicActor : LogicObject
 {
     public override void OnCreate()
     {
-        //
         
         
         
@@ -37,7 +36,7 @@ public partial class LogicActor : LogicObject
         Debug.Log("释放技能："+name);
         RenderObj.PlayAnim(name);
     }
-    public virtual void OnHit(string effectHitObjPath,int survivalTimeMs, LogicObject source,FixedInt logicXAxis)
+    public virtual void OnHit(string effectHitObjPath,int survivalTimeMs, LogicObject source)
     {
         RenderObj.OnHit(effectHitObjPath, survivalTimeMs, source);
     }
@@ -93,6 +92,11 @@ public partial class LogicActor : LogicObject
     public override void OnDestroy()
     {
         base.OnDestroy();
+    }
+
+    public void SetRenderObj(RenderObject renderObj)
+    {
+        this.RenderObj = renderObj;
     }
     
 }

@@ -1,7 +1,9 @@
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
+using FixedPhysics.Fixed_pointNumber.Core;
 using FixedPhysics.FixedCollider.Colliders._3D;
+using FixedPhysics.FixedCollider.Colliders.Types;
 using UnityEngine;
 
 [System.Serializable]
@@ -13,35 +15,57 @@ public class SkillDamageConfig
     [LabelText("结束帧")]
     public int endFrame;//结束帧
     
-    [LabelText("触发间隔（ value=0 默认一次，>0则为间隔）")]
-    public int triggerIntervalFrame;//触发间隔（毫秒 value=0 默认一次，>0则为间隔）
-    
     [LabelText("是否跟随特效移动")]
-    public bool isFollowEffect;//碰撞体是否跟随特效移动
+    public bool isFollowEffect;
     
     [LabelText("伤害倍率")]
     public int damageRate;//伤害倍率
     
     [LabelText("伤害检测方式"),OnValueChanged("OnDetectionValueChange")]
-    public DamageDetectionMode detectionMode;//伤害检测方式
-    
+    public DamageDetectionMode detectionMode;
+
+    #region Box碰撞体参数
+
     [LabelText("Box碰撞体宽高"),ShowIf("_showBox3D"),OnValueChanged("OnBoxValueChange")]
-    public Vector3 boxSize = new Vector3(1, 1, 1);//Box碰撞的大小
+    public Vector3 boxSize = new Vector3(1, 1, 1);
     
     [LabelText("Box碰撞体偏移"), ShowIf("_showBox3D"),OnValueChanged("OnColliderOffsetChange")]
-    public Vector3 boxOffset = new Vector3(0, 0, 0);//Box碰撞体偏移值
-    
+    public Vector3 boxOffset = new Vector3(0, 0, 0);
+
+    #endregion
+
+    #region Sphere碰撞体参数
+
     [LabelText("圆球碰撞体偏移值"), ShowIf("_showSphere3D"),OnValueChanged("OnColliderOffsetChange")]
-    public Vector3 sphereOffset = new Vector3(0,0.9f,0);//圆球碰撞体偏移值
+    public Vector3 sphereOffset = new Vector3(0,0.9f,0);
+
+    [LabelText("圆球伤害检测半径"), ShowIf("_showSphere3D"), OnValueChanged("OnRadiusValueChange")]
+    public float sphereRadius = 1;
+
+    #endregion
+
+    #region Cylinder碰撞体参数
+
+    [LabelText("圆柱体碰撞体偏移值"), ShowIf("_showCylinder3D"),OnValueChanged("OnColliderOffsetChange")]
+    public Vector3 cylinderOffset = new Vector3(0,0.9f,0);
     
-    [LabelText("圆球伤害检测半径"), ShowIf("_showSphere3D"),OnValueChanged("OnRadiusValueChange")]
-    public float radius = 1;//圆球伤害检查半径
+    [LabelText("圆柱体伤害检测半径"), ShowIf("_showCylinder3D"),OnValueChanged("OnRadiusValueChange")]
+    public float cylinderRadius = 1;
+    
+    [LabelText("圆柱体伤害检测高度"), ShowIf("_showCylinder3D"),OnValueChanged("OnCylinderHeightValueChange")]
+    public float cylinderHeight = 1;
+    
+
+    #endregion
+
+    
+
     
     [LabelText("圆球检测半径高度"), ShowIf("_showSphere3D")]
     public float radiusHeight = 0;//圆球检测半径高度
     
     [LabelText("碰撞体位置类型")]
-    public ColliderPosType colliderPosType = ColliderPosType.FollowDir;//碰撞体位置类型
+    public ColliderPosType colliderPosType = ColliderPosType.FixedDir;//碰撞体位置类型
     
     [LabelText("伤害触发目标")]
     public TargetType targetType;//伤害触发目标
@@ -50,53 +74,15 @@ public class SkillDamageConfig
 #if UNITY_EDITOR
     private bool _showBox3D;//是否显示3DBox碰撞体
     private bool _showSphere3D;//是否显示3D圆球碰撞体
+    private bool _showCylinder3D;//是否显示3D圆柱体碰撞体
+    
     private FixedIntBoxCollider _boxCollider;
     private FixedIntSphereCollider _sphereCollider;
+    private FixedIntCylinderCollider _cylinderCollider;
+    
     private int _curLogicFrame;//当前执行到的逻辑帧
-    /// <summary>
-    /// 碰撞检测类型发生变化
-    /// </summary>
-    /// <param name="newDetectionMode"></param>
-    public void OnDetectionValueChange(DamageDetectionMode newDetectionMode)
-    {
-        _showBox3D = newDetectionMode == DamageDetectionMode.Box3D;
-        _showSphere3D = newDetectionMode == DamageDetectionMode.Sphere3D ;
-        CreateCollider();
-    }
-    /// <summary>
-    /// 圆球碰撞体检测半径发生变化
-    /// </summary>
-    public void OnRadiusValueChange(float newRadius)
-    {
-        // if (_sphereCollider!=null)
-        //     _sphereCollider.SetBoxData(radius, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
-        // else
-        //     Debug.LogError("_sphereCollider is Null！");
-    }
-    /// <summary>
-    /// 碰撞体中心点发生变化
-    /// </summary>
-    public void OnColliderOffsetChange(Vector3 newCenter)
-    {
-        // if (detectionMode == DamageDetectionMode.Box3D&& _boxCollider!=null)
-        // {
-        //     _boxCollider.SetBoxData(GetColliderOffsetPos(), boxSize, colliderPosType == ColliderPosType.FollowPos);
-        // }
-        // else if (detectionMode == DamageDetectionMode.Sphere3D&& _sphereCollider!=null)
-        // {
-        //     _sphereCollider.SetBoxData(radius, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
-        // }
-    }
-    /// <summary>
-    /// Box碰撞体宽高发生变化
-    /// </summary>
-    public void OnBoxValueChange(Vector3 size)
-    {
-        // if (_boxCollider!=null)
-        //     _boxCollider.SetBoxData(GetColliderOffsetPos(), size,colliderPosType == ColliderPosType.FollowPos);
-        // else
-        //     Debug.LogError("_boxCollider is Null！");
-    }
+    
+
     /// <summary>
     /// 获取碰撞体的偏移值
     /// </summary>
@@ -112,6 +98,10 @@ public class SkillDamageConfig
         {
             return characterPos + sphereOffset;
         }
+        else if (detectionMode == DamageDetectionMode.Cylinder3D)
+        {
+            return  characterPos + cylinderOffset;
+        }
         return Vector3.zero;
     }
     /// <summary>
@@ -119,28 +109,39 @@ public class SkillDamageConfig
     /// </summary>
     public void CreateCollider()
     {
-        // DestroyCollider();
-        // if (detectionMode== DamageDetectionMode.Box3D)
-        // {
-        //     _boxCollider = new FixIntBoxCollider(boxSize, GetColliderOffsetPos());
-        //     _boxCollider.SetBoxData(GetColliderOffsetPos(), boxSize,colliderPosType== ColliderPosType.FollowPos);
-        // }
-        // else if (detectionMode== DamageDetectionMode.Sphere3D)
-        // {
-        //     _sphereCollider = new FixIntSphereCollider(radius, GetColliderOffsetPos());
-        //     _sphereCollider.SetBoxData(radius, GetColliderOffsetPos(), colliderPosType == ColliderPosType.FollowPos);
-        // }
+        DestroyCollider();
+        if (detectionMode == DamageDetectionMode.Box3D)
+        {
+            _boxCollider = new FixedIntBoxCollider(
+                GetColliderOffsetPos(),
+                FixedIntVector3.zero,
+                new FixedIntVector3(boxSize),
+                0,
+                FixedIntCollider3DType.AABB);
+        }
+        else if (detectionMode == DamageDetectionMode.Sphere3D)
+        {
+            _sphereCollider = new FixedIntSphereCollider(
+                GetColliderOffsetPos(),
+                FixedIntVector3.zero,
+                sphereRadius);
+        }
+        else if (detectionMode == DamageDetectionMode.Cylinder3D)
+        {
+            _cylinderCollider = new FixedIntCylinderCollider(
+                cylinderRadius,
+                cylinderHeight,
+                GetColliderOffsetPos(),
+                FixedIntVector3.zero);
+        }
     }
     public void DestroyCollider()
     {
-        // if (_boxCollider != null)
-        // {
-        //     _boxCollider.OnRelease();
-        // }
-        // if (_sphereCollider != null)
-        // {
-        //     _sphereCollider.OnRelease();
-        // }
+        _boxCollider?.OnDestroy();
+
+        _sphereCollider?.OnDestroy();
+
+        _cylinderCollider?.OnDestroy();
     }
     /// <summary>
     /// 当前窗口初始化
@@ -181,6 +182,96 @@ public class SkillDamageConfig
         _curLogicFrame++;
     }
 
+
+    #region 变化检测方法
+
+    /// <summary>
+    /// 碰撞检测类型发生变化
+    /// </summary>
+    /// <param name="newDetectionMode"></param>
+    public void OnDetectionValueChange(DamageDetectionMode newDetectionMode)
+    {
+        _showBox3D = newDetectionMode == DamageDetectionMode.Box3D;
+        _showSphere3D = newDetectionMode == DamageDetectionMode.Sphere3D ;
+        _showCylinder3D = newDetectionMode == DamageDetectionMode.Cylinder3D ;
+        CreateCollider();
+    }
+    /// <summary>
+    /// 圆球/圆柱体碰撞体检测半径或高度发生变化
+    /// </summary>
+    public void OnRadiusValueChange(float newValue)
+    {
+        if (detectionMode == DamageDetectionMode.Sphere3D)
+        {
+            if (_sphereCollider != null)
+                _sphereCollider.UpdateRadius(sphereRadius);
+            else
+                Debug.LogError("_sphereCollider is Null！");
+        }
+        else if (detectionMode == DamageDetectionMode.Cylinder3D)
+        {
+            if (_cylinderCollider != null)
+            {
+                _cylinderCollider.UpdateRadius(cylinderRadius);
+            }
+            else
+                Debug.LogError("_cylinderCollider is Null！");
+        }
+    }
+    
+    public void OnCylinderHeightValueChange(float newValue)
+    {
+        if (detectionMode == DamageDetectionMode.Cylinder3D)
+        {
+            if (_cylinderCollider != null)
+            {
+                _cylinderCollider.UpdateHeight(cylinderHeight);
+            }
+            else
+                Debug.LogError("_cylinderCollider is Null！");
+        }
+    }
+    
+    /// <summary>
+    /// 碰撞体中心点偏移发生变化
+    /// </summary>
+    public void OnColliderOffsetChange(Vector3 newCenter)
+    {
+        if (detectionMode == DamageDetectionMode.Box3D && _boxCollider != null)
+        {
+            _boxCollider.UpdatePosition(GetColliderOffsetPos());
+        }
+        else if (detectionMode == DamageDetectionMode.Sphere3D && _sphereCollider != null)
+        {
+            _sphereCollider.UpdatePosition(GetColliderOffsetPos());
+        }
+        else if (detectionMode == DamageDetectionMode.Cylinder3D && _cylinderCollider != null)
+        {
+            _cylinderCollider.UpdatePosition(GetColliderOffsetPos());
+        }
+        else
+        {
+            Debug.LogError("Collider is Null！");
+        }
+    }
+    /// <summary>
+    /// Box碰撞体宽高发生变化
+    /// </summary>
+    public void OnBoxValueChange(Vector3 size)
+    {
+        if (_boxCollider != null)
+        {
+            _boxCollider.UpdateSize(new FixedIntVector3(size));
+            _boxCollider.UpdatePosition(GetColliderOffsetPos());
+        }
+        else
+            Debug.LogError("_boxCollider is Null！");
+    }
+
+    #endregion
+    
+    
+
 #endif
 }
 public enum TargetType
@@ -194,18 +285,10 @@ public enum TargetType
 
 public enum ColliderPosType
 {
-    [LabelText("跟随角色朝向")] FollowDir,//跟随角色朝向
+    [LabelText("跟随角色朝向")] FixedDir,//固定与角色朝向同向
     [LabelText("跟随角色位置")] FollowPos,//跟随角色位置
-    [LabelText("中心坐标")] CenterPos,//中心坐标
-    [LabelText("目标位置")] TargetPos,//目标位置
 }
 
-public enum DamageType
-{
-    [LabelText("无伤害")]None,//无伤害
-    [LabelText("物理伤害")] ADDamage,//物理伤害
-    [LabelText("魔法伤害")] APDamage,//魔法伤害
-}
 
 public enum DamageDetectionMode
 {
@@ -213,6 +296,5 @@ public enum DamageDetectionMode
     [LabelText("3DBox碰撞检测")] Box3D,//3DBox碰撞检测
     [LabelText("3D圆球碰撞检测")] Sphere3D,//3D圆球碰撞检测
     [LabelText("3D圆柱体碰撞检测")] Cylinder3D,//3D圆柱体碰撞检测
-    [LabelText("半径的距离")] RadiusDistance,//半径的距离 （代码搜索）
     [LabelText("所有目标")] AllTarget,//通过代码搜索的所有目标
 }

@@ -10,9 +10,9 @@ public partial class Skill
     private Dictionary<int, SkillEffectLogic> mEffectDic = new Dictionary<int, SkillEffectLogic>();
     public void OnLogicFrameUpdateEffect()
     {
-        if (mSkillData.effectCfgList != null && mSkillData.effectCfgList.Count > 0)
+        if (_skillData.effectCfgList != null && _skillData.effectCfgList.Count > 0)
         {
-            foreach (var item in mSkillData.effectCfgList)
+            foreach (var item in _skillData.effectCfgList)
             {
 
                 if (item.skillEffect != null && mCurLogicFrame == item.triggerFrame)
@@ -22,7 +22,7 @@ public partial class Skill
                     if (item.isSetTransParent)
                     {
                         //获取左手或右手节点
-                        parent = mSkillCharacter.RenderObj.GetTransParent(item.transParent);
+                        parent = skillCharacter.RenderObj.GetTransParent(item.transParent);
                     }
                     //技能特效生成触发 
                     // GameObject effectObj = ZMAsset.Instantiate(item.skillEffectPath, parent, Vector3.zero, Vector3.one, Quaternion.identity);
@@ -35,7 +35,7 @@ public partial class Skill
                     // if (effectRender == null)
                     //     effectRender = effectObj.AddComponent<SkillEffectRender>();
                     //创建技能特效逻辑层
-                    // SkillEffectLogic effectLogic = new SkillEffectLogic(LogicObjectType.Effect, item, effectRender, mSkillCharacter,this);
+                    // SkillEffectLogic effectLogic = new SkillEffectLogic(LogicObjectType.Effect, item, effectRender, skillCharacter,this);
                     // effectRender.SetLogicObject(effectLogic,item.effectPosType!= EffectPosType.Zero);
                     // mEffectDic.Add(item.GetHashCode(), effectLogic);
                 }
@@ -76,7 +76,7 @@ public partial class Skill
     /// </summary>
     public void ReleaseAllEffect()
     {
-        foreach (var item in mSkillData.effectCfgList)
+        foreach (var item in _skillData.effectCfgList)
         {
             if (!item.isAttachAction)
             {

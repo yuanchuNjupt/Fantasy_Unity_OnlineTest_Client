@@ -45,7 +45,7 @@ namespace FixedPhysics.FixedCollider.Colliders._2D
 
         public FixedIntCollider2D(FixedIntVector2 position, FixedIntVector2 offset , FixedIntCollider2DType colliderType)
         {
-            Position = position;
+            Position = position + offset;
             Offset = offset;
             ColliderType = colliderType;
             Active = true; // 默认激活碰撞体

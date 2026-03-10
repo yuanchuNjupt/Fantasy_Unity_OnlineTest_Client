@@ -2,6 +2,7 @@
 using Fantasy;
 using FixedPhysics.Fixed_pointNumber.Core;
 using Framework.GameManager.Core;
+using Framework.GameManagerFramework.DataManagers;
 using Framework.GameManagerFramework.LogicManagers;
 using UnityEngine;
 
@@ -27,6 +28,9 @@ namespace Battle
         private BattlePlayerInstance _instance;
 
         private Vector2 newInput;
+
+        // 缓存攻击输入，避免因采样频率低而丢失 triggered 事件
+        private bool _pendingNormalAttack;
         
 
 
@@ -76,7 +80,6 @@ namespace Battle
             if (LogicFrameConfig.IsUseLocalLogicFrame)
             {
                 _instance.logicLayer.UpdateMoveDir(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
-                _instance.renderLayer.UpdateInputDir(_inputDir);  // 传入XZ平面方向向量
             }
             else
                 _battleLogicManager.MoveFrameDataInput(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
@@ -85,11 +88,16 @@ namespace Battle
                 
                 
             //检测攻击
-            if (_battlePlayerMouseLogicManager.NormalAttack)
+            if (_pendingNormalAttack)
             {
+                _pendingNormalAttack = false;
                 // 释放技能
-                 _instance.logicLayer.ReleaseNormalAttack();
-                    
+                if (LogicFrameConfig.IsUseLocalLogicFrame)
+                {
+                    _instance.logicLayer.ReleaseNormalAttack();
+                }
+                else
+                    _battleLogicManager.ReleaseSkillFrameData(1001 , _instance.logicLayer.LogicPos , SkillTypeEnum.None);
             }
         }
         
@@ -97,6 +105,12 @@ namespace Battle
                 
         private void Update()
         {
+            // 输入缓冲
+            if (_battlePlayerMouseLogicManager.NormalAttack)
+            {
+                _pendingNormalAttack = true;
+            }
+
             _accInputSampleRuntime += Time.deltaTime;
 
             if (_accInputSampleRuntime >= LogicFrameConfig.InputSampleInterval)

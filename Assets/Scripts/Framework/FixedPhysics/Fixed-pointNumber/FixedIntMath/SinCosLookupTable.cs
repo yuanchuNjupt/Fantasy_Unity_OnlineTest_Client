@@ -8231,7 +8231,9 @@ namespace FixMath
             nom *= (long)SinCosLookupTable.NOM_MUL;
             den *= 62832L;
             int num = (int)(nom / den);
-            return num & SinCosLookupTable.MASK;
+            // 负角度时 num 为负，& MASK 会取补码低位导致索引错误
+            // 需要保证结果在 [0, COUNT) 范围内
+            return ((num % SinCosLookupTable.COUNT) + SinCosLookupTable.COUNT) % SinCosLookupTable.COUNT;
         }
     }
 }

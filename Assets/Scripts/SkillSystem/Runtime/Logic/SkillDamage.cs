@@ -1,10 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
+using Battle.CustomCollider;
 using FixedPhysics.Fixed_pointNumber.Core;
 using FixedPhysics.Fixed_pointNumber.FixedIntMath;
 using FixedPhysics.FixedCollider.Colliders._3D;
+using FixedPhysics.FixedCollider.Colliders.Types;
 using UnityEngine;
-using FixMath;
+using Logger = Framework.AdvancedLog.Logger;
 
 /// <summary>
 /// 伤害来源
@@ -12,210 +13,175 @@ using FixMath;
 public enum DamageSource
 {
     None,
-    SKill,//技能伤害
-    Buff,//Buff伤害
-    Bullet,//子弹伤害
+    SKill,
+    Buff,
+    Bullet,
 }
+
 public partial class Skill
 {
     /// <summary>
-    /// 特效对象字典 key为特效配置的HashCode，Value为生成的对应的特效
+    /// 技能碰撞体字典，key 为配置的 HashCode
     /// </summary>
-
-    private Dictionary<int, FixedIntCollider3D> mColliderDic = new ();
-    ///// <summary>
-    ///// 当前伤害累加时间
-    ///// </summary>
-    //private int mCurDamageAccTime;
-
-    //当前所有子弹累加时间列表
-    private List<int> mCurDamageAccTimeList = new List<int>();
+    private Dictionary<int, FixedIntCollider3D> mColliderDic = new();
 
     private void OnInitDamage()
     {
-        if (mSkillData.damageCfgList != null && mSkillData.damageCfgList.Count > 0)
-        {
-            for (int i = 0; i < mSkillData.damageCfgList.Count; i++)
-            {
-                mCurDamageAccTimeList.Add(0);
-            }
-        }
+        // 每次技能启动时清空残留碰撞体
+        OnDamageRelease();
     }
+
     /// <summary>
-    /// 逻辑帧更新伤害
+    /// 逻辑帧更新伤害，只负责生命周期管理
+    /// 碰撞响应由 SkillDamageBoxCollider / SkillDamageCylinderCollider 内部处理
     /// </summary>
     public void OnLogicFrameUpdateDamage()
     {
-        //判断当前伤害配置列表是否为空，以及长度是否大于0
-        if (mSkillData.damageCfgList != null && mSkillData.damageCfgList.Count > 0)
+        if (_skillData.damageCfgList == null || _skillData.damageCfgList.Count == 0)
+            return;
+
+        for (int i = 0; i < _skillData.damageCfgList.Count; i++)
         {
-            for (int i = 0; i < mSkillData.damageCfgList.Count; i++)
+            SkillDamageConfig item = _skillData.damageCfgList[i];
+            int hashCode = item.GetHashCode();
+
+            // FollowPos 模式：每帧更新碰撞体位置跟随角色
+            if (item.colliderPosType == ColliderPosType.FollowPos)
             {
-                SkillDamageConfig item = mSkillData.damageCfgList[i];
-                int hashCode = item.GetHashCode();
-                if (item.colliderPosType == ColliderPosType.FollowPos)
+                if (mColliderDic.TryGetValue(hashCode, out var followCollider) && followCollider != null)
                 {
-                    FixedIntCollider3D damageCollider = null;
-                    //更新碰撞体位置
-                    if (mColliderDic.TryGetValue(item.GetHashCode(), out damageCollider) && damageCollider != null)
+                    // Box 碰撞体需要同步更新旋转，再更新位置，确保 offset 始终沿角色当前朝向
+                    if (followCollider is SkillDamageBoxCollider followBox)
                     {
-                        CreateOrUpdateCollider(item, damageCollider);
+                        followBox.UpdateRotation(skillCharacter.LogicRotationY);
                     }
-                }
 
-                //创建碰撞体
-                if (mCurLogicFrame == item.triggerFrame)
-                {
-                    DestroyCollider(item);
-                    FixedIntCollider3D collider = CreateOrUpdateCollider(item, null);
-                    //创建字典缓存当前碰撞体
-                    mColliderDic.Add(hashCode, collider);
-                    if (item.triggerIntervalFrame == 0)
-                    {
-                        //触发一次伤害//TOOD
-                        if (mColliderDic.ContainsKey(hashCode))
-                        {
-                            TriggerColliderDamage(mColliderDic[hashCode], item);
-                        }
-                    }
+                    followCollider.UpdatePosition(skillCharacter.LogicPos);
                 }
+            }
 
-                //处理碰撞体伤害检测
-                if (item.triggerIntervalFrame != 0)
-                {
-                    //int mCurDamageAccTime = mCurDamageAccTimeList[i]; 值拷贝，非mCurDamageAccTimeList[i]对应的一个值
-                    mCurDamageAccTimeList[i] += LogicFrameConfig.LogicFrameIntervalMs;
-                    //如果当前累加时间大于触发伤害间隔，那就造成伤害检测
-                    if (mCurDamageAccTimeList[i] >= item.triggerIntervalFrame)
-                    {
-                        //触发一次伤害//TOOD
-                        mCurDamageAccTimeList[i] = 0;
-                        if (mColliderDic.ContainsKey(hashCode))
-                        {
-                            TriggerColliderDamage(mColliderDic[hashCode], item);
-                        }
-                    }
-                }
+            // 触发帧：创建碰撞体并绑定伤害回调
+            if (mCurLogicFrame == item.triggerFrame)
+            {
+                DestroyDamageCollider(item);
+                var collider = CreateDamageCollider(item);
+                if (collider != null)
+                    mColliderDic[hashCode] = collider;
+            }
 
-                //销毁碰撞体
-                if (item.endFrame == mCurLogicFrame)
-                {
-                    DestroyCollider(item);
-                }
+            // 结束帧：销毁碰撞体
+            if (mCurLogicFrame == item.endFrame)
+            {
+                DestroyDamageCollider(item);
             }
         }
     }
-    /// <summary>
-    /// 触发碰撞体伤害
-    /// </summary>
-    public void TriggerColliderDamage(FixedIntCollider3D collider, SkillDamageConfig config)
-    {
-        //1.获取敌人目标列表 敌人 英雄
-        // List<LogicActor> enemyList = BattleWorld.GetExitsLogicCtrl<BattleLogicCtrl>().GetEnemyList(mSkillCharacter.ObjectType);
 
-        //2.通过碰撞检测逻辑，去检测碰撞到的敌人
-        List<LogicActor> damageTargetList = new List<LogicActor>();
-        // foreach (var target in enemyList)
-        // {
-        //     if (collider.ColliderType == ColliderType.Box)
-        //     {
-        //         //如果返回值为True，说明两个碰撞体发生了碰撞
-        //         if (PhysicsManager.IsCollision(collider as FixIntBoxCollider, target.Collider))
-        //         {
-        //             damageTargetList.Add(target);
-        //         }
-        //     }
-        //     else if (collider.ColliderType == ColliderType.Shpere)
-        //     {
-        //         //如果返回值为True，说明两个碰撞体发生了碰撞
-        //         if (PhysicsManager.IsCollision(target.Collider, collider as FixIntSphereCollider))
-        //         {
-        //             damageTargetList.Add(target);
-        //         }
-        //     }
-        // }
-        //释放列表
-        // enemyList.Clear();
-        //3.获取到攻击目标后，对这些敌人造成伤害
-        foreach (var target in damageTargetList)
+    /// <summary>
+    /// 创建伤害碰撞体并绑定命中回调
+    /// </summary>
+    private FixedIntCollider3D CreateDamageCollider(SkillDamageConfig item)
+    {
+        if (item.detectionMode == DamageDetectionMode.Box3D)
         {
-            //造成伤害
-            // target.SkillDamage(DamageCalcuCenter.CaclulateDamage(config,mSkillCharacter,target), config);
+            var targetPos = skillCharacter.LogicPos + skillCharacter.LogicForwardDir * item.boxOffset.z +
+                            skillCharacter.LogicRightDir * item.boxOffset.x +
+                            new FixedIntVector3(0, item.boxOffset.y, 0);
+
+            var box = new SkillDamageBoxCollider(
+                targetPos,
+                skillCharacter.LogicRotationY,
+                item);
+
+            // 绑定命中回调：由碰撞体内部检测到 BattlePlayerCollider 后回调此处
+            box.OnHitPlayerCallBack += playerCollider =>
+                OnPlayerHit(playerCollider, item);
+
+            return box;
+        }
+        else if (item.detectionMode == DamageDetectionMode.Cylinder3D)
+        {
             
-            //添加击中特效
-            AddHitEffect(target, config.targetType == TargetType.Self ? mSkillCharacter : target);
-            //播放击中音效
-            PlayHitAudio();
+            var targetPos = skillCharacter.LogicPos + skillCharacter.LogicForwardDir * item.cylinderOffset.z +
+                            skillCharacter.LogicRightDir * item.cylinderOffset.x +
+                            new FixedIntVector3(0, item.cylinderOffset.y, 0);
+            
+            var cyl = new SkillDamageCylinderCollider(
+                targetPos,
+                item);
 
+            cyl.OnHitPlayerCallBack += playerCollider =>
+                OnPlayerHit(playerCollider, item);
+
+            return cyl;
         }
-    }
-    /// <summary>
-    /// 添加击中特效
-    /// </summary>
-    public void AddHitEffect(LogicActor targetObj, LogicActor source)
-    {
-        if (mSkillData.skillCfg.skillHitEffect != null)
-        {
-            targetObj.OnHit(mSkillData.skillCfg.skillHitEffectPath, mSkillData.skillCfg.hitEffectSurvivalTimeMs, source, mSkillCharacter.LogicXAxis);
-        }
-    }
-    /// <summary>
-    /// 创建碰撞体
-    /// </summary>
-    public FixedIntCollider3D CreateOrUpdateCollider(SkillDamageConfig item, FixedIntCollider3D damageCollider, LogicObject followObj = null)
-    {
-        // FixedIntCollider3D collider = damageCollider;
-        // LogicObject followTragetObj = followObj == null ? mSkillCharacter : followObj;
-        // //创建对应的定点数碰撞体
-        // if (item.detectionMode == DamageDetectionMode.Box3D)
-        // {
-        //     FixedIntVector3 boxSize = new FixedIntVector3(item.boxSize);
-        //     FixedIntVector3 offset = new FixedIntVector3(item.boxOffset) * followTragetObj.LogicXAxis;
-        //
-        //     //限制y轴的偏移只能往上进行偏移
-        //     offset.Y = FixedIntMathf.Abs(offset.Y);
-        //     if (damageCollider == null)
-        //         collider = new FixIntBoxCollider(boxSize, offset);
-        //     
-        //     collider.SetBoxData(offset, boxSize);
-        //     collider.UpdateColliderInfo(followTragetObj.LogicPos, boxSize);
-        // }
-        // else if (item.detectionMode == DamageDetectionMode.Sphere3D)
-        // {
-        //     FixedIntVector3 offset = new FixedIntVector3(item.sphereOffset) * followTragetObj.LogicXAxis;
-        //     //限制y轴的偏移只能往上进行偏移
-        //     offset.y = FixedIntMathf.Abs(offset.y);
-        //
-        //     if (damageCollider == null)
-        //         collider = new FixIntSphereCollider(item.radius, offset);
-        //     
-        //     collider.SetBoxData(item.radius, offset);
-        //     collider.UpdateColliderInfo(followTragetObj.LogicPos, FixIntVector3.zero, item.radius);
-        // }
-        // return collider;
+
+        // 暂不支持 Sphere3D
         return null;
     }
 
-
-
     /// <summary>
-    /// 销毁对应配置生成的碰撞体
+    /// 碰撞体命中玩家后的统一处理入口
     /// </summary>
-    /// <param name="item"></param>
-    public void DestroyCollider(SkillDamageConfig item)
-    {
-        // FixedIntCollider3D collider = null;
-        // int hashCode = item.GetHashCode();
-        // mColliderDic.TryGetValue(hashCode, out collider);
-        // if (collider != null)
-        // {
-        //     mColliderDic.Remove(hashCode);
-        //     collider.OnRelease();
-        // }
+    private void OnPlayerHit(BattlePlayerCollider playerCollider, SkillDamageConfig config)
+    { 
+        var target = playerCollider.playerLogicLayer;
+        if (target == null || target.ObjectState != LogicObjectState.Survival)
+            return;
+
+        // 过滤自身：命中的是自己（PlayerType.Self）则直接返回
+        if (playerCollider.playerLogicLayer.instance.playerType == PlayerType.Self)
+            return;
+        
+            
+        Logger.Info($"攻击命中！: {target.instance.playerName}, Skill: {_skillData.skillCfg.skillName}");
+
+
+        // 伤害结算（TODO：接入伤害计算中心）
+        // target.SkillDamage(DamageCalcuCenter.Calculate(config, skillCharacter, target), config);
+        // target.SkillDamage(config.damageRate, config);
+
+        // 击中特效
+        AddHitEffect(target, config.targetType == TargetType.Self ? skillCharacter : target);
+        // 击中音效
+        PlayHitAudio();
     }
 
+    /// <summary>
+    /// 添加击中特效
+    /// </summary>
+    private void AddHitEffect(LogicActor targetObj, LogicActor source)
+    {
+        if (_skillData.skillCfg.skillHitEffect != null)
+        {
+            targetObj.OnHit(
+                _skillData.skillCfg.skillHitEffectPath,
+                _skillData.skillCfg.hitEffectSurvivalTimeMs,
+                source);
+        }
+    }
+
+    /// <summary>
+    /// 销毁指定配置对应的伤害碰撞体
+    /// </summary>
+    private void DestroyDamageCollider(SkillDamageConfig item)
+    {
+        int hashCode = item.GetHashCode();
+        if (mColliderDic.TryGetValue(hashCode, out var collider) && collider != null)
+        {
+            // OnDestroy 内部已自动调用 PhysicsManager3D.RemoveCollider3D
+            collider.OnDestroy();
+            mColliderDic.Remove(hashCode);
+        }
+    }
+
+    /// <summary>
+    /// 技能结束时销毁所有残留碰撞体
+    /// </summary>
     public void OnDamageRelease()
     {
-        mCurDamageAccTimeList.Clear();
+        foreach (var kv in mColliderDic)
+            kv.Value?.OnDestroy();
+        mColliderDic.Clear();
     }
 }

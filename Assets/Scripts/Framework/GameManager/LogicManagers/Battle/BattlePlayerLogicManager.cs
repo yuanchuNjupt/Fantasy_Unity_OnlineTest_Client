@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using System.Linq;
 using Battle;
 using Config;
@@ -48,6 +48,14 @@ namespace Framework.GameManagerFramework.LogicManagers
                 Debug.LogError("未找到玩家实例，玩家ID：" + playerId);
                 return null;
             }
+        }
+
+        /// <summary>
+        /// 获取所有战斗玩家实例（只读遍历）
+        /// </summary>
+        public IReadOnlyDictionary<long, BattlePlayerInstance> GetAllBattlePlayers()
+        {
+            return _battlePlayerList;
         }
         
 

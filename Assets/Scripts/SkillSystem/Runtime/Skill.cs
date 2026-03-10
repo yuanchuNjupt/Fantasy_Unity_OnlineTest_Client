@@ -17,18 +17,18 @@ public enum SkillState
 public partial class Skill
 {
     //技能ID
-    public int skillId;
+    public readonly int skillId;
 
     //释放技能的角色
-    public LogicActor mSkillCharacter;
+    public readonly LogicActor skillCharacter;
     
     //技能数据
-    private SkillDataConfig mSkillData;
+    private readonly SkillDataConfig _skillData;
 
     //外界访问技能数据接口
-    public SkillConfig SKillCfg { get { return mSkillData.skillCfg; } }
+    public SkillConfig SKillCfg { get { return _skillData.skillCfg; } }
 
-    public List<SkillDamageConfig> damageCfgList { get { return mSkillData.damageCfgList; } }
+    public List<SkillDamageConfig> damageCfgList { get { return _skillData.damageCfgList; } }
 
     
     public Action<Skill> OnReleaseAfter;
@@ -50,17 +50,17 @@ public partial class Skill
     public Skill(int skillId, LogicActor skillCharacter)
     {
         this.skillId = skillId;
-        this.mSkillCharacter = skillCharacter;
+        this.skillCharacter = skillCharacter;
         
         //加载技能数据
-        mSkillData = Resources.Load<ScriptableObject>(LoadPathConfig.SkillLoadPath + skillId) as SkillDataConfig;
+        _skillData = Resources.Load<ScriptableObject>(LoadPathConfig.SkillLoadPath + skillId) as SkillDataConfig;
         
         // 检查加载是否成功
-        if (mSkillData == null)
+        if (_skillData == null)
         {
             Debug.LogError($"技能数据加载失败！技能ID: {skillId}");
         }
-        // mSkillData = ZMAsset.LoadScriptableObject<SkillDataConfig>(AssetPathConfig.SKILL_DATA_PATH + skillId + ".asset");
+        // _skillData = ZMAsset.LoadScriptableObject<SkillDataConfig>(AssetPathConfig.SKILL_DATA_PATH + skillId + ".asset");
     }
 
     public void ReleaseSKill(Action<Skill> releaseAfterCallBack , Action<Skill, bool> releaseSkillEnd)
@@ -74,16 +74,16 @@ public partial class Skill
 
     public void PlayAnim()
     {
-        mSkillCharacter.PlayAnim(mSkillData.skillCfg.skillid.ToString());
+        skillCharacter.PlayAnim(_skillData.skillCfg.skillid.ToString());
     }
 
     public void SkillStart()
     {
         mCurLogicFrame = 0;
         mCurLogicFrameAccTime = 0;
-        mCombinationSkillid = mSkillData.skillCfg.combinationSkillId;
-         if (mSkillData.character.customLogicFame != 0)
-            mSkillData.character.logicFrame = mSkillData.character.customLogicFame;
+        mCombinationSkillid = _skillData.skillCfg.combinationSkillId;
+         if (_skillData.character.customLogicFame != 0)
+            _skillData.character.logicFrame = _skillData.character.customLogicFame;
         OnInitDamage();
     }
 
@@ -96,12 +96,12 @@ public partial class Skill
     public void SKillEnd()
     {
         skillState = SkillState.End;
-        OnReleaseSkillEnd?.Invoke(this, mSkillData.skillCfg.combinationSkillId != 0);
+        OnReleaseSkillEnd?.Invoke(this, _skillData.skillCfg.combinationSkillId != 0);
         ReleaseAllEffect();
         OnDamageRelease();
         if (mCombinationSkillid != 0)
         {
-            mSkillCharacter.ReleaseSKill(mCombinationSkillid);
+            skillCharacter.ReleaseSKill(mCombinationSkillid);
         }
     }
 
@@ -115,7 +115,7 @@ public partial class Skill
         mCurLogicFrameAccTime = mCurLogicFrame * LogicFrameConfig.LogicFrameIntervalMs;
 
         //达到后摇关键帧 
-        if (mCurLogicFrame == mSkillData.skillCfg.skillShakeAfterFrame)
+        if (mCurLogicFrame == _skillData.skillCfg.skillShakeAfterFrame)
         {
             SkillAfter();
         }
@@ -127,7 +127,7 @@ public partial class Skill
         
         
         
-        if (mCurLogicFrame == mSkillData.character.MaxLogicFrame)
+        if (mCurLogicFrame == _skillData.character.MaxLogicFrame)
         {
             SKillEnd();
         }

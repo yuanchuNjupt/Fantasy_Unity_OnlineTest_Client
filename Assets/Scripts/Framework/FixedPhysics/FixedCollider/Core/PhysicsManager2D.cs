@@ -72,6 +72,16 @@ namespace FixedPhysics.FixedCollider.Core
             _collidersList.Remove(collider);
         }
 
+        /// <summary>
+        /// 清空所有碰撞体和碰撞历史，用于场景切换/重新进入时重置状态
+        /// </summary>
+        public void Reset()
+        {
+            _collidersList.Clear();
+            _lastFrameCollisions.Clear();
+            _currentFrameCollisions.Clear();
+        }
+
         public void OnLogicFrameUpdate()
         {
             DetectAllCollider();

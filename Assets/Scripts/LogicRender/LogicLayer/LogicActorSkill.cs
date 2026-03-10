@@ -17,7 +17,7 @@ public partial class LogicActor
     private List<int> _skillIdArr = new List<int>() {};
 
     //正在释放技能的列表
-    public readonly List<Skill> releasingSkillList = new List<Skill>();
+    public Skill currentSkill;
     
     //当前普通攻击连击索引
     private int _curNormalComboIndex = 0;
@@ -54,20 +54,20 @@ public partial class LogicActor
     /// <summary>
     /// 释放对应的技能
     /// </summary>
-    /// <param name="skillid"></param>
-    public void ReleaseSKill(int skillid, Action<bool> releaseSkillCallBack = null)
+    /// <param name="skillId"></param>
+    public void ReleaseSKill(int skillId, Action<bool> releaseSkillCallBack = null)
     {
         
-        Skill skill = _skillSystem.ReleaseSkill(skillid,  OnSkillReleaseAfter, OnSkillReleaseEnd);
+        Skill skill = _skillSystem.ReleaseSkill(skillId,  OnSkillReleaseAfter, OnSkillReleaseEnd);
         //！=null 说明技能释放成功
         if (skill != null)
         {
-            releasingSkillList.Add(skill);
+            currentSkill = skill;
             if (!IsNormalAttackSkill(skill.skillId))
             {
                 _curNormalComboIndex = 0;
             }
-            ActionSate = LogicObjectActionState.ReleasingSkill;
+            ActionState = LogicObjectActionState.ReleasingSkillBefore;
 
             releaseSkillCallBack?.Invoke(true);
             OnReleaseSkillCallBack?.Invoke(true, skill.skillId);
@@ -93,6 +93,9 @@ public partial class LogicActor
     /// <param name="skill"></param>
     public void OnSkillReleaseAfter(Skill skill)
     {
+        
+        ActionState = LogicObjectActionState.ReleasingSkillAfter;
+        
         if (!IsNormalAttackSkill(skill.skillId))
         {
             _curNormalComboIndex = 0;
@@ -113,12 +116,9 @@ public partial class LogicActor
     /// <param name="skill"></param>
     public void OnSkillReleaseEnd(Skill skill)
     {
-        releasingSkillList.Remove(skill);
-        if (releasingSkillList.Count == 0)
-        {
-            ActionSate = LogicObjectActionState.Idle;
-            _curNormalComboIndex = 0;
-        }
+        currentSkill = null;
+        ActionState = LogicObjectActionState.Idle;
+        _curNormalComboIndex = 0;
     }
 
     public Skill GetSKill(int skillId)
