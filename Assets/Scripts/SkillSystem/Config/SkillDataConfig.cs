@@ -27,7 +27,7 @@ public class SkillDataConfig : ScriptableObject
         , List<SkillAudioConfig> audioCfgList, List<SkillActionConfig> actionCfgList)
     {
         //通过代码创建SkillDataConfig的实例，并对字段进行赋值储存
-        SkillDataConfig skillDataCfg= ScriptableObject.CreateInstance<SkillDataConfig>();
+        SkillDataConfig skillDataCfg= CreateInstance<SkillDataConfig>();
         skillDataCfg.character = characterCfg;
         skillDataCfg.skillCfg = skillCfg;
         skillDataCfg.damageCfgList = damageCfgList;

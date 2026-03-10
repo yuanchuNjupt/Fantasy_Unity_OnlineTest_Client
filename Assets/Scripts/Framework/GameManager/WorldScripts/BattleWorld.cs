@@ -3,7 +3,6 @@ using FixedPhysics.FixedCollider.Core;
 using Framework.AdvancedLog;
 using Framework.GameManagerFramework.LogicManagers;
 using UnityEngine;
-using Logger = Framework.AdvancedLog.Logger;
 
 namespace Framework.GameManagerFramework.WorldScripts
 {

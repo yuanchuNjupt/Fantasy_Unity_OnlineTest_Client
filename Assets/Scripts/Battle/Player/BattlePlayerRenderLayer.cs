@@ -4,7 +4,7 @@ using Fantasy;
 using FixedPhysics.Fixed_pointNumber.Core;
 using Framework.AdvancedLog;
 using UnityEngine;
-using Logger = Framework.AdvancedLog.Logger;
+using Log = Framework.AdvancedLog.Log;
 
 namespace Battle
 {
@@ -61,14 +61,12 @@ namespace Battle
                 case LogicObjectActionState.Move:
                     PlayAnim(AnimationClipConfig.RUN_START);
                     break;
-                default:
-                    return;
+                // default:
+                //     return;
             }
 
-            Logger.Info(LogColor.Cyan, "角色状态切换",
-                $"角色UID:{_instance.uid}",
-                $"角色名称:{_instance.playerName}",
-                $"当前状态{newState.ToString()}");
+            Log.Info(LogColor.Cyan, "角色状态切换",
+                $"角色UID:{_instance.uid},角色名称:{_instance.playerName},当前状态{newState.ToString()}");
         }
     }
 }

@@ -15,7 +15,7 @@ public partial class Skill
             foreach (var item in _skillData.effectCfgList)
             {
 
-                if (item.skillEffect != null && mCurLogicFrame == item.triggerFrame)
+                if (item.skillEffect != null && _curLogicFrame == item.triggerFrame)
                 {
                     DestroyEffect(item);
                     Transform parent = null;
@@ -40,7 +40,7 @@ public partial class Skill
                     // mEffectDic.Add(item.GetHashCode(), effectLogic);
                 }
 
-                if (mCurLogicFrame == item.endFrame&&!item.isAttachAction)
+                if (_curLogicFrame == item.endFrame&&!item.isAttachAction)
                 {
                     //技能特效结束，开始销毁
                     DestroyEffect(item);
@@ -50,7 +50,7 @@ public partial class Skill
                 //更新特效逻辑层逻辑帧
                 if (mEffectDic.TryGetValue(item.GetHashCode(),out effectLogicObj)&& effectLogicObj!=null)
                 {
-                    effectLogicObj.OnLogicFrameEffectUpdate(this,mCurLogicFrame);
+                    effectLogicObj.OnLogicFrameEffectUpdate(this,_curLogicFrame);
                 }
             }
         }

@@ -15,27 +15,19 @@ public partial class Skill
             foreach (var item in _skillData.audioCfgList)
             {
                 //是否达到了当前音效配置的播放触发帧
-                if (item.triggerFrame==mCurLogicFrame)
+                if (item.triggerFrame==_curLogicFrame)
                 {
                     //播放音效
                     // AudioController.GetInstance().PlaySoundByAudioClip(item.skillAudio,item.isLoop,100);
                 }
 
                 //是否是循环音效，并且达到了循环音效的结束帧
-                if (item.isLoop&&item.endFrame==mCurLogicFrame)
+                if (item.isLoop&&item.endFrame==_curLogicFrame)
                 {
                     //停止当前音效的循环播放  
                     // AudioController.GetInstance().StopSound(item.skillAudio);
                 }
             }
         }
-    }
-    /// <summary>
-    /// 播放击中音效
-    /// </summary>
-    public void PlayHitAudio()
-    {
-        //播放音效
-        // AudioController.GetInstance().PlaySoundByAudioClip(_skillData.skillCfg.skillHitAudio, false, 100);
     }
 }

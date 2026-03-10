@@ -84,7 +84,7 @@ public class RenderObject : MonoBehaviour
                     mPreTargetPos = logicObject.LogicPos.ToVector3();
                     logicObject.objectHasNewPos = false;
                     mCurPreMoveCount = 0;
-                    // Debuger.Logger("PreMove ForceUpdate Pos:" + mPreTargetPos);
+                    // Debuger.Log("PreMove ForceUpdate Pos:" + mPreTargetPos);
                 }
                 else
                 {
@@ -97,7 +97,7 @@ public class RenderObject : MonoBehaviour
                     Vector3 deltaPos = logicObject.LogicForwardDir.ToVector3() * (logicObject.LogicMoveSpeed.RenderFloat * Time.deltaTime);
                     mPreTargetPos += deltaPos;
                     mCurPreMoveCount++;
-                    // Debuger.Logger("PreMove mPreTargetPos:" + mPreTargetPos);
+                    // Debuger.Log("PreMove mPreTargetPos:" + mPreTargetPos);
                 }
                 //更新位置
                 transform.position = Vector3.Lerp(transform.position, mPreTargetPos, Time.deltaTime * mSmoothPosSpeed);
@@ -156,7 +156,15 @@ public class RenderObject : MonoBehaviour
         // DamageTextItem item = damageItemObj.GetComponent<DamageTextItem>();
         // item.ShowDamageText(damageValue, this);
     }
-    public virtual void OnHit(string effectHitObjPath, int survivalTimems, LogicObject source)
+
+    public virtual void OnHit()
+    {
+        //受击动画
+        
+    }
+    
+    
+    public virtual void AddHitEffect(string effectHitObjPath, int survivalTimems, LogicObject source)
     {
         if (!string.IsNullOrEmpty(effectHitObjPath))
         {

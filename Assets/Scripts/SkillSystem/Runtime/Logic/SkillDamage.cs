@@ -4,8 +4,8 @@ using FixedPhysics.Fixed_pointNumber.Core;
 using FixedPhysics.Fixed_pointNumber.FixedIntMath;
 using FixedPhysics.FixedCollider.Colliders._3D;
 using FixedPhysics.FixedCollider.Colliders.Types;
+using Framework.AdvancedLog;
 using UnityEngine;
-using Logger = Framework.AdvancedLog.Logger;
 
 /// <summary>
 /// 伤害来源
@@ -61,7 +61,7 @@ public partial class Skill
             }
 
             // 触发帧：创建碰撞体并绑定伤害回调
-            if (mCurLogicFrame == item.triggerFrame)
+            if (_curLogicFrame == item.triggerFrame)
             {
                 DestroyDamageCollider(item);
                 var collider = CreateDamageCollider(item);
@@ -70,7 +70,7 @@ public partial class Skill
             }
 
             // 结束帧：销毁碰撞体
-            if (mCurLogicFrame == item.endFrame)
+            if (_curLogicFrame == item.endFrame)
             {
                 DestroyDamageCollider(item);
             }
@@ -134,30 +134,29 @@ public partial class Skill
             return;
         
             
-        Logger.Info($"攻击命中！: {target.instance.playerName}, Skill: {_skillData.skillCfg.skillName}");
+        Log.Info($"攻击命中！: {target.instance.playerName}, Skill: {_skillData.skillCfg.skillName}");
 
 
         // 伤害结算（TODO：接入伤害计算中心）
         // target.SkillDamage(DamageCalcuCenter.Calculate(config, skillCharacter, target), config);
-        // target.SkillDamage(config.damageRate, config);
+        target.OnHit(config);
 
+        
+        
         // 击中特效
-        AddHitEffect(target, config.targetType == TargetType.Self ? skillCharacter : target);
-        // 击中音效
-        PlayHitAudio();
-    }
-
-    /// <summary>
-    /// 添加击中特效
-    /// </summary>
-    private void AddHitEffect(LogicActor targetObj, LogicActor source)
-    {
-        if (_skillData.skillCfg.skillHitEffect != null)
+        if (config.hitEffectPrefab != null)
         {
-            targetObj.OnHit(
-                _skillData.skillCfg.skillHitEffectPath,
-                _skillData.skillCfg.hitEffectSurvivalTimeMs,
-                source);
+            
+            // target.AddHitEffect();
+            
+            //暂时先这么写
+            GameObject hitEffect = GameObject.Instantiate(config.hitEffectPrefab , target.instance.logicLayer.LogicPos.ToVector3(), Quaternion.identity);
+            GameObject.Destroy(hitEffect , config.hitEffectSurvivalTimeMs / 1000f);
+        }
+        // 击中音效
+        if (config.hitAudioClip != null)
+        {
+            AudioSource.PlayClipAtPoint(config.hitAudioClip, target.instance.logicLayer.LogicPos.ToVector3());
         }
     }
 

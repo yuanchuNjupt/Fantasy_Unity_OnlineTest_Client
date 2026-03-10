@@ -8,7 +8,7 @@ namespace Framework.AdvancedLog
     /// <summary>
     /// 增强版日志工具类
     /// </summary>
-    public static class Logger
+    public static class Log
     {
         #region 配置选项
 

@@ -57,18 +57,22 @@ public class SkillDamageConfig
     
 
     #endregion
-
     
-
+    [LabelText("技能命中特效")]
+    public GameObject hitEffectPrefab;
     
-    [LabelText("圆球检测半径高度"), ShowIf("_showSphere3D")]
-    public float radiusHeight = 0;//圆球检测半径高度
+    [LabelText("技能命中特效持续时间（毫秒）")]
+    public int hitEffectSurvivalTimeMs;
+    
+    [LabelText("技能命中音效")]
+    public AudioClip hitAudioClip;
+    
     
     [LabelText("碰撞体位置类型")]
-    public ColliderPosType colliderPosType = ColliderPosType.FixedDir;//碰撞体位置类型
+    public ColliderPosType colliderPosType = ColliderPosType.FixedDir;
     
     [LabelText("伤害触发目标")]
-    public TargetType targetType;//伤害触发目标
+    public TargetType targetType;
     
     
 #if UNITY_EDITOR
@@ -285,8 +289,8 @@ public enum TargetType
 
 public enum ColliderPosType
 {
-    [LabelText("跟随角色朝向")] FixedDir,//固定与角色朝向同向
-    [LabelText("跟随角色位置")] FollowPos,//跟随角色位置
+    [LabelText("位置固定且与角色朝向同向")] FixedDir,//固定与角色朝向同向
+    [LabelText("跟随角色位置但不旋转")] FollowPos,//跟随角色位置
 }
 
 

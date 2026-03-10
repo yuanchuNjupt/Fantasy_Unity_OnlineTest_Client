@@ -135,6 +135,7 @@ public enum LogicObjectActionState
     Move,//移动中
     ReleasingSkillBefore,
     ReleasingSkillAfter,
+    OnHit,
 }
 
 public enum LogicObjectType

@@ -17,12 +17,10 @@ public class SkillEffectLogic : LogicObject
         this.RenderObj = renderObject;
         this.mSkillCreater = skillCreater;
         this.mEffectCfg = effectCfg;
-        // this.LogicXAxis = skillCreater.LogicXAxis;
         //初始化特效逻辑位置
         if (effectCfg.effectPosType == EffectPosType.FollowDir || effectCfg.effectPosType == EffectPosType.FollowPosDir)
         {
             FixedIntVector3 offsetPos = effectCfg.effectOffsetPos;
-            // offsetPos *= LogicXAxis;
             offsetPos.Y = FixedIntMathf.Abs(offsetPos.Y);
             LogicPos = skillCreater.LogicPos + offsetPos;
         }
@@ -47,7 +45,7 @@ public class SkillEffectLogic : LogicObject
         // {
         //     skill.AddMoveAction(mEffectCfg.actionConfig, this,mEffectCfg.effectOffsetPos, () =>
         //     {
-        //         Debug.Logger("MoveToAction Finish SkillEffectLogic");
+        //         Debug.Log("MoveToAction Finish SkillEffectLogic");
         //         // mCollider?.OnRelease();
         //         skill.DestroyEffect(mEffectCfg);
         //         mCollider = null;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using FixedPhysics.Bounds;
 using FixedPhysics.Fixed_pointNumber.Core;
 using FixedPhysics.FixedCollider.Core;
+using Framework.AdvancedLog;
 using UnityEngine;
 
 public partial class LogicActor : LogicObject
@@ -36,37 +37,35 @@ public partial class LogicActor : LogicObject
         Debug.Log("释放技能："+name);
         RenderObj.PlayAnim(name);
     }
-    public virtual void OnHit(string effectHitObjPath,int survivalTimeMs, LogicObject source)
+    public virtual void OnHit(SkillDamageConfig config)
     {
-        RenderObj.OnHit(effectHitObjPath, survivalTimeMs, source);
+        RenderObj.OnHit();
+        CalculateDamage(config.damageRate , DamageSource.SKill);
     }
-    public virtual void SkillDamage(FixedInt hp,SkillDamageConfig damageConfig)
+    public virtual void AddHitEffect(string effectHitObjPath,int survivalTimeMs, LogicObject source)
     {
-        Debug.Log("SkillDamage hp:"+hp);
-        CaculDamage(hp, DamageSource.SKill);
+        RenderObj.AddHitEffect(effectHitObjPath, survivalTimeMs, source);
     }
+    
+    
+    
     
     /// <summary>
     /// 计算伤害
     /// </summary>
-    /// <param name="hp"></param>
-    /// <param name="source"></param>
-    public void CaculDamage(FixedInt hp,DamageSource source)
+    /// <param name="damage">伤害数值</param>
+    /// <param name="source">伤害来源</param>
+    public void CalculateDamage(FixedInt damage,DamageSource source)
     {
         if (ObjectState== LogicObjectState.Survival)
         {
             //1.对象逻辑层血量减少
-            ReduceHP(hp);
+            ReduceHP(damage);
             //2.判断对象是否死亡 如果死亡就处理死亡逻辑
             if (this.HP<=0)
             {
-               
                 OnDeath();
-
-
             }
-            //3.进行伤害飘字渲染
-            RenderObj.Damage(hp.RenderInt, source);
         }
     }
     /// <summary>

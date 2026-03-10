@@ -408,7 +408,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1673710457818346399
+--- !u!1001 &1437659132
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -876,6 +876,11 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.045299158
       objectReference: {fileID: 0}
+    - target: {fileID: 3805333948070126538, guid: 4a72582044fdd7345b0c8c08c6234288,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3904045798116461300, guid: 4a72582044fdd7345b0c8c08c6234288,
         type: 3}
       propertyPath: m_LocalRotation.w
@@ -899,7 +904,7 @@ PrefabInstance:
     - target: {fileID: 3955795788723173208, guid: 4a72582044fdd7345b0c8c08c6234288,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.013893127
+      value: 0.013891843
       objectReference: {fileID: 0}
     - target: {fileID: 3955795788723173208, guid: 4a72582044fdd7345b0c8c08c6234288,
         type: 3}
@@ -909,7 +914,7 @@ PrefabInstance:
     - target: {fileID: 3955795788723173208, guid: 4a72582044fdd7345b0c8c08c6234288,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.0039949417
+      value: 0.003994261
       objectReference: {fileID: 0}
     - target: {fileID: 3955795788723173208, guid: 4a72582044fdd7345b0c8c08c6234288,
         type: 3}
@@ -974,7 +979,7 @@ PrefabInstance:
     - target: {fileID: 4294024357105437448, guid: 4a72582044fdd7345b0c8c08c6234288,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -50.221344
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4294024357105437448, guid: 4a72582044fdd7345b0c8c08c6234288,
         type: 3}
@@ -984,7 +989,7 @@ PrefabInstance:
     - target: {fileID: 4294024357105437448, guid: 4a72582044fdd7345b0c8c08c6234288,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 12.614
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4294024357105437448, guid: 4a72582044fdd7345b0c8c08c6234288,
         type: 3}
@@ -1502,6 +1507,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 414061316}
   - {fileID: 480017983}
-  - {fileID: 1673710457818346399}
   - {fileID: 1174600143}
   - {fileID: 112206461}
+  - {fileID: 1437659132}

@@ -6,13 +6,13 @@ using Config;
 using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 
-public enum SkillState
-{
-    None,
-    Before,
-    After,
-    End,
-}
+// public enum SkillState
+// {
+//     None,
+//     Before,
+//     After,
+//     End,
+// }
 
 public partial class Skill
 {
@@ -31,20 +31,21 @@ public partial class Skill
     public List<SkillDamageConfig> damageCfgList { get { return _skillData.damageCfgList; } }
 
     
-    public Action<Skill> OnReleaseAfter;
+    public Action onReleaseAfter;
 
     
-    public Action<Skill, bool> OnReleaseSkillEnd;
+    public Action onReleaseSkillEnd;
 
     
-    public SkillState skillState = SkillState.None;
 
     
-    private int mCurLogicFrame = 0;
+    private int _curLogicFrame = 0;
+
+    /// <summary>
+    /// 当前技能是否正在释放中，SKillEnd 后置 false 阻止后续帧继续执行
+    /// </summary>
+    public bool IsReleasing { get; private set; } = false;
     
-    private int mCurLogicFrameAccTime = 0;
-    
-    private int mCombinationSkillid;
 
     
     public Skill(int skillId, LogicActor skillCharacter)
@@ -63,12 +64,12 @@ public partial class Skill
         // _skillData = ZMAsset.LoadScriptableObject<SkillDataConfig>(AssetPathConfig.SKILL_DATA_PATH + skillId + ".asset");
     }
 
-    public void ReleaseSKill(Action<Skill> releaseAfterCallBack , Action<Skill, bool> releaseSkillEnd)
+    public void ReleaseSKill(Action releaseAfterCallBack , Action releaseSkillEnd)
     {
-        OnReleaseAfter = releaseAfterCallBack;
-        OnReleaseSkillEnd = releaseSkillEnd;
+        onReleaseAfter = releaseAfterCallBack;
+        onReleaseSkillEnd = releaseSkillEnd;
+        IsReleasing = true;
         SkillStart();
-        skillState = SkillState.Before;
         PlayAnim();
     }
 
@@ -79,9 +80,7 @@ public partial class Skill
 
     public void SkillStart()
     {
-        mCurLogicFrame = 0;
-        mCurLogicFrameAccTime = 0;
-        mCombinationSkillid = _skillData.skillCfg.combinationSkillId;
+        _curLogicFrame = 0;
          if (_skillData.character.customLogicFame != 0)
             _skillData.character.logicFrame = _skillData.character.customLogicFame;
         OnInitDamage();
@@ -89,48 +88,44 @@ public partial class Skill
 
     public void SkillAfter()
     {
-        skillState = SkillState.After;
-        OnReleaseAfter?.Invoke(this);
+        onReleaseAfter?.Invoke();
     }
 
     public void SKillEnd()
     {
-        skillState = SkillState.End;
-        OnReleaseSkillEnd?.Invoke(this, _skillData.skillCfg.combinationSkillId != 0);
+        if (!IsReleasing) return;
+        IsReleasing = false;
+        onReleaseSkillEnd?.Invoke();
         ReleaseAllEffect();
         OnDamageRelease();
-        if (mCombinationSkillid != 0)
-        {
-            skillCharacter.ReleaseSKill(mCombinationSkillid);
-        }
     }
 
 
     public void OnLogicFrameUpdate()
     {
-        if (skillState == SkillState.None||skillState== SkillState.End)
-        {
-            return;
-        }
-        mCurLogicFrameAccTime = mCurLogicFrame * LogicFrameConfig.LogicFrameIntervalMs;
+        // 技能已结束（被外部提前中止或自然结束），不再执行任何逻辑
+        if (!IsReleasing) return;
 
         //达到后摇关键帧 
-        if (mCurLogicFrame == _skillData.skillCfg.skillShakeAfterFrame)
+        if (_curLogicFrame == _skillData.skillCfg.skillShakeAfterFrame)
         {
             SkillAfter();
         }
-
+        
+        //先更新移动
+        OnLogicFrameUpdateAction();
+        
         OnLogicFrameUpdateEffect();
         OnLogicFrameUpdateDamage();
-        OnLogicFrameUpdateAction();
+        
         OnLogicFrameUpdateAudio();
         
         
         
-        if (mCurLogicFrame == _skillData.character.MaxLogicFrame)
+        if (_curLogicFrame == _skillData.character.MaxLogicFrame)
         {
             SKillEnd();
         }
-        mCurLogicFrame++;
+        _curLogicFrame++;
     }
 }

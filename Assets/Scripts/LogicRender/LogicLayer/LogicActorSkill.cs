@@ -5,6 +5,8 @@ using System.Linq;
 using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 using FixMath;
+using Framework.AdvancedLog;
+
 public partial class LogicActor
 {
     
@@ -22,8 +24,7 @@ public partial class LogicActor
     //当前普通攻击连击索引
     private int _curNormalComboIndex = 0;
     
-    //释放技能回调
-    public Action<bool, int> OnReleaseSkillCallBack;
+    
     
     //初始化技能列表
     public void InitActorSkill(List<int> normalAttackList , List<int> skillList)
@@ -55,28 +56,37 @@ public partial class LogicActor
     /// 释放对应的技能
     /// </summary>
     /// <param name="skillId"></param>
-    public void ReleaseSKill(int skillId, Action<bool> releaseSkillCallBack = null)
+    public void ReleaseSKill(int skillId)
     {
-        
-        Skill skill = _skillSystem.ReleaseSkill(skillId,  OnSkillReleaseAfter, OnSkillReleaseEnd);
-        //！=null 说明技能释放成功
-        if (skill != null)
-        {
-            currentSkill = skill;
-            if (!IsNormalAttackSkill(skill.skillId))
-            {
-                _curNormalComboIndex = 0;
-            }
-            ActionState = LogicObjectActionState.ReleasingSkillBefore;
 
-            releaseSkillCallBack?.Invoke(true);
-            OnReleaseSkillCallBack?.Invoke(true, skill.skillId);
+        if (ActionState is LogicObjectActionState.ReleasingSkillBefore)
+        {
+            Log.Info(LogColor.Cyan , "正在释放技能前摇，无法释放技能");
+            return;
+        }
+        
+        
+        Skill skill = _skillSystem.ReleaseSkill(skillId,OnSkillReleaseAfter,OnSkillReleaseEnd);
+        
+        
+        currentSkill = skill;
+        
+        if (!IsNormalAttackSkill(currentSkill.skillId))
+        {
+            _curNormalComboIndex = 0;
         }
         else
         {
-            releaseSkillCallBack?.Invoke(false);
-            OnReleaseSkillCallBack?.Invoke(false, 0);
+            _curNormalComboIndex++;
+            //如果当前普通攻击技能索引大于等级普通攻击技能数组长度，索引归0
+            if (_curNormalComboIndex >= _normalSkillIdArr.Count || currentSkill.skillId == _normalSkillIdArr[^1])
+            {
+                _curNormalComboIndex = 0;
+            }
         }
+        
+        ActionState = LogicObjectActionState.ReleasingSkillBefore;
+
     }
     /// <summary>
     /// 是否是普通攻击技能
@@ -90,31 +100,29 @@ public partial class LogicActor
     /// <summary>
     /// 技能释放后摇
     /// </summary>
-    /// <param name="skill"></param>
-    public void OnSkillReleaseAfter(Skill skill)
+    public void OnSkillReleaseAfter()
     {
         
         ActionState = LogicObjectActionState.ReleasingSkillAfter;
         
-        if (!IsNormalAttackSkill(skill.skillId))
-        {
-            _curNormalComboIndex = 0;
-        }
-        else
-        {
-            _curNormalComboIndex++;
-            //如果当前普通攻击技能索引大于等级普通攻击技能数组长度，索引归0
-            if (_curNormalComboIndex >= _normalSkillIdArr.Count || skill.skillId == _normalSkillIdArr[^1])
-            {
-                _curNormalComboIndex = 0;
-            }
-        }
+        // if (!IsNormalAttackSkill(currentSkill.skillId))
+        // {
+        //     _curNormalComboIndex = 0;
+        // }
+        // else
+        // {
+        //     _curNormalComboIndex++;
+        //     //如果当前普通攻击技能索引大于等级普通攻击技能数组长度，索引归0
+        //     if (_curNormalComboIndex >= _normalSkillIdArr.Count || currentSkill.skillId == _normalSkillIdArr[^1])
+        //     {
+        //         _curNormalComboIndex = 0;
+        //     }
+        // }
     }
     /// <summary>
     /// 技能释放完成
     /// </summary>
-    /// <param name="skill"></param>
-    public void OnSkillReleaseEnd(Skill skill)
+    public void OnSkillReleaseEnd()
     {
         currentSkill = null;
         ActionState = LogicObjectActionState.Idle;
