@@ -26,7 +26,6 @@ MonoBehaviour:
     skillName: NormalSkill01
     skillShakeAfterFrame: 12
     skillCdTime: 0
-    combinationSkillId: 0
     skillDes: 
   damageCfgList:
   - triggerFrame: 5
@@ -92,46 +91,52 @@ MonoBehaviour:
     moveData: {x: 0, y: 0, z: 0}
     durationFrame: 0
     deltaMoveData:
-    - triggerFrame: 1
+    - triggerFrame: 0
       deltaPos: {x: -0.00058470294, y: 0, z: 0.10799335}
-    - triggerFrame: 2
+    - triggerFrame: 1
       deltaPos: {x: 0.024958633, y: 0, z: 0.107751146}
-    - triggerFrame: 3
+    - triggerFrame: 2
       deltaPos: {x: 0.015238769, y: 0, z: 0.18950155}
-    - triggerFrame: 4
+    - triggerFrame: 3
       deltaPos: {x: 0.008249253, y: 0, z: 0.27529684}
-    - triggerFrame: 5
+    - triggerFrame: 4
       deltaPos: {x: 0.034036618, y: 0, z: 0.30088764}
-    - triggerFrame: 6
+    - triggerFrame: 5
       deltaPos: {x: 0.024334252, y: 0, z: 0.17958927}
-    - triggerFrame: 7
+    - triggerFrame: 6
       deltaPos: {x: 0.0006905645, y: 0, z: 0.015993357}
-    - triggerFrame: 8
+    - triggerFrame: 7
       deltaPos: {x: 0.003467381, y: 0, z: -0.00073611736}
-    - triggerFrame: 21
+    - triggerFrame: 8
+      deltaPos: {x: -0.0034320056, y: 0, z: -0.0034991503}
+    - triggerFrame: 9
+      deltaPos: {x: -0.0052382573, y: 0, z: -0.00449574}
+    - triggerFrame: 10
+      deltaPos: {x: -0.004200734, y: 0, z: -0.0040159225}
+    - triggerFrame: 11
+      deltaPos: {x: -0.0018710494, y: 0, z: -0.0029091835}
+    - triggerFrame: 20
       deltaPos: {x: 0.0024485216, y: 0, z: 0.013093352}
-    - triggerFrame: 22
+    - triggerFrame: 21
       deltaPos: {x: 0.0060614347, y: 0, z: 0.042121887}
-    - triggerFrame: 23
+    - triggerFrame: 22
       deltaPos: {x: 0.009527564, y: 0, z: 0.054635167}
-    - triggerFrame: 24
+    - triggerFrame: 23
       deltaPos: {x: 0.0029981285, y: 0, z: 0.053309917}
-    - triggerFrame: 25
+    - triggerFrame: 24
       deltaPos: {x: -0.008316308, y: 0, z: 0.045230627}
-    - triggerFrame: 26
+    - triggerFrame: 25
       deltaPos: {x: -0.010273032, y: 0, z: 0.016501784}
-    - triggerFrame: 27
+    - triggerFrame: 26
       deltaPos: {x: -0.010826521, y: 0, z: 0.0039794445}
-    - triggerFrame: 28
+    - triggerFrame: 27
       deltaPos: {x: -0.01153744, y: 0, z: -0.0044925213}
-    - triggerFrame: 29
+    - triggerFrame: 28
       deltaPos: {x: -0.010374371, y: 0, z: -0.01068604}
-    - triggerFrame: 30
+    - triggerFrame: 29
       deltaPos: {x: -0.00829142, y: 0, z: -0.019270182}
-    - triggerFrame: 31
+    - triggerFrame: 30
       deltaPos: {x: -0.0045133233, y: 0, z: -0.032642245}
-    - triggerFrame: 32
+    - triggerFrame: 31
       deltaPos: {x: -0.0027284548, y: 0, z: -0.02392745}
-    - triggerFrame: 33
-      deltaPos: {x: -0.002064731, y: 0, z: -0.00690794}
     rootMotionClip: {fileID: 7400002, guid: 52c2de492ef1443458626e80a78b7c99, type: 3}

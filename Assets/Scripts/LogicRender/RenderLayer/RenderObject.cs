@@ -16,9 +16,9 @@ public class RenderObject : MonoBehaviour
     /// <summary>
     /// 位置插值速度
     /// </summary>
-    protected float mSmoothPosSpeed = 10;
+    protected float smoothPosSpeed = 10;
 
-    protected bool mIsUpdatePosAndRotation = true;
+    protected bool isUpdatePosAndRotation = true;
     protected Vector3 mRenderDir;
 
     protected bool mIsLocalPlayer = false;
@@ -26,16 +26,16 @@ public class RenderObject : MonoBehaviour
     /// <summary>
     /// 当前预测的移动次数
     /// </summary>
-    protected int mCurPreMoveCount;
+    protected int curPreMoveCount;
 
     public void SetLogicObject(LogicObject logicObj,bool isUpdatePosAndRotation=true,bool isLocalPlayer=false)
     {
         logicObject = logicObj;
-        mIsUpdatePosAndRotation = isUpdatePosAndRotation;
+        this.isUpdatePosAndRotation = isUpdatePosAndRotation;
         mIsLocalPlayer=isLocalPlayer;
         //初始化位置
         transform.position = logicObj.LogicPos.ToVector3();
-        if (mIsUpdatePosAndRotation == false)
+        if (this.isUpdatePosAndRotation == false)
             transform.localPosition = Vector3.zero;
         UpdateDir();
     }
@@ -67,7 +67,7 @@ public class RenderObject : MonoBehaviour
     /// </summary>
     public virtual void UpdatePosition()
     {
-        if (logicObject == null || mIsUpdatePosAndRotation == false)
+        if (logicObject == null || isUpdatePosAndRotation == false)
         {
             return;
         }
@@ -77,44 +77,44 @@ public class RenderObject : MonoBehaviour
         if (mIsLocalPlayer)
         {
             //逻辑位置是否是最新，如果是，立马更新并回滚预测位置
-            if (mIsUpdatePosAndRotation == true)
+            if (isUpdatePosAndRotation == true)
             {
                 if (logicObject.objectHasNewPos)//是否有最新的位置
                 {
                     mPreTargetPos = logicObject.LogicPos.ToVector3();
                     logicObject.objectHasNewPos = false;
-                    mCurPreMoveCount = 0;
+                    curPreMoveCount = 0;
                     // Debuger.Log("PreMove ForceUpdate Pos:" + mPreTargetPos);
                 }
                 else
                 {
                     //位置的预测.达到最大预测次数则停止
-                    if (mCurPreMoveCount > LogicFrameConfig.PreMaxMoveLogicFrameCount)
+                    if (curPreMoveCount > LogicFrameConfig.PreMaxMoveLogicFrameCount)
                     {
                         return;
                     }
                     //计算预测的增量位置
                     Vector3 deltaPos = logicObject.LogicForwardDir.ToVector3() * (logicObject.LogicMoveSpeed.RenderFloat * Time.deltaTime);
                     mPreTargetPos += deltaPos;
-                    mCurPreMoveCount++;
+                    curPreMoveCount++;
                     // Debuger.Log("PreMove mPreTargetPos:" + mPreTargetPos);
                 }
                 //更新位置
-                transform.position = Vector3.Lerp(transform.position, mPreTargetPos, Time.deltaTime * mSmoothPosSpeed);
+                transform.position = Vector3.Lerp(transform.position, mPreTargetPos, Time.deltaTime * smoothPosSpeed);
                 return;
             }
 
         }
 
         //对逻辑位置做插值动画，流畅渲染对象移动
-        transform.position = Vector3.Lerp(transform.position, logicObject.LogicPos.ToVector3(), Time.deltaTime * mSmoothPosSpeed);
+        transform.position = Vector3.Lerp(transform.position, logicObject.LogicPos.ToVector3(), Time.deltaTime * smoothPosSpeed);
     }
     /// <summary>
     /// 通用的方向更新逻辑
     /// </summary>
     public virtual void UpdateDir()
     {
-        if (logicObject == null || mIsUpdatePosAndRotation == false)
+        if (logicObject == null || isUpdatePosAndRotation == false)
         {
             return;
         }

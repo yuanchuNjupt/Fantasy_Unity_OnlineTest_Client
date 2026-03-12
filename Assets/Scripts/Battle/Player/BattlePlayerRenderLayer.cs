@@ -52,7 +52,6 @@ namespace Battle
 
         private void SwitchState(LogicObjectActionState newState)
         {
-
             switch (newState)
             {
                 case LogicObjectActionState.Idle:
@@ -67,6 +66,14 @@ namespace Battle
 
             Log.Info(LogColor.Cyan, "角色状态切换",
                 $"角色UID:{_instance.uid},角色名称:{_instance.playerName},当前状态{newState.ToString()}");
+        }
+
+
+        public override void OnDeath()
+        {
+            isUpdatePosAndRotation = false;
+            _playerAnimator.applyRootMotion = true;
+            PlayAnim(AnimationClipConfig.DEATH);
         }
     }
 }

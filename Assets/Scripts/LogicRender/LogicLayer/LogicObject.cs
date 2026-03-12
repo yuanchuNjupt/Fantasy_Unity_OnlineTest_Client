@@ -131,8 +131,8 @@ public abstract class LogicObject
 }
 public enum LogicObjectActionState
 {
-    Idle,//待机
-    Move,//移动中
+    Idle,
+    Move,
     ReleasingSkillBefore,
     ReleasingSkillAfter,
     OnHit,

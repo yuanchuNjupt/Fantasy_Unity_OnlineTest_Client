@@ -52,6 +52,11 @@ namespace Battle
 
         private void OnInputSampleFrameUpdate()
         {
+            
+            if(_instance.logicLayer.ObjectState is LogicObjectState.Death) //不采集输入
+                return;
+            
+            
             newInput = _battlePlayerMouseLogicManager.MoveInput;
             if (newInput != Vector2.zero && _playerCameraTransform != null)
             {

@@ -11,9 +11,6 @@ public partial class LogicActor : LogicObject
 {
     public override void OnCreate()
     {
-        
-        
-        
         base.OnCreate();
     }
  
@@ -64,6 +61,7 @@ public partial class LogicActor : LogicObject
             //2.判断对象是否死亡 如果死亡就处理死亡逻辑
             if (this.HP<=0)
             {
+                Log.Info(LogColor.Red , "战斗系统" , $"对象死亡");
                 OnDeath();
             }
         }

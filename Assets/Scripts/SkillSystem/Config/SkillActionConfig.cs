@@ -87,8 +87,6 @@ public class SkillActionConfig
 
             float duration = rootMotionClip.length;
             float frameInterval = LogicFrameConfig.LogicFrameInterval; // 0.066s
-            // 与 SkillCharacterConfig.MaxLogicFrame 保持完全一致：截断取整
-            // CeilToInt 会多出一个永远不会被触发的幽灵帧，必须用 (int) 截断
             int totalFrames = (int)(duration / frameInterval);
 
             // 采样第 0 帧，记录起始位置
@@ -109,7 +107,8 @@ public class SkillActionConfig
                 {
                     deltaMoveData.Add(new DeltaMoveData
                     {
-                        triggerFrame = frame,
+                        //因为计算的是当前帧与上一帧的增量，所以触发帧应该是当前帧 - 1
+                        triggerFrame = frame - 1,
                         deltaPos = delta
                     });
                 }
