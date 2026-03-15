@@ -12,7 +12,7 @@ public class BattleSceneTestMain : MonoBehaviour
     
     public UserDataManager userDataManager;
     
-    void Awake()
+    void Start()
     {
         WorldManager.CreateWorld<GlobalWorld>();
         userDataManager = World.GetExitsDataManager<UserDataManager>();

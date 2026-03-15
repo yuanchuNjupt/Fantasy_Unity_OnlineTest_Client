@@ -9,6 +9,7 @@ using Framework.GameManagerFramework.WorldScripts;
 using Generate;
 using UIFramework.Core;
 using UIFramework.ViewPath;
+using UnityEngine;
 
 namespace Framework.MessageManagers
 {
@@ -75,9 +76,14 @@ namespace Framework.MessageManagers
                 WorldManager.CreateWorld<BattleWorld>((() =>
                 {
                     GameManager.Core.World.GetExitsDataManager<BattleDataManager>().InitBattlePlayerData(message.battlePlayers);
-                    GameManager.Core.World.GetExitsLogicManager<BattleLogicManager>().OnStartBattle();
                     UIManager.MainInstance.HideAllPanel("Main");
+                    
+                    GameManager.Core.World.GetExitsLogicManager<BattleLogicManager>().OnStartBattle();
                     UIManager.MainInstance.HidePanel<LoadingPanelView>();
+                    
+                    
+                    
+                    
                 }));
                 await FTask.CompletedTask;
             }

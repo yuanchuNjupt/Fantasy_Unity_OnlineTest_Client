@@ -20,6 +20,8 @@ namespace Framework.GameManagerFramework.LogicManagers
 
         public bool NormalAttack => _gameInputAction.BattlePlayerInputMap.LAttack.triggered;
         
+        public bool SpecialSkill1 => _gameInputAction.BattlePlayerInputMap.SpecialSkill1.triggered;
+        
         
         public void OnCreate()
         {

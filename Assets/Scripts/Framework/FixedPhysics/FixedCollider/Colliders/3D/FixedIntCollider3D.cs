@@ -22,8 +22,9 @@ namespace FixedPhysics.FixedCollider.Colliders._3D
         
         public FixedIntCollider3D(FixedIntVector3 position, FixedIntVector3 offset , FixedIntCollider3DType colliderType)
         {
-            Position = position;
             Offset = offset;
+            Position = position + offset;
+            
             ColliderType = colliderType;
             Active = true; // 默认激活碰撞体
         }

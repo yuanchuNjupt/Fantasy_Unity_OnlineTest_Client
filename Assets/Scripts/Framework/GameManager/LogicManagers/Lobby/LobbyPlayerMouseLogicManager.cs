@@ -58,10 +58,12 @@ namespace Framework.GameManagerFramework.LogicManagers
             if(_showMouseCount > 1)
                 return;
             
-            _gameInputAction.LobbyPlayerInputMap.Disable();
+            // _gameInputAction.LobbyPlayerInputMap.Disable();
             
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            
+            Debug.Log("Showing mouse : " + _showMouseCount);
         }
         
         /// <summary>
@@ -69,11 +71,14 @@ namespace Framework.GameManagerFramework.LogicManagers
         /// </summary>
         public void HideMousePartial()
         {
+            
+            
             _showMouseCount--;
-            if(_showMouseCount > 0)
+            Debug.Log("Hide mouse : " + _showMouseCount);
+            if(_showMouseCount > 0)                                                                                 
                 return;
             
-            _gameInputAction.LobbyPlayerInputMap.Enable();
+            // _gameInputAction.LobbyPlayerInputMap.Enable();
             
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;

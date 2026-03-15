@@ -33,9 +33,6 @@ namespace Framework.MessageManagers
             
             protected override async FTask Run(Session session, FrameOperateEventMessage_G2C message)
             {
-                
-                Debug.Log("收到服务器帧操作数据同步 消息，战斗ID：" + message.battleId + " 操作数据数量：" + message.frameOperateDataList.Count);
-                
                 if (_battleLogicManager == null)
                 {
                     _battleLogicManager = World.GetExitsLogicManager<BattleLogicManager>();

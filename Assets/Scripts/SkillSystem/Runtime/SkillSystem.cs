@@ -30,14 +30,8 @@ public class SkillSystem
         }
         Debug.Log("技能初始化完成，技能个数:" + skillIdArr.Count);
     }
-    public Skill ReleaseSkill(int skillId,Action onReleaseSkillAfter ,Action onReleaseSkillEnd )
+    public Skill ReleaseSkill(int skillId,Action onReleaseSkillAfter ,Action onReleaseSkillEnd , Action<bool> onForceSkillEnd = null)
     {
-        //当前正在释放的技能不为空，并且技能状态不为结束或者后续，则无法释放新技能
-        // if (_curReleasingSkill!=null&&(_curReleasingSkill.skillState!= SkillState.End&&_curReleasingSkill.skillState!= SkillState.After))
-        // {
-        //     return null;
-        // }
-        
         var skill = _skillArr.FirstOrDefault(x => x.skillId == skillId);
         
         if (skill == null)
@@ -46,29 +40,7 @@ public class SkillSystem
             return null;
         }
         
-        // if (skill.skillState != SkillState.None && skill.skillState != SkillState.End)
-        // {
-        //     Debug.Log("技能正在释放中，无法释放:" + skillId);
-        //     return null;
-        // }
-        
-
-        
-        // skill.ReleaseSKill(OnSkillReleaseAfterCallBack , () =>
-        // {
-        //     
-        //     onReleaseSkillEnd?.Invoke();
-        //     
-        //     _curReleasingSkill = null;
-        // });
-        //
-        // _curReleasingSkill = skill;
-        
-        
-        skill.ReleaseSKill(onReleaseSkillAfter , onReleaseSkillEnd);
-        
-        
-        
+        skill.ReleaseSKill(onReleaseSkillAfter , onReleaseSkillEnd , onForceSkillEnd);
         
         return skill;
     }

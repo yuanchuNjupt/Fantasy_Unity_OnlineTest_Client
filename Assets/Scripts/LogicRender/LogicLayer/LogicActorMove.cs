@@ -52,7 +52,8 @@ public partial class LogicActor
                 // 后摇阶段有移动输入：结束后摇，状态由 OnSkillReleaseEnd 置为 Idle
                 // 本帧直接 return，下一个采样帧再走正常 Idle→Move 流程
                 // 避免同帧内 Idle→Move 触发 SwitchState 导致动画被反复打断
-                currentSkill?.SKillEnd();
+                currentSkill?.SkillForceEnd();
+                ActionState = LogicObjectActionState.Move;
                 return;
             }
             if (ActionState is LogicObjectActionState.Idle)

@@ -2,12 +2,18 @@
 using System.Collections.Generic;
 using Fantasy;
 using FixedPhysics.Fixed_pointNumber.Core;
+using FixedPhysics.FixedCollider.Core;
 using FixMath;
+using Framework.AdvancedLog;
 using Framework.GameManager.Core;
 using Framework.GameManagerFramework.DataManagers;
 using Framework.GameManagerFramework.WorldScripts;
 using Framework.MessageManagers;
+using UIFramework.Core;
+using UIFramework.ViewPath;
 using UnityEngine;
+using Log = Framework.AdvancedLog.Log;
+
 
 namespace Framework.GameManagerFramework.LogicManagers
 {
@@ -31,6 +37,8 @@ namespace Framework.GameManagerFramework.LogicManagers
         //收到开始战斗的消息
         public void OnStartBattle()
         {
+            UIManager.MainInstance.AddPanel<BattleMainPanelView>(Resources.Load<GameObject>("UI/BattleMainPanel"), UILayer.Main , true);
+            UIManager.MainInstance.ShowPanel<BattleMainPanelView>();
             _battlePlayerLogicManager.InitPlayer();
             
         }
@@ -38,12 +46,12 @@ namespace Framework.GameManagerFramework.LogicManagers
         //
         public void MoveFrameDataInput(FixedIntVector3 inputDir)
         {
-            CacheFrameOperateData(OperateTypeEnum.InputMove, inputDir ,0 ,FixedIntVector3.zero , SkillTypeEnum.None);
+            CacheFrameOperateData(OperateTypeEnum.InputMove, inputDir ,0);
         }
         
-        public void ReleaseSkillFrameData(int skillId , FixedIntVector3 skillPos , SkillTypeEnum skillType)
+        public void ReleaseSkillFrameData(int skillId)
         {
-            CacheFrameOperateData(OperateTypeEnum.ReleaseSkill, FixedIntVector3.zero , skillId , skillPos , skillType);
+            CacheFrameOperateData(OperateTypeEnum.ReleaseSkill, FixedIntVector3.zero , skillId);
         }
 
 
@@ -70,11 +78,39 @@ namespace Framework.GameManagerFramework.LogicManagers
                 return;
             }
 
-            var best = GetBestOperateData();
+            var operateDataList = _battleDataManager.FrameOperationDataList;
+            
+            // 调试日志
+            if (operateDataList.Count > 0)
+            {
+                string operateInfo = "操作列表: ";
+                foreach (var op in operateDataList)
+                {
+                    operateInfo += $"[{(OperateTypeEnum)op.operateType}] ";
+                }
+                Log.Info(LogColor.Yellow, "网络同步", 
+                    $"[LogicFrame:{LogicFrameConfig.LogicFrameId}] 发送 {operateDataList.Count} 个操作: {operateInfo}");
+            }
+            
+            if (operateDataList.Count == 0)
+            {
+                // 没有操作数据，发送空操作列表
+                _battleMessageManager.SendFrameOperateEventMessage(
+                    _battleDataManager.BattleId,
+                    new List<FrameOperationData>());
+                return;
+            }
 
+            // 按权重排序操作（高权重优先发送）
+            operateDataList.Sort((a, b) =>
+                GetOperateWeight((OperateTypeEnum)b.operateType).CompareTo(
+                    GetOperateWeight((OperateTypeEnum)a.operateType)));
+
+            // 发送所有操作数据（不再丢弃）
             _battleMessageManager.SendFrameOperateEventMessage(
                 _battleDataManager.BattleId,
-                new List<FrameOperationData>() { best });
+                new List<FrameOperationData>(operateDataList));
+            
             _battleDataManager.FrameOperationDataList.Clear();
         }
 
@@ -103,7 +139,7 @@ namespace Framework.GameManagerFramework.LogicManagers
         
         
 
-        public void CacheFrameOperateData(OperateTypeEnum operateType , FixedIntVector3 inputDir , int skillId , FixedIntVector3 skillPos , SkillTypeEnum skillType)
+        public void CacheFrameOperateData(OperateTypeEnum operateType , FixedIntVector3 inputDir , int skillId)
         {
             if (_battleDataManager.BattleState != BattleStateEnum.Start)
             {
@@ -121,20 +157,17 @@ namespace Framework.GameManagerFramework.LogicManagers
                 case OperateTypeEnum.InputMove:
                     frameOperationData.inputDir = new CSFixIntVector3()
                     {
-                        x = (int)inputDir.X.Magnification,
-                        y = (int)inputDir.Y.Magnification,
-                        z = (int)inputDir.Z.Magnification
+                        x = inputDir.X.Magnification,
+                        y = inputDir.Y.Magnification,
+                        z = inputDir.Z.Magnification
                     };
+                    Log.Info(LogColor.Cyan, "网络同步", 
+                        $"[采样帧] 缓存移动操作: [{inputDir.X.Magnification}, {inputDir.Z.Magnification}]");
                     break;
                 case OperateTypeEnum.ReleaseSkill:
                     frameOperationData.skillId = skillId;
-                    frameOperationData.skillPos = new CSFixIntVector3()
-                    {
-                        x = (int)skillPos.X.Magnification,
-                        y = (int)skillPos.Y.Magnification,
-                        z = (int)skillPos.Z.Magnification
-                    };
-                    frameOperationData.skillType = (int)skillType;
+                    Log.Info(LogColor.Cyan, "网络同步", 
+                        $"[采样帧] 缓存攻击操作: skillId={skillId}");
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(operateType), operateType, null);
@@ -142,13 +175,7 @@ namespace Framework.GameManagerFramework.LogicManagers
             _battleDataManager.FrameOperationDataList.Add(frameOperationData);
            
         }
-
-
-        public void ModifyLogicFrameUpdate()
-        {
-            SendFrameOperateData();
-            
-        }
+        
         
         //服务器下发收集到的所有玩家的上一帧的操作帧，将这些操作帧应用到玩家逻辑层，并调用逻辑帧更新接口
         public void OnLogicFrameUpdateByServer(FrameOperateEventMessage_G2C message)
@@ -162,6 +189,15 @@ namespace Framework.GameManagerFramework.LogicManagers
             
             _battleDataManager.BattleId = message.battleId;
             
+            // 调试日志：记录接收到的所有操作
+            string receivedOpsInfo = "接收操作列表: ";
+            foreach (var data in message.frameOperateDataList)
+            {
+                receivedOpsInfo += $"[{(OperateTypeEnum)data.operateType}(pid:{data.playerId})] ";
+            }
+            Log.Info(LogColor.Green, "网络同步", 
+                $"[LogicFrame:{LogicFrameConfig.LogicFrameId}] 共接收 {message.frameOperateDataList.Count} 个操作: {receivedOpsInfo}");
+            
             //更新玩家输入
             message.frameOperateDataList.ForEach(data =>
             {
@@ -174,6 +210,7 @@ namespace Framework.GameManagerFramework.LogicManagers
             
             //调用逻辑帧接口
             _battlePlayerLogicManager.OnLogicFrameUpdate();
+            PhysicsManager3D.Instance.OnLogicFrameUpdate();
             
         }
 

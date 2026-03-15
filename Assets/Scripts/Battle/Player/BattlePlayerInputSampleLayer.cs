@@ -5,6 +5,7 @@ using Framework.GameManager.Core;
 using Framework.GameManagerFramework.DataManagers;
 using Framework.GameManagerFramework.LogicManagers;
 using UnityEngine;
+using Log = Framework.AdvancedLog.Log;
 
 namespace Battle
 {
@@ -20,11 +21,6 @@ namespace Battle
         
         //输入采样累计运行时间
         private float _accInputSampleRuntime;
-
-        private BattlePlayerMouseLogicManager _battlePlayerMouseLogicManager;
-        private BattleLogicManager _battleLogicManager;
-        
-
         private BattlePlayerInstance _instance;
 
         private Vector2 newInput;
@@ -39,13 +35,9 @@ namespace Battle
         {
             _instance = instance;
             _accInputSampleRuntime = 0f;
-            
-            _battlePlayerMouseLogicManager = World.GetExitsLogicManager<BattlePlayerMouseLogicManager>();
-            _battleLogicManager = World.GetExitsLogicManager<BattleLogicManager>();
-            var cameraLogicManager = World.GetExitsLogicManager<TP_CameraLogicManager>(); 
-            if (cameraLogicManager.cameraControl != null)
+            if (instance.cameraLogicManager.cameraControl != null)
             {
-                _playerCameraTransform = cameraLogicManager.cameraControl.transform;
+                _playerCameraTransform = instance.cameraLogicManager.cameraControl.transform;
             }
         }
 
@@ -57,7 +49,7 @@ namespace Battle
                 return;
             
             
-            newInput = _battlePlayerMouseLogicManager.MoveInput;
+            newInput = _instance.battleMouseLogicManager.MoveInput;
             if (newInput != Vector2.zero && _playerCameraTransform != null)
             {
                 // 获取相机前方向（XZ平面投影）
@@ -82,15 +74,13 @@ namespace Battle
                 _inputDir = Vector2.zero;
             }
 
+    
             if (LogicFrameConfig.IsUseLocalLogicFrame)
             {
                 _instance.logicLayer.UpdateMoveDir(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
             }
             else
-                _battleLogicManager.MoveFrameDataInput(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
-                
-                
-                
+                _instance.battleLogicManager.MoveFrameDataInput(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
                 
             //检测攻击
             if (_pendingNormalAttack)
@@ -102,8 +92,13 @@ namespace Battle
                     _instance.logicLayer.ReleaseNormalAttack();
                 }
                 else
-                    _battleLogicManager.ReleaseSkillFrameData(1001 , _instance.logicLayer.LogicPos , SkillTypeEnum.None);
+                {
+                    _instance.logicLayer.ReleaseNormalAttack();
+                }
             }
+            
+            
+            
         }
         
         
@@ -111,7 +106,7 @@ namespace Battle
         private void Update()
         {
             // 输入缓冲
-            if (_battlePlayerMouseLogicManager.NormalAttack)
+            if (_instance.battleMouseLogicManager.NormalAttack)
             {
                 _pendingNormalAttack = true;
             }

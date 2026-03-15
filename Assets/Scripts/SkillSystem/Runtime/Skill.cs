@@ -35,6 +35,8 @@ public partial class Skill
 
     
     public Action onReleaseSkillEnd;
+    
+    public Action<bool> onForceEnd;
 
     
 
@@ -64,10 +66,11 @@ public partial class Skill
         // _skillData = ZMAsset.LoadScriptableObject<SkillDataConfig>(AssetPathConfig.SKILL_DATA_PATH + skillId + ".asset");
     }
 
-    public void ReleaseSKill(Action releaseAfterCallBack , Action releaseSkillEnd)
+    public void ReleaseSKill(Action releaseAfterCallBack , Action releaseSkillEnd , Action<bool> forceEnd = null)
     {
         onReleaseAfter = releaseAfterCallBack;
         onReleaseSkillEnd = releaseSkillEnd;
+        onForceEnd = forceEnd;
         IsReleasing = true;
         SkillStart();
         PlayAnim();
@@ -98,6 +101,17 @@ public partial class Skill
         onReleaseSkillEnd?.Invoke();
         ReleaseAllEffect();
         OnDamageRelease();
+    }
+
+    public void SkillForceEnd(bool isResetNormalAttackIndex = true)
+    {
+        if (!IsReleasing) return;
+        IsReleasing = false;
+        onForceEnd?.Invoke(isResetNormalAttackIndex);
+        ReleaseAllEffect();
+        OnDamageRelease();
+        
+        
     }
 
 

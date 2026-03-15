@@ -1,0 +1,130 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20a191d3015a06a4ba70b05048ace4d1, type: 3}
+  m_Name: 1004
+  m_EditorClassIdentifier: 
+  character:
+    skillCharacter: {fileID: 0}
+    skillAnim: {fileID: 7400002, guid: e4263221de5102548a26722e06080ab4, type: 3}
+    animProgress: 599
+    MaxLogicFrame: 41
+    logicFrame: 9
+    isSetCustomLogicFrame: 0
+    customLogicFame: 0
+  skillCfg:
+    skillIcon: {fileID: 0}
+    skillid: 1004
+    skillName: NormalSkill05
+    skillShakeAfterFrame: 15
+    skillCdTime: 0
+    skillDes: 
+  damageCfgList:
+  - triggerFrame: 8
+    endFrame: 10
+    isFollowEffect: 0
+    damageRate: 30
+    detectionMode: 1
+    boxSize: {x: 2, y: 2, z: 1.5}
+    boxOffset: {x: 0, y: 1, z: 1}
+    sphereOffset: {x: 0, y: 0.9, z: 0}
+    sphereRadius: 1
+    cylinderOffset: {x: 0, y: 0.9, z: 0}
+    cylinderRadius: 1
+    cylinderHeight: 1
+    hitEffectPrefab: {fileID: 0}
+    hitEffectSurvivalTimeMs: 0
+    hitAudioClip: {fileID: 0}
+    colliderPosType: 0
+    targetType: 2
+  effectCfgList: []
+  audioCfgList: []
+  actionCfgList:
+  - triggerFrame: 0
+    moveActionType: 1
+    moveData: {x: 0, y: 0, z: 0}
+    durationFrame: 0
+    deltaMoveData:
+    - triggerFrame: 0
+      deltaPos: {x: 0.06607871, y: 0, z: 0.22519}
+    - triggerFrame: 1
+      deltaPos: {x: 0.017159648, y: 0, z: 0.13504155}
+    - triggerFrame: 2
+      deltaPos: {x: -0.0009354055, y: 0, z: 0.11997157}
+    - triggerFrame: 3
+      deltaPos: {x: -0.004336551, y: 0, z: 0.124966234}
+    - triggerFrame: 4
+      deltaPos: {x: -0.025388982, y: 0, z: 0.18214339}
+    - triggerFrame: 5
+      deltaPos: {x: -0.06299242, y: 0, z: 0.26457202}
+    - triggerFrame: 6
+      deltaPos: {x: -0.13621007, y: 0, z: 0.29028833}
+    - triggerFrame: 7
+      deltaPos: {x: -0.124987155, y: 0, z: 0.49942255}
+    - triggerFrame: 8
+      deltaPos: {x: 0.1852115, y: 0, z: 0.2844875}
+    - triggerFrame: 9
+      deltaPos: {x: 0.000016517937, y: 0, z: 0.12088609}
+    - triggerFrame: 10
+      deltaPos: {x: -0.00015625358, y: 0, z: 0.009776831}
+    - triggerFrame: 12
+      deltaPos: {x: -0.0028181598, y: 0, z: -0.00551486}
+    - triggerFrame: 13
+      deltaPos: {x: -0.0023100898, y: 0, z: -0.004411936}
+    - triggerFrame: 15
+      deltaPos: {x: 0.00072004646, y: 0, z: 0.0035934448}
+    - triggerFrame: 16
+      deltaPos: {x: 0.003356658, y: 0, z: 0.004303932}
+    - triggerFrame: 17
+      deltaPos: {x: 0.00666102, y: 0, z: 0.0046269894}
+    - triggerFrame: 18
+      deltaPos: {x: 0.0071200505, y: 0, z: 0.005445242}
+    - triggerFrame: 19
+      deltaPos: {x: 0.004225038, y: 0, z: 0.00673604}
+    - triggerFrame: 20
+      deltaPos: {x: 0.0003168881, y: 0, z: 0.008381844}
+    - triggerFrame: 21
+      deltaPos: {x: -0.00021201372, y: 0, z: 0.010754824}
+    - triggerFrame: 22
+      deltaPos: {x: 0.0015855879, y: 0, z: 0.016930342}
+    - triggerFrame: 23
+      deltaPos: {x: 0.0030630082, y: 0, z: 0.02150178}
+    - triggerFrame: 24
+      deltaPos: {x: 0.004263073, y: 0, z: 0.020123005}
+    - triggerFrame: 25
+      deltaPos: {x: 0.0034592561, y: 0, z: 0.01811409}
+    - triggerFrame: 26
+      deltaPos: {x: 0.0028323643, y: 0, z: 0.02202344}
+    - triggerFrame: 27
+      deltaPos: {x: 0.00033956394, y: 0, z: 0.041175127}
+    - triggerFrame: 28
+      deltaPos: {x: 0.0006837584, y: 0, z: 0.10932803}
+    - triggerFrame: 29
+      deltaPos: {x: 0.0058336332, y: 0, z: 0.07866335}
+    - triggerFrame: 30
+      deltaPos: {x: -0.000017672777, y: 0, z: 0.042433262}
+    - triggerFrame: 31
+      deltaPos: {x: -0.011819519, y: 0, z: 0.0046167374}
+    - triggerFrame: 32
+      deltaPos: {x: -0.009554595, y: 0, z: -0.010802269}
+    - triggerFrame: 33
+      deltaPos: {x: -0.0025353655, y: 0, z: -0.008023024}
+    - triggerFrame: 34
+      deltaPos: {x: -0.002017893, y: 0, z: -0.0036783218}
+    - triggerFrame: 35
+      deltaPos: {x: -0.0010448843, y: 0, z: -0.003469944}
+    - triggerFrame: 37
+      deltaPos: {x: -0.00036299974, y: 0, z: -0.0034148693}
+    - triggerFrame: 38
+      deltaPos: {x: -0.00031459332, y: 0, z: -0.003907919}
+    - triggerFrame: 39
+      deltaPos: {x: -0.00046275556, y: 0, z: -0.0038232803}
+    rootMotionClip: {fileID: 7400000, guid: 5029b485ac85ca0478e8877b25e6dec6, type: 3}

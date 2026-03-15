@@ -1,0 +1,141 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20a191d3015a06a4ba70b05048ace4d1, type: 3}
+  m_Name: 1003
+  m_EditorClassIdentifier: 
+  character:
+    skillCharacter: {fileID: 0}
+    skillAnim: {fileID: 7400002, guid: 111b1099a70d86646a94081dcae9ff1e, type: 3}
+    animProgress: 606
+    MaxLogicFrame: 37
+    logicFrame: 9
+    isSetCustomLogicFrame: 0
+    customLogicFame: 0
+  skillCfg:
+    skillIcon: {fileID: 0}
+    skillid: 1003
+    skillName: NormalSkill03
+    skillShakeAfterFrame: 12
+    skillCdTime: 0
+    skillDes: 
+  damageCfgList:
+  - triggerFrame: 4
+    endFrame: 6
+    isFollowEffect: 0
+    damageRate: 20
+    detectionMode: 1
+    boxSize: {x: 2, y: 2, z: 1.5}
+    boxOffset: {x: 0, y: 1, z: 1}
+    sphereOffset: {x: 0, y: 0.9, z: 0}
+    sphereRadius: 1
+    cylinderOffset: {x: 0, y: 0.9, z: 0}
+    cylinderRadius: 1
+    cylinderHeight: 1
+    hitEffectPrefab: {fileID: 0}
+    hitEffectSurvivalTimeMs: 0
+    hitAudioClip: {fileID: 0}
+    colliderPosType: 0
+    targetType: 2
+  - triggerFrame: 7
+    endFrame: 9
+    isFollowEffect: 0
+    damageRate: 0
+    detectionMode: 1
+    boxSize: {x: 2, y: 2, z: 1.5}
+    boxOffset: {x: 0, y: 1, z: 1}
+    sphereOffset: {x: 0, y: 0.9, z: 0}
+    sphereRadius: 1
+    cylinderOffset: {x: 0, y: 0.9, z: 0}
+    cylinderRadius: 1
+    cylinderHeight: 1
+    hitEffectPrefab: {fileID: 0}
+    hitEffectSurvivalTimeMs: 0
+    hitAudioClip: {fileID: 0}
+    colliderPosType: 0
+    targetType: 2
+  effectCfgList: []
+  audioCfgList: []
+  actionCfgList:
+  - triggerFrame: 0
+    moveActionType: 1
+    moveData: {x: 0, y: 0, z: 0}
+    durationFrame: 0
+    deltaMoveData:
+    - triggerFrame: 0
+      deltaPos: {x: 0.014095898, y: 0, z: 0.023072137}
+    - triggerFrame: 1
+      deltaPos: {x: 0.01871116, y: 0, z: 0.047146782}
+    - triggerFrame: 2
+      deltaPos: {x: -0.037595063, y: 0, z: 0.22607228}
+    - triggerFrame: 3
+      deltaPos: {x: -0.0751594, y: 0, z: 0.1314398}
+    - triggerFrame: 4
+      deltaPos: {x: 0.0043967366, y: 0, z: 0.16592488}
+    - triggerFrame: 5
+      deltaPos: {x: -0.006111376, y: 0, z: 0.10131931}
+    - triggerFrame: 6
+      deltaPos: {x: -0.06530373, y: 0, z: 0.18950224}
+    - triggerFrame: 7
+      deltaPos: {x: 0.08189329, y: 0, z: 0.15946668}
+    - triggerFrame: 8
+      deltaPos: {x: 0.11340514, y: 0, z: 0.013670921}
+    - triggerFrame: 9
+      deltaPos: {x: 0.00085326284, y: 0, z: -0.012544751}
+    - triggerFrame: 10
+      deltaPos: {x: -0.008003809, y: 0, z: -0.015107036}
+    - triggerFrame: 11
+      deltaPos: {x: -0.0033717416, y: 0, z: -0.009037733}
+    - triggerFrame: 12
+      deltaPos: {x: -0.002944842, y: 0, z: -0.008431196}
+    - triggerFrame: 13
+      deltaPos: {x: -0.002275724, y: 0, z: -0.0065660477}
+    - triggerFrame: 14
+      deltaPos: {x: -0.0012239292, y: 0, z: -0.0033750534}
+    - triggerFrame: 16
+      deltaPos: {x: 0.0036274046, y: 0, z: 0.0036741495}
+    - triggerFrame: 17
+      deltaPos: {x: 0.0023387522, y: 0, z: 0.008121729}
+    - triggerFrame: 18
+      deltaPos: {x: -0.003199704, y: 0, z: 0.013871431}
+    - triggerFrame: 19
+      deltaPos: {x: -0.014605686, y: 0, z: 0.022924304}
+    - triggerFrame: 20
+      deltaPos: {x: -0.013214251, y: 0, z: 0.0329566}
+    - triggerFrame: 21
+      deltaPos: {x: 0.007508591, y: 0, z: 0.04002726}
+    - triggerFrame: 22
+      deltaPos: {x: 0.0126597695, y: 0, z: 0.05396402}
+    - triggerFrame: 23
+      deltaPos: {x: 0.01563842, y: 0, z: 0.055647492}
+    - triggerFrame: 24
+      deltaPos: {x: 0.004638247, y: 0, z: 0.10079682}
+    - triggerFrame: 25
+      deltaPos: {x: 0.0019705705, y: 0, z: 0.0841372}
+    - triggerFrame: 26
+      deltaPos: {x: 0.0013193376, y: 0, z: 0.059720397}
+    - triggerFrame: 27
+      deltaPos: {x: -0.0037206486, y: 0, z: 0.024347544}
+    - triggerFrame: 28
+      deltaPos: {x: -0.016363481, y: 0, z: -0.0065749884}
+    - triggerFrame: 29
+      deltaPos: {x: -0.003843354, y: 0, z: -0.013797045}
+    - triggerFrame: 30
+      deltaPos: {x: -0.00233683, y: 0, z: -0.0045052767}
+    - triggerFrame: 31
+      deltaPos: {x: -0.0012484081, y: 0, z: -0.0035229921}
+    - triggerFrame: 34
+      deltaPos: {x: -0.000015096739, y: 0, z: -0.00357306}
+    - triggerFrame: 35
+      deltaPos: {x: -0.00018003397, y: 0, z: -0.0037858486}
+    - triggerFrame: 36
+      deltaPos: {x: -0.00040622242, y: 0, z: -0.003382206}
+    rootMotionClip: {fileID: 7400000, guid: 8decc86bf4985ea42b3005926975955f, type: 3}

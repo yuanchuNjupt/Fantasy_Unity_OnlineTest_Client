@@ -31,7 +31,7 @@ MonoBehaviour:
   - triggerFrame: 5
     endFrame: 6
     isFollowEffect: 0
-    damageRate: 1
+    damageRate: 20
     detectionMode: 1
     boxSize: {x: 1, y: 2, z: 1}
     boxOffset: {x: 0, y: 1, z: 1}
@@ -45,45 +45,7 @@ MonoBehaviour:
     hitAudioClip: {fileID: 0}
     colliderPosType: 0
     targetType: 2
-  effectCfgList:
-  - skillEffect: {fileID: 1872147318604286, guid: 5bea49531fc500c408823a2e2863106f,
-      type: 3}
-    skillEffectPath: Assets/ArtRes/Effects/Hovl Studio/Sword slash VFX/Prefabs/Sword
-      Slash 1.prefab
-    triggerFrame: 5
-    endFrame: 10
-    effectOffsetPos: {x: 0, y: 0.5, z: 0}
-    effectPosType: 0
-    isSetTransParent: 0
-    transParent: 0
-    isAttachDamage: 0
-    damageConfig:
-      triggerFrame: 0
-      endFrame: 0
-      isFollowEffect: 0
-      damageRate: 0
-      detectionMode: 0
-      boxSize: {x: 1, y: 1, z: 1}
-      boxOffset: {x: 0, y: 0, z: 0}
-      sphereOffset: {x: 0, y: 0.9, z: 0}
-      sphereRadius: 1
-      cylinderOffset: {x: 0, y: 0.9, z: 0}
-      cylinderRadius: 1
-      cylinderHeight: 1
-      hitEffectPrefab: {fileID: 0}
-      hitEffectSurvivalTimeMs: 0
-      hitAudioClip: {fileID: 0}
-      colliderPosType: 0
-      targetType: 0
-    isAttachAction: 0
-    actionConfig:
-      triggerFrame: 0
-      moveActionType: 0
-      moveData: {x: 0, y: 0, z: 0}
-      durationFrame: 0
-      deltaMoveData: []
-      rootMotionClip: {fileID: 0}
-    GameEffectObj: {fileID: 0}
+  effectCfgList: []
   audioCfgList: []
   actionCfgList:
   - triggerFrame: 0

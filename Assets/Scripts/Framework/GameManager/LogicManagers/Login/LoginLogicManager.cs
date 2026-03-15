@@ -20,7 +20,7 @@ namespace Framework.GameManagerFramework.LogicManagers
         
         public void OnCreate()
         {
-            // _userDataManager = GameManager.Core.World.GetExitsDataManager<UserDataManager>();
+            // userDataManager = GameManager.Core.World.GetExitsDataManager<UserDataManager>();
             // _loginMessageManager = GameManager.Core.World.GetExitsMessageManager<LoginMessageManager>();
         }
 

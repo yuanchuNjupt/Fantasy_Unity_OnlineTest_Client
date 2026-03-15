@@ -15,76 +15,80 @@ MonoBehaviour:
   character:
     skillCharacter: {fileID: 0}
     skillAnim: {fileID: 7400002, guid: b285d65889a8c414784007cbd6eb7bcc, type: 3}
-    animProgress: 1068
+    animProgress: 1966
     MaxLogicFrame: 29
-    logicFrame: 16
+    logicFrame: 29
     isSetCustomLogicFrame: 0
     customLogicFame: 0
   skillCfg:
     skillIcon: {fileID: 0}
     skillid: 1002
     skillName: NormalSkill02
-    skillShakeAfterFrame: 12
+    skillShakeAfterFrame: 10
     skillCdTime: 0
-    combinationSkillId: 0
-    skillHitEffect: {fileID: 0}
-    skillHitEffectPath: 
-    hitEffectSurvivalTimeMs: 100
-    skillHitAudio: {fileID: 0}
     skillDes: 
   damageCfgList:
-  - triggerFrame: 2
-    endFrame: 12
+  - triggerFrame: 5
+    endFrame: 6
     isFollowEffect: 0
-    damageRate: 0
+    damageRate: 20
     detectionMode: 1
-    boxSize: {x: 1, y: 2, z: 1}
+    boxSize: {x: 2, y: 2, z: 1.5}
     boxOffset: {x: 0, y: 1, z: 1}
     sphereOffset: {x: 0, y: 0.9, z: 0}
     sphereRadius: 1
     cylinderOffset: {x: 0, y: 0.9, z: 0}
     cylinderRadius: 1
     cylinderHeight: 1
-    radiusHeight: 0
+    hitEffectPrefab: {fileID: 0}
+    hitEffectSurvivalTimeMs: 0
+    hitAudioClip: {fileID: 0}
     colliderPosType: 0
     targetType: 2
-  effectCfgList:
-  - skillEffect: {fileID: 1872147318604286, guid: 5bea49531fc500c408823a2e2863106f,
-      type: 3}
-    skillEffectPath: Assets/ArtRes/Effects/Hovl Studio/Sword slash VFX/Prefabs/Sword
-      Slash 1.prefab
-    triggerFrame: 5
-    endFrame: 10
-    effectOffsetPos: {x: 0, y: 0.5, z: 0}
-    effectPosType: 0
-    isSetTransParent: 0
-    transParent: 0
-    isAttachDamage: 0
-    damageConfig:
-      triggerFrame: 0
-      endFrame: 0
-      isFollowEffect: 0
-      damageRate: 0
-      detectionMode: 0
-      boxSize: {x: 1, y: 1, z: 1}
-      boxOffset: {x: 0, y: 0, z: 0}
-      sphereOffset: {x: 0, y: 0.9, z: 0}
-      sphereRadius: 1
-      cylinderOffset: {x: 0, y: 0.9, z: 0}
-      cylinderRadius: 1
-      cylinderHeight: 1
-      radiusHeight: 0
-      colliderPosType: 0
-      targetType: 0
-    isAttachAction: 0
-    actionConfig:
-      triggerFrame: 0
-      moveActionType: 0
-      heightPos: {x: 0, y: 0, z: 0}
-      movePos: {x: 0, y: 0, z: 0}
-      durationMs: 0
-      actionFinishOpation: 0
-      actionFinishidList: 
-    GameEffectObj: {fileID: 0}
+  effectCfgList: []
   audioCfgList: []
-  actionCfgList: []
+  actionCfgList:
+  - triggerFrame: 0
+    moveActionType: 1
+    moveData: {x: 0, y: 0, z: 0}
+    durationFrame: 0
+    deltaMoveData:
+    - triggerFrame: 0
+      deltaPos: {x: -0.014164154, y: 0, z: -0.02190676}
+    - triggerFrame: 1
+      deltaPos: {x: -0.0150275985, y: 0, z: -0.021257278}
+    - triggerFrame: 2
+      deltaPos: {x: -0.030565998, y: 0, z: -0.005568497}
+    - triggerFrame: 3
+      deltaPos: {x: -0.0007644594, y: 0, z: 0.16163127}
+    - triggerFrame: 4
+      deltaPos: {x: 0.06350943, y: 0, z: 0.3363095}
+    - triggerFrame: 5
+      deltaPos: {x: -0.023191907, y: 0, z: 0.3040389}
+    - triggerFrame: 6
+      deltaPos: {x: -0.017342512, y: 0, z: 0.14278692}
+    - triggerFrame: 7
+      deltaPos: {x: 0.0013748854, y: 0, z: 0.0030276775}
+    - triggerFrame: 9
+      deltaPos: {x: -0.0008509457, y: 0, z: -0.003748238}
+    - triggerFrame: 10
+      deltaPos: {x: -0.00019638613, y: 0, z: -0.0039109588}
+    - triggerFrame: 16
+      deltaPos: {x: -0.0009576157, y: 0, z: 0.0073511004}
+    - triggerFrame: 17
+      deltaPos: {x: 0.0009445362, y: 0, z: 0.013953149}
+    - triggerFrame: 18
+      deltaPos: {x: -0.0018915385, y: 0, z: 0.016712308}
+    - triggerFrame: 19
+      deltaPos: {x: -0.0073622726, y: 0, z: 0.0167647}
+    - triggerFrame: 20
+      deltaPos: {x: -0.013087727, y: 0, z: 0.016625643}
+    - triggerFrame: 21
+      deltaPos: {x: -0.017454583, y: 0, z: 0.017353654}
+    - triggerFrame: 22
+      deltaPos: {x: -0.019858219, y: 0, z: 0.01550746}
+    - triggerFrame: 23
+      deltaPos: {x: -0.016398787, y: 0, z: 0.011264741}
+    - triggerFrame: 24
+      deltaPos: {x: -0.00759238, y: 0, z: 0.004865885}
+    rootMotionClip: {fileID: 7400000, guid: 77fc626278dbd774a9e6b1fee68562c4, type: 3}

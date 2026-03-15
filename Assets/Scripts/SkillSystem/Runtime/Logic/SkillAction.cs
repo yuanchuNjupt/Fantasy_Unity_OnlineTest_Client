@@ -42,7 +42,7 @@ public partial class Skill
 
                         skillCharacter.LogicPos += worldDelta;
                         
-                        Log.Info(LogColor.Purple , "技能系统" , $"移动增量触发帧:{deltaData.triggerFrame}");
+                        // Log.Info(LogColor.Purple , "技能移动" , $"移动增量触发帧:{deltaData.triggerFrame}");
                     }
                     break;
             }

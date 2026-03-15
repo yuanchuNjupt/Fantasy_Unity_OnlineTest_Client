@@ -5,6 +5,7 @@ using FixedPhysics.Bounds;
 using FixedPhysics.Fixed_pointNumber.Core;
 using FixedPhysics.FixedCollider.Core;
 using Framework.AdvancedLog;
+using UIFramework.Core;
 using UnityEngine;
 
 public partial class LogicActor : LogicObject

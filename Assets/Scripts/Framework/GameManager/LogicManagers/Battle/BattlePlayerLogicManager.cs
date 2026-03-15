@@ -16,6 +16,7 @@ namespace Framework.GameManagerFramework.LogicManagers
     public class BattlePlayerLogicManager : ILogicBehaviour
     {
         [Inject]private BattleDataManager _battleDataManager;
+        [Inject]private UserDataManager _userDataManager;
 
 
         private readonly Dictionary<long , BattlePlayerInstance> _battlePlayerList = new ();
@@ -24,7 +25,7 @@ namespace Framework.GameManagerFramework.LogicManagers
 
         public void OnCreate()
         {
-            // _battleDataManager = GameManager.Core.World.GetExitsDataManager<BattleDataManager>();
+            // battleDataManager = GameManager.Core.World.GetExitsDataManager<BattleDataManager>();
             Debug.Log("BattlePlayerLogicManager 创建完成");
         }
 
@@ -34,6 +35,13 @@ namespace Framework.GameManagerFramework.LogicManagers
             {
                 BattlePlayerInstance battlePlayer = new BattlePlayerInstance(player.playerId, player.playerName);
                 _battlePlayerList.Add(player.playerId , battlePlayer);
+                var presenter = UIManager.MainInstance.GetPanel<BattleMainPanelView>().GetComponent<BattleMainPanelPresenter>();
+
+                if (_userDataManager.UserData.AccountId != player.playerId)
+                {
+                    presenter.AddEnemyHpRectView(player.playerId, player.playerName);
+                }
+                
             });
         }
 

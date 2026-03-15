@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+// #if UNITY_EDITOR
 using FixedPhysics.Fixed_pointNumber.Core;
 using UnityEngine;
 
@@ -76,4 +76,4 @@ namespace FixedPhysics.Bounds
         }
     }
 }
-#endif
+// #endif

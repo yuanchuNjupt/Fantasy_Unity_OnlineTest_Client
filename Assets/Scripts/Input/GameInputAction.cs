@@ -280,6 +280,15 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SpecialSkill1"",
+                    ""type"": ""Button"",
+                    ""id"": ""309f0dda-16ec-4a07-8d2b-4192c33e5ef4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -392,6 +401,17 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""LAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0fe88d5a-d354-4104-b0d5-9bbac4f11c7c"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SpecialSkill1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -411,6 +431,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         m_BattlePlayerInputMap_Movement = m_BattlePlayerInputMap.FindAction("Movement", throwIfNotFound: true);
         m_BattlePlayerInputMap_CameraLook = m_BattlePlayerInputMap.FindAction("CameraLook", throwIfNotFound: true);
         m_BattlePlayerInputMap_LAttack = m_BattlePlayerInputMap.FindAction("LAttack", throwIfNotFound: true);
+        m_BattlePlayerInputMap_SpecialSkill1 = m_BattlePlayerInputMap.FindAction("SpecialSkill1", throwIfNotFound: true);
     }
 
     ~@GameInputAction()
@@ -567,6 +588,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_BattlePlayerInputMap_Movement;
     private readonly InputAction m_BattlePlayerInputMap_CameraLook;
     private readonly InputAction m_BattlePlayerInputMap_LAttack;
+    private readonly InputAction m_BattlePlayerInputMap_SpecialSkill1;
     public struct BattlePlayerInputMapActions
     {
         private @GameInputAction m_Wrapper;
@@ -574,6 +596,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_BattlePlayerInputMap_Movement;
         public InputAction @CameraLook => m_Wrapper.m_BattlePlayerInputMap_CameraLook;
         public InputAction @LAttack => m_Wrapper.m_BattlePlayerInputMap_LAttack;
+        public InputAction @SpecialSkill1 => m_Wrapper.m_BattlePlayerInputMap_SpecialSkill1;
         public InputActionMap Get() { return m_Wrapper.m_BattlePlayerInputMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -592,6 +615,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             @LAttack.started += instance.OnLAttack;
             @LAttack.performed += instance.OnLAttack;
             @LAttack.canceled += instance.OnLAttack;
+            @SpecialSkill1.started += instance.OnSpecialSkill1;
+            @SpecialSkill1.performed += instance.OnSpecialSkill1;
+            @SpecialSkill1.canceled += instance.OnSpecialSkill1;
         }
 
         private void UnregisterCallbacks(IBattlePlayerInputMapActions instance)
@@ -605,6 +631,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             @LAttack.started -= instance.OnLAttack;
             @LAttack.performed -= instance.OnLAttack;
             @LAttack.canceled -= instance.OnLAttack;
+            @SpecialSkill1.started -= instance.OnSpecialSkill1;
+            @SpecialSkill1.performed -= instance.OnSpecialSkill1;
+            @SpecialSkill1.canceled -= instance.OnSpecialSkill1;
         }
 
         public void RemoveCallbacks(IBattlePlayerInputMapActions instance)
@@ -636,5 +665,6 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnCameraLook(InputAction.CallbackContext context);
         void OnLAttack(InputAction.CallbackContext context);
+        void OnSpecialSkill1(InputAction.CallbackContext context);
     }
 }

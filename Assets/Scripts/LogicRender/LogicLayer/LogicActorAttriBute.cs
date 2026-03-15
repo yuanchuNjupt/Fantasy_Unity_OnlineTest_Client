@@ -13,6 +13,7 @@ public partial class LogicActor
 
     #region 内部属性(最基础的属性)
     protected FixedInt hp;//血量
+    protected FixedInt maxHp;//最大血量
     protected FixedInt mp;//法力值
     protected FixedInt ap;//魔法攻击力
     protected FixedInt ad;//物理攻击力
@@ -54,6 +55,7 @@ public partial class LogicActor
 
     #region 公开属性
     public FixedInt HP { get { return hp ; }}//血量
+    public FixedInt MAXHP { get { return maxHp ; }}//最大血量
     public FixedInt MP { get { return mp; } }//法力值
     public FixedInt AP { get { return addAP + ap; } }//魔法攻击力
     public FixedInt AD { get { return addAD + ad; } }//物理攻击力
@@ -84,5 +86,11 @@ public partial class LogicActor
         {
             hp = 0;
         }
+    }
+
+    public void InitHp(FixedInt maxHp)
+    {
+        this.maxHp = maxHp;
+        this.hp = maxHp;
     }
 }

@@ -558,8 +558,6 @@ namespace Fantasy
 			operateType = default;
 			inputDir = default;
 			skillId = default;
-			skillType = default;
-			skillPos = default;
 			playerId = default;
 #if FANTASY_NET || FANTASY_UNITY
 			GetScene().MessagePoolComponent.Return<FrameOperationData>(this);
@@ -572,10 +570,6 @@ namespace Fantasy
 		[ProtoMember(3)]
 		public int skillId { get; set; }
 		[ProtoMember(4)]
-		public int skillType { get; set; }
-		[ProtoMember(5)]
-		public CSFixIntVector3 skillPos { get; set; }
-		[ProtoMember(6)]
 		public long playerId { get; set; }
 	}
 	[ProtoContract]
@@ -640,11 +634,11 @@ namespace Fantasy
 #endif
 		}
 		[ProtoMember(1)]
-		public int x { get; set; }
+		public long x { get; set; }
 		[ProtoMember(2)]
-		public int y { get; set; }
+		public long y { get; set; }
 		[ProtoMember(3)]
-		public int z { get; set; }
+		public long z { get; set; }
 	}
 	[ProtoContract]
 	public partial class BattlePlayerData : AMessage

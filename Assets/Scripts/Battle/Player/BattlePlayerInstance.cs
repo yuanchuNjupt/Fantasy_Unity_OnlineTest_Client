@@ -31,24 +31,27 @@ namespace Battle
         
         public BattlePlayerInputSampleLayer inputSampleLayer;
         
-        private readonly UserDataManager _userDataManager;
+        public readonly UserDataManager userDataManager;
         
-        private readonly BattleDataManager _battleDataManager;
+        public readonly BattleDataManager battleDataManager;
+
+        public readonly BattleLogicManager battleLogicManager;
         
-        private readonly TP_CameraLogicManager _cameraLogicManager;
+        public readonly TP_CameraLogicManager cameraLogicManager;
         
-        private readonly BattlePlayerMouseLogicManager _battleMouseLogicManager;
+        public readonly BattlePlayerMouseLogicManager battleMouseLogicManager;
 
         public BattlePlayerInstance(long uid , string playerName)
         {
             this.uid = uid;
             this.playerName = playerName;
-            _userDataManager = World.GetExitsDataManager<UserDataManager>();
-            _battleDataManager = World.GetExitsDataManager<BattleDataManager>();
-            _cameraLogicManager = World.GetExitsLogicManager<TP_CameraLogicManager>();
-            _battleMouseLogicManager = World.GetExitsLogicManager<BattlePlayerMouseLogicManager>();
+            userDataManager = World.GetExitsDataManager<UserDataManager>();
+            battleDataManager = World.GetExitsDataManager<BattleDataManager>();
+            cameraLogicManager = World.GetExitsLogicManager<TP_CameraLogicManager>();
+            battleMouseLogicManager = World.GetExitsLogicManager<BattlePlayerMouseLogicManager>();
+            battleLogicManager = World.GetExitsLogicManager<BattleLogicManager>();
             
-            playerType = _userDataManager.UserData.AccountId == this.uid ? PlayerType.Self : PlayerType.Other;
+            playerType = userDataManager.UserData.AccountId == this.uid ? PlayerType.Self : PlayerType.Other;
             
             CreateLogicLayer();
             CreateRenderLayer();
@@ -72,8 +75,8 @@ namespace Battle
             logicLayer = new BattlePlayerLogicLayer(this);
             logicLayer.OnCreate();
             
-            var normalAttackConfigIdList = _battleDataManager.PlayerNormalAttackConfigIdList;
-            var skillConfigIdList = _battleDataManager.PLayerSkillConfigIdList;
+            var normalAttackConfigIdList = battleDataManager.PlayerNormalAttackConfigIdList;
+            var skillConfigIdList = battleDataManager.PLayerSkillConfigIdList;
             logicLayer.InitActorSkill(normalAttackConfigIdList , skillConfigIdList);
         }
 
@@ -89,8 +92,8 @@ namespace Battle
         private void CreateTPCamera()
         {
             // 传入战斗场景对应的 CameraLook Action
-            var cameraLookAction = _battleMouseLogicManager.CameraLookAction;
-            _cameraLogicManager.InitTPCamera(renderLayer.transform, cameraLookAction);
+            var cameraLookAction = battleMouseLogicManager.CameraLookAction;
+            cameraLogicManager.InitTPCamera(renderLayer.transform, cameraLookAction);
         }
         
         private void CreateInputSampleLayer()
@@ -103,8 +106,8 @@ namespace Battle
         {
             LobbyPlayerName playerNameInstance = renderLayer.gameObject.GetComponent<LobbyPlayerName>();
             // cameraControl 只有本地玩家才会初始化，非本地玩家时跳过头顶名字朝向绑定
-            if (_cameraLogicManager.cameraControl == null) return;
-            playerNameInstance.Init(playerName , _cameraLogicManager.cameraControl.transform);
+            if (cameraLogicManager.cameraControl == null) return;
+            playerNameInstance.Init(playerName , cameraLogicManager.cameraControl.transform);
         }
 
         //应用逻辑帧输入数据到角色实例
@@ -116,10 +119,13 @@ namespace Battle
                     logicLayer.ApplyMoveOperation(data.inputDir);
                     break;
                 case OperateTypeEnum.ReleaseSkill:
-                    logicLayer.ApplyReleaseSkillOperation();
+                    logicLayer.ApplyReleaseSkillOperation(data.skillId);
                     break;
             }
         }
+        
+        
+        
         
         
         
