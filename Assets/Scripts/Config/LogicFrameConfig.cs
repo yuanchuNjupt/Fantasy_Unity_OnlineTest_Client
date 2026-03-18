@@ -7,6 +7,7 @@ public class LogicFrameConfig
     //逻辑帧id 自增
     public static long LogicFrameId;
     
+    
     //实际逻辑帧间隔
     public const float LogicFrameInterval = 0.066f; //一秒15帧
 
@@ -21,7 +22,7 @@ public class LogicFrameConfig
     /// <summary>
     /// 是否使用本地逻辑帧
     /// </summary>
-    public const bool IsUseLocalLogicFrame = true;
+    public const bool IsUseLocalLogicFrame = false;
 
     /// <summary>
     /// 最大预测逻辑帧次数

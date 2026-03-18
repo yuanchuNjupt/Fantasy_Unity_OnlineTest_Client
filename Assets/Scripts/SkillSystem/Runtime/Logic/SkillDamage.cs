@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Collections.Generic;
+using Battle;
 using Battle.CustomCollider;
 using FixedPhysics.Fixed_pointNumber.Core;
 using FixedPhysics.Fixed_pointNumber.FixedIntMath;
@@ -128,10 +130,18 @@ public partial class Skill
         var target = playerCollider.playerLogicLayer;
         if (target == null || target.ObjectState != LogicObjectState.Survival)
             return;
-
-        // 过滤自身：命中的是自己（PlayerType.Self）则直接返回
-        if (playerCollider.playerLogicLayer.instance.playerType == PlayerType.Self)
-            return;
+        
+        // 通过UID比对
+        if (skillCharacter is BattlePlayerLogicLayer skillCasterLogicLayer)
+        {
+            if (skillCasterLogicLayer.instance.uid == target.instance.uid)
+            {
+                Log.Info(LogColor.Red, "伤害检测", 
+                    $"检测到自伤，已拦截！释放者: {skillCasterLogicLayer.instance.playerName}(UID:{skillCasterLogicLayer.instance.uid}), " +
+                    $"被命中者: {target.instance.playerName}(UID:{target.instance.uid})");
+                return;
+            }
+        }
         
             
         Log.Info($"攻击命中！: {target.instance.playerName}, Skill: {_skillData.skillCfg.skillName}");

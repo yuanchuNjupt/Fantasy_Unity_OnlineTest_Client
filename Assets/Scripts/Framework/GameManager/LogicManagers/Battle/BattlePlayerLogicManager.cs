@@ -2,6 +2,7 @@
 using System.Linq;
 using Battle;
 using Config;
+using Fantasy;
 using Framework.GameManager.Base;
 using Framework.GameManager.Core;
 using Framework.GameManagerFramework.DataManagers;
@@ -31,18 +32,21 @@ namespace Framework.GameManagerFramework.LogicManagers
 
         public void InitPlayer()
         {
-            _battleDataManager.BattlePlayerDataList.ForEach(player =>
+            //一定要先创建自己并绑定摄像机，再创建其他玩家，否则会出现摄像机绑定错误的问题
+            var selfInstance = _battleDataManager.BattlePlayerDataList.First(x => x.playerId == _userDataManager.UserData.AccountId);
+            BattlePlayerInstance battlePlayer = new BattlePlayerInstance(selfInstance.playerId, selfInstance.playerName);
+            _battlePlayerList.Add(selfInstance.playerId , battlePlayer);
+            foreach (BattlePlayerData playerData in _battleDataManager.BattlePlayerDataList)
             {
-                BattlePlayerInstance battlePlayer = new BattlePlayerInstance(player.playerId, player.playerName);
-                _battlePlayerList.Add(player.playerId , battlePlayer);
-                var presenter = UIManager.MainInstance.GetPanel<BattleMainPanelView>().GetComponent<BattleMainPanelPresenter>();
-
-                if (_userDataManager.UserData.AccountId != player.playerId)
-                {
-                    presenter.AddEnemyHpRectView(player.playerId, player.playerName);
-                }
+                if(playerData.playerId == selfInstance.playerId)
+                    continue;
                 
-            });
+                BattlePlayerInstance battleOtherPlayer = new BattlePlayerInstance(playerData.playerId, playerData.playerName);
+                
+                _battlePlayerList.Add(playerData.playerId , battleOtherPlayer);
+                var presenter = UIManager.MainInstance.GetPanel<BattleMainPanelView>().GetComponent<BattleMainPanelPresenter>();
+                presenter.AddEnemyHpRectView(playerData.playerId, playerData.playerName);
+            }
         }
 
         public BattlePlayerInstance GetBattlePlayerInstance(long playerId)

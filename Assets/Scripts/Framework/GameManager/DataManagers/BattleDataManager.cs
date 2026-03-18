@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Fantasy;
+using Framework.AdvancedLog;
 using Framework.GameManager.Core;
 using Framework.GameManagerFramework.WorldScripts;
+using Log = Framework.AdvancedLog.Log;
 
 namespace Framework.GameManagerFramework.DataManagers
 {
@@ -11,6 +13,10 @@ namespace Framework.GameManagerFramework.DataManagers
         
         //战斗中玩家的数据列表,由服务器下发
         public List<BattlePlayerData> BattlePlayerDataList { get; private set; }
+        
+        // ===== 新增：当前客户端在战斗中的玩家ID =====
+        // 用于在OnPlayerHit中正确判断自己，避免依赖UserData.AccountId
+        public long CurrentPlayerIdInBattle { get; set; }
         
         //角色的普通攻击列表
         public List<int> PlayerNormalAttackConfigIdList = new List<int>(){1001,1002,1003,1004}; //暂时先写死
@@ -28,6 +34,13 @@ namespace Framework.GameManagerFramework.DataManagers
         public void InitBattlePlayerData(List<BattlePlayerData> battlePlayerDataList)
         {
             BattlePlayerDataList = battlePlayerDataList;
+            
+            // 设置当前客户端的玩家ID（用UserData来做最终确认）
+            var userDataManager = World.GetExitsDataManager<UserDataManager>();
+            CurrentPlayerIdInBattle = userDataManager.UserData.AccountId;
+            Log.Info(LogColor.Blue , "当前玩家UID" , CurrentPlayerIdInBattle.ToString());       
+     
+            
         }
         
         public void OnCreate()

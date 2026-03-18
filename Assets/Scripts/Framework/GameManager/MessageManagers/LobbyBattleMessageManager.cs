@@ -54,9 +54,9 @@ namespace Framework.MessageManagers
                 {
                     panel.SetProgress(progress);
                     //发送加载进度消息给服务器
-                    GameManager.Core.World.GetExitsMessageManager<LobbyBattleMessageManager>().SendLoadProgressMessage(
-                        GameManager.Core.World.GetExitsDataManager<LobbyTeamDataManager>().TeamInfo.TeamId,
-                        GameManager.Core.World.GetExitsDataManager<UserDataManager>().UserData.AccountId,
+                    World.GetExitsMessageManager<LobbyBattleMessageManager>().SendLoadProgressMessage(
+                        World.GetExitsDataManager<LobbyTeamDataManager>().TeamInfo.TeamId,
+                        World.GetExitsDataManager<UserDataManager>().UserData.AccountId,
                         progress / 100f
                         );
                 });
@@ -80,9 +80,6 @@ namespace Framework.MessageManagers
                     
                     GameManager.Core.World.GetExitsLogicManager<BattleLogicManager>().OnStartBattle();
                     UIManager.MainInstance.HidePanel<LoadingPanelView>();
-                    
-                    
-                    
                     
                 }));
                 await FTask.CompletedTask;

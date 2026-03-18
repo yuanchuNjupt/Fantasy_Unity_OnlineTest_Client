@@ -51,7 +51,9 @@ namespace Battle
             battleMouseLogicManager = World.GetExitsLogicManager<BattlePlayerMouseLogicManager>();
             battleLogicManager = World.GetExitsLogicManager<BattleLogicManager>();
             
-            playerType = userDataManager.UserData.AccountId == this.uid ? PlayerType.Self : PlayerType.Other;
+            // ===== 修改：使用BattleDataManager.CurrentPlayerIdInBattle来判断自己 =====
+            // 原因：在联机场景中，每个客户端都有自己的UserData，但CurrentPlayerIdInBattle是服务器确认下发的
+            playerType = battleDataManager.CurrentPlayerIdInBattle == this.uid ? PlayerType.Self : PlayerType.Other;
             
             CreateLogicLayer();
             CreateRenderLayer();
@@ -105,9 +107,14 @@ namespace Battle
         private void InitPlayerName()
         {
             LobbyPlayerName playerNameInstance = renderLayer.gameObject.GetComponent<LobbyPlayerName>();
-            // cameraControl 只有本地玩家才会初始化，非本地玩家时跳过头顶名字朝向绑定
-            if (cameraLogicManager.cameraControl == null) return;
-            playerNameInstance.Init(playerName , cameraLogicManager.cameraControl.transform);
+
+
+            if (cameraLogicManager.cameraControl == null)
+            {
+                Log.Error("相机为空，玩家初始化顺序有误，确保在创建相机后再初始化玩家名字");
+                return;
+            }
+            playerNameInstance.Init(playerName, cameraLogicManager.cameraControl.transform);
         }
 
         //应用逻辑帧输入数据到角色实例

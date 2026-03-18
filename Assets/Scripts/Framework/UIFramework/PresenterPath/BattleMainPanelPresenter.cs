@@ -38,7 +38,7 @@ public class BattleMainPanelPresenter : BasePresenter<BattleMainPanelView>
     {
         var hpPercent = curHp / maxHp;
         
-        View.img_HP.rectTransform.sizeDelta = new Vector2(hpPercent , View.img_HP.rectTransform.sizeDelta.y);
+        View.img_HP.rectTransform.sizeDelta = new Vector2(hpPercent * _initWidth , View.img_HP.rectTransform.sizeDelta.y);
     }
     
     public void UpdateEnemyHp(long enemyId , float curHp , float maxHp)

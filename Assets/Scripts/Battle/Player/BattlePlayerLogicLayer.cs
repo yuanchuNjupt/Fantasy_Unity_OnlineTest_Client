@@ -35,15 +35,15 @@ namespace Battle
                 FixedInt.ConstructFromMagnification(csInputDir.x),
                 FixedInt.ConstructFromMagnification(csInputDir.y),
                 FixedInt.ConstructFromMagnification(csInputDir.z));
-            Log.Info(LogColor.Green, "操作应用", 
-                $"[{instance.playerName}] 应用移动操作: [{csInputDir.x}, {csInputDir.z}]");
+            // Log.Info(LogColor.Green, "操作应用", 
+            //     $"[{instance.playerName}] 应用移动操作: [{csInputDir.x}, {csInputDir.z}]");
             UpdateMoveDir(inputDir);
         }
         
         public void ApplyReleaseSkillOperation(int skillId)
         {
-            Log.Info(LogColor.Green, "操作应用", 
-                $"[{instance.playerName}] 应用攻击操作: skillId={skillId}");
+            // Log.Info(LogColor.Green, "操作应用", 
+            //     $"[{instance.playerName}] 应用攻击操作: skillId={skillId}");
             ReleaseSKill(skillId);
         }
 
