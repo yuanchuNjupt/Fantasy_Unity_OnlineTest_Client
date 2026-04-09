@@ -19,10 +19,11 @@ public class RenderObject : MonoBehaviour
     protected float smoothPosSpeed = 10;
 
     protected bool isUpdatePosAndRotation = true;
-    protected Vector3 mRenderDir;
+    protected Vector3 renderDir;
 
-    protected bool mIsLocalPlayer = false;
-    protected Vector3 mPreTargetPos;//预测位置
+    protected bool isLocalPlayer = false;
+    protected Vector3 preTargetPos;//预测位置
+    protected Vector3 preTargetDir;//预测朝向
     /// <summary>
     /// 当前预测的移动次数
     /// </summary>
@@ -32,9 +33,11 @@ public class RenderObject : MonoBehaviour
     {
         logicObject = logicObj;
         this.isUpdatePosAndRotation = isUpdatePosAndRotation;
-        mIsLocalPlayer=isLocalPlayer;
+        this.isLocalPlayer=isLocalPlayer;
         //初始化位置
         transform.position = logicObj.LogicPos.ToVector3();
+        preTargetPos = logicObj.LogicPos.ToVector3();  // 初始化预测目标位置
+        preTargetDir = logicObj.LogicForwardDir.ToVector3(); // 初始化预测朝向
         if (this.isUpdatePosAndRotation == false)
             transform.localPosition = Vector3.zero;
         UpdateDir();
@@ -51,7 +54,7 @@ public class RenderObject : MonoBehaviour
     /// </summary>
     public virtual void OnRelease()
     {
-        //ZMAsset.Release(gameObject,true);
+        Destroy(gameObject);
     }
     /// <summary>
     /// Unity引擎渲染帧，根据程序配置，渲染帧一般一秒为30帧、和60帧以及120帧 
@@ -73,34 +76,35 @@ public class RenderObject : MonoBehaviour
         }
         //如果是本地玩家，为了玩家操作的体验感和流畅度，需要预测本地玩家的渲染位置（与逻辑位置无关，当逻辑位置更新的时候，需要立即回滚角色的渲染位置）
         //战斗中所有逻辑运算都是基于逻辑位置进行运算的，所以我们这里预测渲染位置是不影响游戏逻辑的。
-        //主要是应对弱网，
-        if (mIsLocalPlayer)
+        //主要是应对弱网
+        if (isLocalPlayer)
         {
             //逻辑位置是否是最新，如果是，立马更新并回滚预测位置
             if (isUpdatePosAndRotation == true)
             {
-                if (logicObject.objectHasNewPos)//是否有最新的位置
+                if (logicObject.objectHasNewPos)
                 {
-                    mPreTargetPos = logicObject.LogicPos.ToVector3();
+                    //此时接收到了服务器下发的最新逻辑位置，强制更新渲染位置到最新逻辑位置，并重置预测位置和预测计数
+                    preTargetPos = logicObject.LogicPos.ToVector3();
+                    preTargetDir = logicObject.LogicForwardDir.ToVector3(); // 同时同步朝向
                     logicObject.objectHasNewPos = false;
                     curPreMoveCount = 0;
-                    // Debuger.Log("PreMove ForceUpdate Pos:" + mPreTargetPos);
                 }
                 else
                 {
-                    //位置的预测.达到最大预测次数则停止
-                    if (curPreMoveCount > LogicFrameConfig.PreMaxMoveLogicFrameCount)
+                    //位置的预测.达到最大预测次数则停止增量更新，但继续插值到最后的预测位置
+                    if (curPreMoveCount <= LogicFrameConfig.PreMaxMoveLogicFrameCount)
                     {
-                        return;
+                        //计算预测的增量位置
+                        Vector3 deltaPos = logicObject.LogicForwardDir.ToVector3() * (logicObject.LogicMoveSpeed.RenderFloat * Time.deltaTime);
+                        preTargetPos += deltaPos;
+                        curPreMoveCount++;
                     }
-                    //计算预测的增量位置
-                    Vector3 deltaPos = logicObject.LogicForwardDir.ToVector3() * (logicObject.LogicMoveSpeed.RenderFloat * Time.deltaTime);
-                    mPreTargetPos += deltaPos;
-                    curPreMoveCount++;
-                    // Debuger.Log("PreMove mPreTargetPos:" + mPreTargetPos);
+                    // 无论是否超限，都实时更新预测朝向（跟随逻辑朝向变化）
+                    preTargetDir = logicObject.LogicForwardDir.ToVector3();
                 }
                 //更新位置
-                transform.position = Vector3.Lerp(transform.position, mPreTargetPos, Time.deltaTime * smoothPosSpeed);
+                transform.position = Vector3.Lerp(transform.position, preTargetPos, Time.deltaTime * smoothPosSpeed);
                 return;
             }
 
@@ -119,11 +123,20 @@ public class RenderObject : MonoBehaviour
             return;
         }
 
-        mRenderDir = logicObject.LogicForwardDir.ToVector3();
-        
+        // 本地玩家朝向预测
+        if (isLocalPlayer)
+        {
+            // 使用预测朝向而不是逻辑朝向，保持与位置预测的一致性
+            renderDir = preTargetDir;
+        }
+        else
+        {
+            // 远程玩家直接使用逻辑朝向
+            renderDir = logicObject.LogicForwardDir.ToVector3();
+        }
 
         // 计算目标旋转角度（朝向移动方向）
-        Quaternion targetRotation = Quaternion.LookRotation(mRenderDir);
+        Quaternion targetRotation = Quaternion.LookRotation(renderDir);
         
         // 平滑插值到目标旋转
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10);

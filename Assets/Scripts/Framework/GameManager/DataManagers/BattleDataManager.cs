@@ -14,7 +14,6 @@ namespace Framework.GameManagerFramework.DataManagers
         //战斗中玩家的数据列表,由服务器下发
         public List<BattlePlayerData> BattlePlayerDataList { get; private set; }
         
-        // ===== 新增：当前客户端在战斗中的玩家ID =====
         // 用于在OnPlayerHit中正确判断自己，避免依赖UserData.AccountId
         public long CurrentPlayerIdInBattle { get; set; }
         

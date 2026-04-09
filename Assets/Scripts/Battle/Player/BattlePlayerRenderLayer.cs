@@ -23,8 +23,10 @@ namespace Battle
         {
             _instance = instance;
             PlayAnim("Idle");
-            // _renderState = PlayerState.Idle;
-            SetLogicObject(instance.logicLayer);
+            // 为本地玩家启用客户端预测功能，改善弱网体验
+            
+            bool isLocalPlayer = instance.playerType == PlayerType.Self;
+            SetLogicObject(instance.logicLayer, true, isLocalPlayer);
             instance.logicLayer.onActionStateChange += SwitchState;
         }
 

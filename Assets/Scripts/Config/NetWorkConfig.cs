@@ -3,7 +3,7 @@
     public class NetWorkConfig
     {
         //SAST
-        // public const string GateAddress = "192.168.101.17:20000";
+        public const string GateAddress = "192.168.101.58:20000";
         
         
         //NJUPT
@@ -11,6 +11,6 @@
         
         
         //NJUPT - CHINESE   
-        public const string GateAddress = "10.165.222.249:20000";
+        // public const string GateAddress = "10.165.222.249:20000";
     }
 }
