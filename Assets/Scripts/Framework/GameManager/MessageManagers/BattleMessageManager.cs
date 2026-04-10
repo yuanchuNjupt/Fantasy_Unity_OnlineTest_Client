@@ -19,11 +19,13 @@ namespace Framework.MessageManagers
             
         }
 
-        public void SendFrameOperateEventMessage(long battleId , FrameOperationData frameOperationData)
+        public void SendFrameOperateEventMessage(long battleId , List<FrameOperationData> frameOperationData)
         {
             var message = new FrameOperateEventMessage_C2G();
             message.battleId = battleId;
             message.frameOperateDataList = frameOperationData;
+            message.lastLogicFrameId = LogicFrameConfig.ServerLogicFrameId;
+            message.predictLogicFrameId = LogicFrameConfig.LocalPredictedLogicFrameId;
             NetWorkManager.Instance.Send(message);
         }
         

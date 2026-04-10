@@ -34,7 +34,7 @@ namespace Framework.GameManagerFramework.WorldScripts
                 //计算下一个逻辑帧运行的时间
                 _nextLogicFrameTime += LogicFrameConfig.LogicFrameInterval;
                 //逻辑帧ID进行自增
-                LogicFrameConfig.LogicFrameId++;
+                LogicFrameConfig.ServerLogicFrameId++;
             }
             
             //逻辑帧 1秒15帧 渲染帧 1秒60帧

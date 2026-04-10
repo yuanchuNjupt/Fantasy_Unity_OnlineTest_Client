@@ -221,10 +221,11 @@ namespace Fantasy
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void StartDungeonBattleMessage(this Session session, List<BattlePlayerData> battlePlayers)
+		public static void StartDungeonBattleMessage(this Session session, List<BattlePlayerData> battlePlayers, int frameRate)
 		{
 			using var message = Fantasy.StartDungeonBattleMessage.Create(session.Scene);
 			message.battlePlayers = battlePlayers;
+			message.frameRate = frameRate;
 			session.Send(message);
 		}
 
@@ -235,10 +236,12 @@ namespace Fantasy
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void FrameOperateEventMessage_C2G(this Session session, long battleId, FrameOperationData frameOperateDataList)
+		public static void FrameOperateEventMessage_C2G(this Session session, long battleId, long lastLogicFrameId, long predictLogicFrameId, List<FrameOperationData> frameOperateDataList)
 		{
 			using var message = Fantasy.FrameOperateEventMessage_C2G.Create(session.Scene);
 			message.battleId = battleId;
+			message.lastLogicFrameId = lastLogicFrameId;
+			message.predictLogicFrameId = predictLogicFrameId;
 			message.frameOperateDataList = frameOperateDataList;
 			session.Send(message);
 		}
@@ -250,12 +253,13 @@ namespace Fantasy
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void FrameOperateEventMessage_G2C(this Session session, long battleId, List<FrameOperationData> frameOperateDataList, long logicFrameId)
+		public static void FrameOperateEventMessage_G2C(this Session session, long battleId, long startLogicFrameId, long endLogicFrameId, List<OneFrameCommand> oneFrameCommandList)
 		{
 			using var message = Fantasy.FrameOperateEventMessage_G2C.Create(session.Scene);
 			message.battleId = battleId;
-			message.frameOperateDataList = frameOperateDataList;
-			message.logicFrameId = logicFrameId;
+			message.startLogicFrameId = startLogicFrameId;
+			message.endLogicFrameId = endLogicFrameId;
+			message.oneFrameCommandList = oneFrameCommandList;
 			session.Send(message);
 		}
 

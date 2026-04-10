@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class LogicFrameConfig 
 {
-    //逻辑帧id 自增
-    public static long LogicFrameId;
+    //服务器权威逻辑帧ID
+    public static long ServerLogicFrameId;
+    
+    //本地预测逻辑帧ID
+    public static long LocalPredictedLogicFrameId;
     
     
     //实际逻辑帧间隔
@@ -15,6 +18,8 @@ public class LogicFrameConfig
     public const int LogicFrameIntervalMs = 66; //一秒15帧
 
     public const float InputSampleInterval = 0.033f; //输入采样间隔，一秒30帧
+    
+    public const int MaxCachedLogicFrameCount = 100; //最大缓存逻辑帧数量，超过后会丢弃最早的逻辑帧
     
     
     

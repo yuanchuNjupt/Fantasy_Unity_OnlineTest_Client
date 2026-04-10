@@ -25,9 +25,6 @@ namespace Framework.GameManagerFramework.DataManagers
         
         public BattleStateEnum BattleState = BattleStateEnum.None;
         
-        //帧操作数据
-        public List<FrameOperationData> FrameOperationDataList = new List<FrameOperationData>();
-
         public long BattleId;
         
         public void InitBattlePlayerData(List<BattlePlayerData> battlePlayerDataList)
