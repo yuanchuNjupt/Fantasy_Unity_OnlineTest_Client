@@ -3,7 +3,7 @@
     public class NetWorkConfig
     {
         //SAST
-        public const string GateAddress = "192.168.101.58:20000";
+        public const string GateAddress = "192.168.101.171:20000";
         
         
         //NJUPT

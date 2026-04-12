@@ -634,6 +634,7 @@ namespace Fantasy
 			battleId = default;
 			startLogicFrameId = default;
 			endLogicFrameId = default;
+			serverTick = default;
 			oneFrameCommandList.Clear();
 #if FANTASY_NET || FANTASY_UNITY
 			GetScene().MessagePoolComponent.Return<FrameOperateEventMessage_G2C>(this);
@@ -647,6 +648,8 @@ namespace Fantasy
 		[ProtoMember(3)]
 		public long endLogicFrameId { get; set; }
 		[ProtoMember(4)]
+		public long serverTick { get; set; }
+		[ProtoMember(5)]
 		public List<OneFrameCommand> oneFrameCommandList = new List<OneFrameCommand>();
 	}
 	[ProtoContract]

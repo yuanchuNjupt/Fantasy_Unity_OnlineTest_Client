@@ -10,6 +10,7 @@ using Framework.GameManager.Base;
 using Framework.GameManager.Core;
 using Framework.GameManager.DataManagers;
 using Framework.GameManagerFramework.DataManagers;
+using Framework.GameManagerFramework.LogicManagers.FrameCommand;
 using Framework.GameManagerFramework.WorldScripts;
 using Framework.MessageManagers;
 using UIFramework.Core;
@@ -27,9 +28,11 @@ namespace Framework.GameManagerFramework.LogicManagers
         private BattleDataManager _battleDataManager;
         private BattlePlayerLogicManager _battlePlayerLogicManager;
         private BattleMessageManager _battleMessageManager;
+        [Inject] private UserDataManager _userDataManager; 
         
-        [Inject]
-        private FrameCommandDataManager _frameCommandDataManager;
+        
+        [Inject] private FrameCommandDataManager _frameCommandDataManager;
+        [Inject] private FrameCommandLogicManager _frameCommandLogicManager;
         
         public void OnCreate()
         {
@@ -37,6 +40,9 @@ namespace Framework.GameManagerFramework.LogicManagers
             _battleDataManager = World.GetExitsDataManager<BattleDataManager>();
             _battlePlayerLogicManager = World.GetExitsLogicManager<BattlePlayerLogicManager>();
             _battleMessageManager = World.GetExitsMessageManager<BattleMessageManager>();
+            
+            _frameCommandLogicManager.Init();
+            
             Debug.Log("BattleLogicManager创建完成");
         }
         
@@ -60,72 +66,40 @@ namespace Framework.GameManagerFramework.LogicManagers
             CacheFrameOperateData(OperateTypeEnum.ReleaseSkill, FixedIntVector3.zero , skillId);
         }
         
-        public void SendFrameOperateData()
-        {
-            // if (_battleDataManager.BattleState != BattleStateEnum.Start)
-            // {
-            //     return;
-            // }
-            //
-            // var operateDataList = _battleDataManager.FrameOperationDataList;
-            // FrameOperationData toSend;
-            //
-            // if (operateDataList.Count == 0)
-            // {
-            //     toSend = new FrameOperationData
-            //     {
-            //         operateType = (int)OperateTypeEnum.None,
-            //         playerId = World.GetExitsDataManager<UserDataManager>().UserData.AccountId,
-            //         sampleFrameId = LogicFrameConfig.ServerLogicFrameId
-            //     };
-            // }
-            // else
-            // {
-            //     toSend = GetBestOperateData();
-            //     // 强制对齐当前逻辑帧，避免缓存里的旧帧号污染
-            //     toSend.sampleFrameId = LogicFrameConfig.ServerLogicFrameId;
-            // }
-            //
-            // _battleMessageManager.SendFrameOperateEventMessage(_battleDataManager.BattleId, toSend);
-            //
-            // // 统一清理，防止跨帧残留
-            // operateDataList.Clear();
-        }
-        
         public void CacheFrameOperateData(OperateTypeEnum operateType, FixedIntVector3 inputDir, int skillId)
         {
-            // if (_battleDataManager.BattleState != BattleStateEnum.Start)
-            // {
-            //     return;
-            // }
-            //
-            // var frameOperationData = new FrameOperationData
-            // {
-            //     operateType = (int)operateType,
-            //     playerId = World.GetExitsDataManager<UserDataManager>().UserData.AccountId,
-            // };
-            //
-            // switch (operateType)
-            // {
-            //     case OperateTypeEnum.None:
-            //         break;
-            //     case OperateTypeEnum.InputMove:
-            //         frameOperationData.inputDir = new CSFixIntVector3
-            //         {
-            //             x = inputDir.X.Magnification,
-            //             y = inputDir.Y.Magnification,
-            //             z = inputDir.Z.Magnification
-            //         };
-            //         break;
-            //     case OperateTypeEnum.ReleaseSkill:
-            //         frameOperationData.skillId = skillId;
-            //         break;
-            //     default:
-            //         throw new ArgumentOutOfRangeException(nameof(operateType), operateType, null);
-            // }
-            //
-            // var list = _battleDataManager.FrameOperationDataList;
-            // list.Add(frameOperationData);
+            if (_battleDataManager.BattleState != BattleStateEnum.Start)
+            {
+                return;
+            }
+            
+            var frameOperationData = new FrameOperationData
+            {
+                operateType = (int)operateType,
+                playerId =_userDataManager.UserData.AccountId,
+            };
+            
+            switch (operateType)
+            {
+                case OperateTypeEnum.None:
+                    break;
+                case OperateTypeEnum.InputMove:
+                    frameOperationData.inputDir = new CSFixIntVector3
+                    {
+                        x = inputDir.X.Magnification,
+                        y = inputDir.Y.Magnification,
+                        z = inputDir.Z.Magnification
+                    };
+                    break;
+                case OperateTypeEnum.ReleaseSkill:
+                    frameOperationData.skillId = skillId;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(operateType), operateType, null);
+            }
+
+            var list = _frameCommandDataManager.currentFrameOperationData;
+            list.Add(frameOperationData);
         }
 
         
@@ -136,6 +110,11 @@ namespace Framework.GameManagerFramework.LogicManagers
             _battleDataManager.BattleId = message.battleId;
 
             LogicFrameConfig.ServerLogicFrameId = Math.Max(LogicFrameConfig.ServerLogicFrameId, message.endLogicFrameId);
+            _frameCommandLogicManager.OnInputFrameOperateData(message.serverTick);
+            
+            
+            
+            
             
             if (message.oneFrameCommandList.Count == 0) return;
             
@@ -151,32 +130,48 @@ namespace Framework.GameManagerFramework.LogicManagers
                 {
                     //需要进行回滚
                     rollbackToFrameId = frameId;
-                    
                 }
             }
 
             if (!rollbackToFrameId.HasValue) return; // 没有新增的权威帧数据，不需要回滚
             
             //进行回滚相关的处理
+            
+            
+            
+            
+            
+            
+            
         }
+
+
+        
+        
         
         // 本地预测的逻辑帧更新
-        private void OnLogicFrameUpdateByLocalPrediction()
+        public void OnLogicFrameUpdateByLocalPrediction(float deltaTime)
         {
             if (_battleDataManager.BattleState != BattleStateEnum.Start)
                 return;
-        
-            _battlePlayerLogicManager.OnLogicFrameUpdate();
-            PhysicsManager3D.Instance.OnLogicFrameUpdate();
-        }
 
-        private void SendMessageToServer()
-        {
-            // var operateDataList = _battleDataManager.FrameOperationDataList;
-            // _battleMessageManager.SendFrameOperateEventMessage(_battleDataManager.BattleId, operateDataList);
-        }
+            int frameCount = _frameCommandLogicManager.FrameUpdate(deltaTime);
 
-       
+            for (int i = 0; i < frameCount; i++)
+            {
+                //执行逻辑帧更新
+                LogicFrameConfig.LocalPredictedLogicFrameId++;
+                
+                //TODO:执行当前逻辑帧的游戏逻辑更新，包含玩家输入预测、NPC行为预测、物理模拟等
+                
+                //获取当前采集的输入数据，进行本地预测
+                _frameCommandLogicManager.ExecutePredictionFrameCommand();
+                
+                
+            }
+
+
+        }
 
 
         public void OnDestroy()

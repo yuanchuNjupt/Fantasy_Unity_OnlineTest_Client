@@ -21,6 +21,13 @@ public class LogicFrameConfig
     
     public const int MaxCachedLogicFrameCount = 100; //最大缓存逻辑帧数量，超过后会丢弃最早的逻辑帧
     
+    public const int PredictionWindowSize = 3; //预测窗口大小
+    
+    public const int DelayBufferSize = 10; //网络延迟缓冲区大小，用于计算平均网络延迟
+    
+    
+    
+    
     
     
     

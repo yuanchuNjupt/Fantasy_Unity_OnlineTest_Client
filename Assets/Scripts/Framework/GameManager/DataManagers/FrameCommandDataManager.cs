@@ -25,6 +25,12 @@ namespace Framework.GameManager.DataManagers
             }
         }
         
+        //当前采集到的帧操作数据
+        public List<FrameOperationData> currentFrameOperationData = new List<FrameOperationData>();
+        
+        
+        
+        
         
         public void OnCreate()
         {

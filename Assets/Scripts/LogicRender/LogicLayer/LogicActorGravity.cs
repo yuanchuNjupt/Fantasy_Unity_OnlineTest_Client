@@ -64,7 +64,7 @@ public partial class LogicActor
                 Debug.Log("EndTiem:" + Time.realtimeSinceStartup);
                 isAddForce = false;
                 TriggerGround();
-             }
+            }
             else
             {
                 //判断对象是否处于上升阶段

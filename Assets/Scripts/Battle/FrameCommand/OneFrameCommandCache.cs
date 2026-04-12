@@ -12,23 +12,24 @@ namespace Battle.FrameOperate
         
         public FrameCommandType FrameType { get; private set; }
         
-        private List<FrameOperationData> _frameOperationDataList = new List<FrameOperationData>();
-
-
-
-
-
+        private readonly List<FrameOperationData> _frameOperationDataList = new List<FrameOperationData>();
+        
+        public IEnumerable<FrameOperationData> FrameOperationDataList => _frameOperationDataList;
+        
 
         public static OneFrameCommandCache Create(long frameId, List<FrameOperationData> frameOperationDataList , FrameCommandType frameType)
         {
             var oneFrameCommandCache = Pool<OneFrameCommandCache>.Rent();
             oneFrameCommandCache.FrameID = frameId;
             oneFrameCommandCache.FrameType = frameType;
-            oneFrameCommandCache._frameOperationDataList = frameOperationDataList;
+            
+            
+            if(frameOperationDataList == null || frameOperationDataList.Count == 0) return oneFrameCommandCache;
+            
             
             oneFrameCommandCache._frameOperationDataList.AddRange(frameOperationDataList);
             
-            //TODO:根据权重排序
+            oneFrameCommandCache.Sort();
             
             return oneFrameCommandCache;
 
@@ -69,7 +70,32 @@ namespace Battle.FrameOperate
                 if(!IsSameFrameOperationData(a._frameOperationDataList[i] , b._frameOperationDataList[i])) return false;
             return true;
         }
-        
+
+        public void Add(FrameOperationData frameOperationData)
+        {
+            if (frameOperationData == null)
+            {
+                return;
+            }
+            _frameOperationDataList.Add(frameOperationData);
+        }
+
+        /// <summary>
+        /// 根据操作权重进行排序
+        /// </summary>
+        public void Sort()
+        {
+            _frameOperationDataList.Sort((a, b) =>
+            {
+                int operateTypeCompare = b.operateType.CompareTo(a.operateType);
+                if (operateTypeCompare != 0)
+                {
+                    return operateTypeCompare;
+                }
+
+                return a.playerId.CompareTo(b.playerId);
+            });
+        }
         
 
         #endregion

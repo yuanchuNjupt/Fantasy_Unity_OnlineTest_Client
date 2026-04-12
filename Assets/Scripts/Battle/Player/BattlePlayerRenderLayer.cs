@@ -25,7 +25,9 @@ namespace Battle
             PlayAnim("Idle");
             // 为本地玩家启用客户端预测功能，改善弱网体验
             
-            bool isLocalPlayer = instance.playerType == PlayerType.Self;
+            // bool isLocalPlayer = instance.playerType == PlayerType.Self;
+            
+            
             SetLogicObject(instance.logicLayer, true, isLocalPlayer);
             instance.logicLayer.onActionStateChange += SwitchState;
         }
@@ -69,7 +71,6 @@ namespace Battle
             Log.Info(LogColor.Cyan, "角色状态切换",
                 $"角色UID:{_instance.uid},角色名称:{_instance.playerName},当前状态{newState.ToString()}");
         }
-
 
         public override void OnDeath()
         {

@@ -2,6 +2,7 @@
 using Battle;
 using Framework.GameManagerFramework.Base;
 using Framework.GameManagerFramework.LogicManagers;
+using Framework.GameManagerFramework.LogicManagers.FrameCommand;
 
 namespace Framework.GameManagerFramework.Runtime
 {
@@ -9,7 +10,7 @@ namespace Framework.GameManagerFramework.Runtime
     {
         public static Type[] LogicBehaviourExecutions = new Type[]
         {
-            typeof(BattlePlayerLogicManager) , typeof(BattleLogicManager)
+            typeof(BattlePlayerLogicManager) ,typeof(FrameCommandLogicManager) ,typeof(BattleLogicManager)
         };
 
         public static Type[] DataBehaviourExecutions = new Type[]

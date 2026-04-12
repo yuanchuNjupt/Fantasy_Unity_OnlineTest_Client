@@ -17,6 +17,10 @@ namespace Framework.GameManagerFramework.WorldScripts
         {
             base.OnUpdate();
             
+            var battleLogicManager = GetExitsLogicManager<BattleLogicManager>();
+            battleLogicManager.OnLogicFrameUpdateByLocalPrediction(Time.deltaTime);
+                
+            
             if(!LogicFrameConfig.IsUseLocalLogicFrame)
                 return;
             
@@ -36,11 +40,6 @@ namespace Framework.GameManagerFramework.WorldScripts
                 //逻辑帧ID进行自增
                 LogicFrameConfig.ServerLogicFrameId++;
             }
-            
-            //逻辑帧 1秒15帧 渲染帧 1秒60帧
-            
-            
-
             LogicDeltaTime = (_accLogicRunTime + LogicFrameConfig.LogicFrameInterval - _nextLogicFrameTime) / LogicFrameConfig.LogicFrameInterval;
             
             

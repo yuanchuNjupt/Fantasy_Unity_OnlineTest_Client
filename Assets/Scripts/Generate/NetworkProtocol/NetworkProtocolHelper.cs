@@ -253,12 +253,13 @@ namespace Fantasy
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void FrameOperateEventMessage_G2C(this Session session, long battleId, long startLogicFrameId, long endLogicFrameId, List<OneFrameCommand> oneFrameCommandList)
+		public static void FrameOperateEventMessage_G2C(this Session session, long battleId, long startLogicFrameId, long endLogicFrameId, long serverTick, List<OneFrameCommand> oneFrameCommandList)
 		{
 			using var message = Fantasy.FrameOperateEventMessage_G2C.Create(session.Scene);
 			message.battleId = battleId;
 			message.startLogicFrameId = startLogicFrameId;
 			message.endLogicFrameId = endLogicFrameId;
+			message.serverTick = serverTick;
 			message.oneFrameCommandList = oneFrameCommandList;
 			session.Send(message);
 		}
