@@ -1,4 +1,4 @@
-﻿namespace Battle.FrameOperate
+﻿namespace Battle.FrameCommand
 {
     public enum FrameCommandType
     {

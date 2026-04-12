@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Fantasy;
 using Fantasy.Pool;
 
-namespace Battle.FrameOperate
+namespace Battle.FrameCommand
 {
     public sealed class OneFrameCommandCache : IPool , IDisposable
     {

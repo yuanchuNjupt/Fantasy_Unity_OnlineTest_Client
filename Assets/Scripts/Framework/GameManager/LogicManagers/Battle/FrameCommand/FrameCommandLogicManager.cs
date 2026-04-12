@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Battle.FrameOperate;
+using Battle.FrameCommand;
 using Fantasy;
 using Framework.GameManager.Base;
 using Framework.GameManager.Core;
@@ -116,6 +116,17 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
             //发送给服务器，进行预测
             long currentFrameId = LogicFrameConfig.LocalPredictedLogicFrameId + LogicFrameConfig.PredictionWindowSize;
             SendOneFrameCommandToServer(currentFrameId, operationDataList);
+
+            if (_frameCommandDataManager.TryGetCommand(currentFrameId, out var commandCache))
+            {
+                if (commandCache.FrameType is FrameCommandType.Authoritative)
+                {
+                    //已经有权威帧了，不需要预测了
+                    return;
+                }
+            }
+            
+            
             
             //预测本地玩家的操作
             OneFrameCommandCache command = OneFrameCommandCache.Create(currentFrameId, operationDataList , FrameCommandType.Prediction);
