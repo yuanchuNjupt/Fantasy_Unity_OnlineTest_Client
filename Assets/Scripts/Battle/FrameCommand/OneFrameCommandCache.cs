@@ -47,7 +47,7 @@ namespace Battle.FrameCommand
                    a.operateType == b.operateType;
         }
         
-        public static FrameOperationData CloneFrameOperationData(FrameOperationData source)
+        public static FrameOperationData Clone(FrameOperationData source)
         {
             return new FrameOperationData
             {

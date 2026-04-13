@@ -25,6 +25,8 @@ public class LogicFrameConfig
     
     public const int DelayBufferSize = 10; //网络延迟缓冲区大小，用于计算平均网络延迟
     
+    public const int MaxWorldSnapshotBufferSize = 50; //最大世界快照缓冲区大小，超过后会丢弃最早的快照
+    
     
     
     

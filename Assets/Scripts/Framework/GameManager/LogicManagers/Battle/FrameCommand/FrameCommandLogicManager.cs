@@ -139,7 +139,8 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
                 foreach (FrameOperationData frameOperationData in cache.FrameOperationDataList)
                 {
                     if (frameOperationData.playerId == _battleDataManager.CurrentPlayerIdInBattle) continue;
-                    command.Add(frameOperationData);
+                    
+                    command.Add(OneFrameCommandCache.Clone(frameOperationData));
                 }
             }
             
@@ -170,6 +171,7 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
             
             operationDataList.Clear();
             //采集快照
+            _frameCommandDataManager.CaptureSnapshot(currentFrameId , _battlePlayerLogicManager);
             
             
             
