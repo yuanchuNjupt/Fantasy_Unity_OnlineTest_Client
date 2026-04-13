@@ -55,7 +55,12 @@ namespace Framework.GameManagerFramework.LogicManagers
             
         }
 
-        //
+        
+        public void NoneFrameDataInput()
+        {
+            CacheFrameOperateData(OperateTypeEnum.None, FixedIntVector3.zero ,0);
+        }
+        
         public void MoveFrameDataInput(FixedIntVector3 inputDir)
         {
             CacheFrameOperateData(OperateTypeEnum.InputMove, inputDir ,0);
@@ -65,6 +70,7 @@ namespace Framework.GameManagerFramework.LogicManagers
         {
             CacheFrameOperateData(OperateTypeEnum.ReleaseSkill, FixedIntVector3.zero , skillId);
         }
+        
         
         public void CacheFrameOperateData(OperateTypeEnum operateType, FixedIntVector3 inputDir, int skillId)
         {
@@ -77,11 +83,18 @@ namespace Framework.GameManagerFramework.LogicManagers
             {
                 operateType = (int)operateType,
                 playerId =_userDataManager.UserData.AccountId,
+                skillId = skillId,
             };
             
             switch (operateType)
             {
                 case OperateTypeEnum.None:
+                    frameOperationData.inputDir = new CSFixIntVector3
+                    {
+                        x = 0,
+                        y = 0,
+                        z = 0
+                    };
                     break;
                 case OperateTypeEnum.InputMove:
                     frameOperationData.inputDir = new CSFixIntVector3
@@ -92,7 +105,12 @@ namespace Framework.GameManagerFramework.LogicManagers
                     };
                     break;
                 case OperateTypeEnum.ReleaseSkill:
-                    frameOperationData.skillId = skillId;
+                    frameOperationData.inputDir = new CSFixIntVector3()
+                    {
+                        x = 0,
+                        y = 0,
+                        z = 0
+                    };
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(operateType), operateType, null);

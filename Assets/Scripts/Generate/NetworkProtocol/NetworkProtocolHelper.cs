@@ -236,7 +236,7 @@ namespace Fantasy
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static void FrameOperateEventMessage_C2G(this Session session, long battleId, long lastLogicFrameId, long predictLogicFrameId, List<FrameOperationData> frameOperateDataList)
+		public static void FrameOperateEventMessage_C2G(this Session session, long battleId, long lastLogicFrameId, long predictLogicFrameId, FrameOperationData frameOperateDataList)
 		{
 			using var message = Fantasy.FrameOperateEventMessage_C2G.Create(session.Scene);
 			message.battleId = battleId;

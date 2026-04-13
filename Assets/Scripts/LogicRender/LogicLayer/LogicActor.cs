@@ -55,8 +55,7 @@ public partial class LogicActor : LogicObject
         base.Restore(snapshot);
         hp = snapshot.Hp;
 
-        Log.Info(LogColor.Cyan, "[预测回滚]",
-            $"恢复对象快照 对象ID：{snapshot.uid} HP：{snapshot.Hp} Position：{snapshot.LogicPos} ForwardDir：{snapshot.LogicForwardDir} State：{snapshot.ActionState}");
+        
     }
 
     /// <summary>

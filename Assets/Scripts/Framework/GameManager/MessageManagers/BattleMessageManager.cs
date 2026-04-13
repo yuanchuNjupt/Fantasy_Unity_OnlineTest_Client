@@ -19,7 +19,7 @@ namespace Framework.MessageManagers
             
         }
 
-        public void SendFrameOperateEventMessage(long battleId ,long frameId ,List<FrameOperationData> frameOperationData)
+        public void SendFrameOperateEventMessage(long battleId ,long frameId ,FrameOperationData frameOperationData)
         {
             var message = new FrameOperateEventMessage_C2G();
             message.battleId = battleId;

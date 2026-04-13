@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Battle.FrameCommand;
 using Fantasy;
+using Framework.AdvancedLog;
 using Framework.GameManager.Base;
 using Framework.GameManager.Core;
 using Framework.GameManager.DataManagers;
@@ -16,17 +17,17 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
     [WorldSource(typeof(BattleWorld))]
     public class FrameCommandLogicManager : ILogicBehaviour
     {
-        
+
         [Inject] private FrameCommandDataManager _frameCommandDataManager;
         [Inject] private BattleDataManager _battleDataManager;
         [Inject] private BattleMessageManager _battleMessageManager;
-        
+
         [Inject] private BattlePlayerLogicManager _battlePlayerLogicManager;
-        
+
         private BattleLogicManager _battleLogicManager;
 
 
-        
+
 
         #region 固定预测窗口 + 时间缩放
 
@@ -34,7 +35,7 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
         private long _lastServerTick; //上次服务器帧的时间戳
         private Queue<long> _delays;
         private int _averageDelay; //平均网络延迟
-        
+
         public int AverageDelay => _averageDelay;
 
 
@@ -72,20 +73,21 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
             if (frameDiff > 1 || frameDiff < -1)
             {
                 //渐进式调整客户端的帧数，使其逐渐接近服务器的帧数，避免突然跳帧导致的游戏体验问题
-                
+
                 //1.客户端太慢了：frameDiff < -1，说明客户端的帧数落后于服务器，需要加快帧数
                 //2.客户端太快了：frameDiff > 1，说明客户端的帧数领先于服务器，需要减慢帧数
-                
+
                 _timeAccumulator -= Math.Sign(frameDiff) *
                                     Math.Min(Math.Abs(frameDiff) * LogicFrameConfig.LogicFrameIntervalMs,
                                         LogicFrameConfig.LogicFrameIntervalMs);
             }
+
             if (_lastServerTick == 0)
             {
                 _lastServerTick = serverTick;
                 return;
             }
-            
+
             long tickDiff = serverTick - _lastServerTick;
 
             if (tickDiff > 0)
@@ -113,12 +115,18 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
             //预测当前客户端帧 + 预测窗口帧
             //得到当前的采集数据
             var operationDataList = _frameCommandDataManager.CloneCurrentFrameOperationData();
+
+            //获取权重最大的操作
+            var maxWeightOperation = GetMaxWeightOperation(operationDataList);
+
             _frameCommandDataManager.currentFrameOperationData.Clear();
-            
-            
+
+
+
+
             //发送给服务器，进行预测
             long currentFrameId = LogicFrameConfig.LocalPredictedLogicFrameId + LogicFrameConfig.PredictionWindowSize;
-            SendOneFrameCommandToServer(currentFrameId, operationDataList);
+            SendOneFrameCommandToServer(currentFrameId, maxWeightOperation);
 
             if (_frameCommandDataManager.TryGetCommand(currentFrameId, out var commandCache))
             {
@@ -128,13 +136,14 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
                     return;
                 }
             }
-            
-            
-            
+
+
+
             //预测本地玩家的操作
-            OneFrameCommandCache command = OneFrameCommandCache.Create(currentFrameId, operationDataList , FrameCommandType.Prediction);
-            
-            
+            OneFrameCommandCache command =
+                OneFrameCommandCache.Create(currentFrameId, maxWeightOperation, FrameCommandType.Prediction);
+
+
             //预测其他玩家的操作
             //采取的方法为： 获取这个玩家的上一次权威帧操作进行预测。
             if (_frameCommandDataManager.TryGetCommand(LogicFrameConfig.ServerLogicFrameId, out var cache))
@@ -142,22 +151,22 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
                 foreach (FrameOperationData frameOperationData in cache.FrameOperationDataList)
                 {
                     if (frameOperationData.playerId == _battleDataManager.CurrentPlayerIdInBattle) continue;
-                    
+
                     command.Add(OneFrameCommandCache.Clone(frameOperationData));
                 }
             }
-            
+
             //排序
             command.Sort();
-            
-            
+
+
             //添加到缓存中
             _frameCommandDataManager.AddCommand(command);
 
             ExecuteFrameCommand(command);
-            
+
         }
-        
+
         public void ExecuteFrameCommand(OneFrameCommandCache command)
         {
             foreach (var data in command.FrameOperationDataList)
@@ -168,50 +177,103 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
                     case OperateTypeEnum.InputMove:
                         playerLogic.ApplyMoveOperation(data.inputDir);
                         break;
-                    
+
                     //暂时先不考虑技能释放的预测了，技能释放的预测需要考虑更多的因素，比如技能的施法时间、技能的目标选择等，目前先只预测移动操作
-                    
+
                 }
             }
+
             //执行一次逻辑帧更新
             _battlePlayerLogicManager.OnLogicFrameUpdate();
             //采集快照
-            _frameCommandDataManager.CaptureSnapshot(command.FrameID , _battlePlayerLogicManager);
+            _frameCommandDataManager.CaptureSnapshot(command.FrameID, _battlePlayerLogicManager);
         }
-        
-        
-        
+
+
+
         public bool Restore(long rollbackFrameId)
         {
-            
+
             if (!_frameCommandDataManager.TryGetSnapshot(rollbackFrameId, out var snapshot))
             {
-                Log.Warning("[预测回滚]" , "没有找到回滚帧的快照，无法回滚，帧ID：" + (rollbackFrameId));
+                Log.Warning("[预测回滚]", "没有找到回滚帧的快照，无法回滚，帧ID：" + (rollbackFrameId));
                 return false;
             }
+
             snapshot.Restore(_battlePlayerLogicManager);
+            Log.Info(LogColor.Cyan, "预测回滚", "回滚到帧ID：" + rollbackFrameId);
             return true;
         }
-        
 
-        
-        
+
+
+
 
         #endregion
-        
-        
-        
+
+
+
         /// <summary>
         /// 向服务器发送预测操作指令
         /// </summary>
         /// <param name="frameId"></param>
         /// <param name="operationDataList"></param>
-        private void SendOneFrameCommandToServer(long frameId , List<FrameOperationData> operationDataList)
+        private void SendOneFrameCommandToServer(long frameId, FrameOperationData operationDataList)
         {
             long battleId = _battleDataManager.BattleId;
             _battleMessageManager.SendFrameOperateEventMessage(battleId, frameId, operationDataList);
         }
-        
+
+        /// <summary>
+        /// 按权重获取最新且权重最大的单个操作
+        /// 权重顺序：技能(ReleaseSkill) > 移动(InputMove) > 无操作(None)
+        /// </summary>
+        /// <param name="operationDataList">操作数据列表</param>
+        /// <returns>返回权重最大的单个操作，如果列表为空返回null</returns>
+        private FrameOperationData GetMaxWeightOperation(List<FrameOperationData> operationDataList)
+        {
+            FrameOperationData CreateNoneOperation()
+            {
+                return new FrameOperationData
+                {
+                    playerId = _battleDataManager.CurrentPlayerIdInBattle,
+                    operateType = (int)OperateTypeEnum.None
+                };
+            }
+
+            if (operationDataList == null || operationDataList.Count == 0)
+            {
+                return CreateNoneOperation();
+            }
+
+            int GetOperationWeight(OperateTypeEnum operateType)
+            {
+                return operateType switch
+                {
+                    OperateTypeEnum.ReleaseSkill => 3,
+                    OperateTypeEnum.InputMove => 2,
+                    OperateTypeEnum.None => 1,
+                    _ => 0
+                };
+            }
+
+            FrameOperationData latestMaxWeightOperation = null;
+            int maxWeight = int.MinValue;
+
+            // 同权重使用 >=，保证返回列表中“最新”的那个
+            foreach (var op in operationDataList)
+            {
+                if (op == null) continue;
+
+                int weight = GetOperationWeight((OperateTypeEnum)op.operateType);
+                if (weight >= maxWeight)
+                {
+                    maxWeight = weight;
+                    latestMaxWeightOperation = op;
+                }
+            }
+
+            return latestMaxWeightOperation ?? CreateNoneOperation();
+        }
     }
-        
 }

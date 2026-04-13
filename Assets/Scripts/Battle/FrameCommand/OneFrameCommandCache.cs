@@ -32,7 +32,23 @@ namespace Battle.FrameCommand
             oneFrameCommandCache.Sort();
             
             return oneFrameCommandCache;
-
+        }
+        
+        public static OneFrameCommandCache Create(long frameId, FrameOperationData frameOperationData , FrameCommandType frameType)
+        {
+            var oneFrameCommandCache = Pool<OneFrameCommandCache>.Rent();
+            oneFrameCommandCache.FrameID = frameId;
+            oneFrameCommandCache.FrameType = frameType;
+            
+            
+            if(frameOperationData == null) return oneFrameCommandCache;
+            
+            
+            oneFrameCommandCache._frameOperationDataList.Add(frameOperationData);
+            
+            oneFrameCommandCache.Sort();
+            
+            return oneFrameCommandCache;
         }
 
         #region 扩展方法
@@ -118,12 +134,6 @@ namespace Battle.FrameCommand
                 if (ReferenceEquals(a, b)) return 0;
                 if (a == null) return 1;
                 if (b == null) return -1;
-
-                int operateTypeCompare = b.operateType.CompareTo(a.operateType);
-                if (operateTypeCompare != 0)
-                {
-                    return operateTypeCompare;
-                }
 
                 return a.playerId.CompareTo(b.playerId);
             });

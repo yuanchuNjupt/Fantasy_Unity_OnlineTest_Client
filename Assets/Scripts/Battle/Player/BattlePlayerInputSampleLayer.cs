@@ -86,19 +86,25 @@ namespace Battle
             
                 // 转换为Vector2（XZ平面）
                 _inputDir = new Vector2(moveDirection.x, moveDirection.z);
+                
+                if (LogicFrameConfig.IsUseLocalLogicFrame)
+                {
+                    _instance.logicLayer.UpdateMoveDir(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
+                }
+                else
+                    _instance.battleLogicManager.MoveFrameDataInput(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
+                
+                
+                return;
             }
-            else
-            {
-                _inputDir = Vector2.zero;
-            }
+            
+            // 没有输入时，发送零输入
+            if(!LogicFrameConfig.IsUseLocalLogicFrame)
+                _instance.battleLogicManager.NoneFrameDataInput();
+            
 
     
-            if (LogicFrameConfig.IsUseLocalLogicFrame)
-            {
-                _instance.logicLayer.UpdateMoveDir(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
-            }
-            else
-                _instance.battleLogicManager.MoveFrameDataInput(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
+            
             
         }
         

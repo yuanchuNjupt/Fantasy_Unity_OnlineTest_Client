@@ -607,7 +607,7 @@ namespace Fantasy
 			battleId = default;
 			lastLogicFrameId = default;
 			predictLogicFrameId = default;
-			frameOperateDataList.Clear();
+			frameOperateDataList = default;
 #if FANTASY_NET || FANTASY_UNITY
 			GetScene().MessagePoolComponent.Return<FrameOperateEventMessage_C2G>(this);
 #endif
@@ -620,7 +620,7 @@ namespace Fantasy
 		[ProtoMember(3)]
 		public long predictLogicFrameId { get; set; }
 		[ProtoMember(4)]
-		public List<FrameOperationData> frameOperateDataList = new List<FrameOperationData>();
+		public FrameOperationData frameOperateDataList { get; set; }
 	}
 	[ProtoContract]
 	public partial class FrameOperateEventMessage_G2C : AMessage, IMessage
