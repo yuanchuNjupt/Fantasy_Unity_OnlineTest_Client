@@ -49,11 +49,27 @@ namespace Framework.GameManager.DataManagers
         
         public List<FrameOperationData> CloneCurrentFrameOperationData()
         {
+            if (currentFrameOperationData == null || currentFrameOperationData.Count == 0)
+            {
+                return new List<FrameOperationData>();
+            }
+
             var cloneList = new List<FrameOperationData>(currentFrameOperationData.Count);
             foreach (var data in currentFrameOperationData)
             {
-                cloneList.Add(OneFrameCommandCache.Clone(data));
+                // 后台恢复期间可能出现空操作，直接跳过避免 NRE
+                if (data == null)
+                {
+                    continue;
+                }
+
+                var clone = OneFrameCommandCache.Clone(data);
+                if (clone != null)
+                {
+                    cloneList.Add(clone);
+                }
             }
+
             return cloneList;
         }
         
@@ -63,6 +79,12 @@ namespace Framework.GameManager.DataManagers
             _caches = new SortedDictionary<long, OneFrameCommandCache>();
             _snapshots = new SortedDictionary<long, WorldSnapshot>();
 
+            for (int i = 0; i <= LogicFrameConfig.PredictionWindowSize; i++)
+            {
+                AddCommand(i, FrameCommandType.Prediction, new List<FrameOperationData>());
+            }
+            
+            
             MaxSnapshotId = 0;
             MinSnapshotId = 0;
         }
@@ -70,7 +92,11 @@ namespace Framework.GameManager.DataManagers
         
         public bool AddCommand(long frameId, FrameCommandType frameType, List<FrameOperationData> frameOperationDataList)
         {
-            var cache = OneFrameCommandCache.Create(frameId ,frameOperationDataList , frameType);
+            // 统一兜底，避免上游传 null
+            frameOperationDataList ??= new List<FrameOperationData>();
+            frameOperationDataList.RemoveAll(item => item == null);
+
+            var cache = OneFrameCommandCache.Create(frameId, frameOperationDataList, frameType);
             return AddCommand(cache);
         }
         
@@ -167,11 +193,6 @@ namespace Framework.GameManager.DataManagers
             _snapshots[frameId] = worldSnapshot;
             MaxSnapshotId = frameId;
             MinSnapshotId = _snapshots.First().Key;
-
-            if (MinSnapshotId + LogicFrameConfig.MaxWorldSnapshotBufferSize != MaxSnapshotId)
-            {
-                Log.Warning("[状态快照]" , "当前快照缓存中最小帧ID为 " + MinSnapshotId + "，最大帧ID为 " + MaxSnapshotId + "，两者之差不等于配置的快照缓存大小 " + LogicFrameConfig.MaxWorldSnapshotBufferSize);
-            }
         }
 
 

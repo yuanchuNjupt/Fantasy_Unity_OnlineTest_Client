@@ -154,10 +154,8 @@ namespace Framework.GameManagerFramework.LogicManagers
                 _frameCommandLogicManager.ExecuteFrameCommand(_frameCommandDataManager[replayerFrameId]);
             }
             
-            //TODO:全部执行完毕后再执行渲染更新
-            
-            
-            
+            //全部执行完毕后再执行渲染更新
+            //这里暂时每次更新都渲染，后续加个统一渲染接口
         }
 
 
@@ -171,13 +169,14 @@ namespace Framework.GameManagerFramework.LogicManagers
                 return;
 
             int frameCount = _frameCommandLogicManager.FrameUpdate(deltaTime);
-
+            // frameCount = Math.Min(frameCount, LogicFrameConfig.PreMaxMoveLogicFrameCount);
+            
+            
+            
             for (int i = 0; i < frameCount; i++)
             {
                 //执行逻辑帧更新
                 LogicFrameConfig.LocalPredictedLogicFrameId++;
-                
-                //TODO:执行当前逻辑帧的游戏逻辑更新，包含玩家输入预测、NPC行为预测、物理模拟等
                 
                 //获取当前采集的输入数据，进行本地预测
                 _frameCommandLogicManager.ExecutePredictionFrameCommand();

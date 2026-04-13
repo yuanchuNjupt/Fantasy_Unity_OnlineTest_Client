@@ -39,9 +39,16 @@ namespace Battle.FrameCommand
 
         public static bool IsSameFrameOperationData(FrameOperationData a, FrameOperationData b)
         {
-            return a.inputDir.x == b.inputDir.x &&
-                   a.inputDir.y == b.inputDir.y &&
-                   a.inputDir.z == b.inputDir.z &&
+            if (ReferenceEquals(a, b)) return true;
+            if (a == null || b == null) return false;
+
+            bool inputDirSame = ReferenceEquals(a.inputDir, b.inputDir) ||
+                                (a.inputDir != null && b.inputDir != null &&
+                                 a.inputDir.x == b.inputDir.x &&
+                                 a.inputDir.y == b.inputDir.y &&
+                                 a.inputDir.z == b.inputDir.z);
+
+            return inputDirSame &&
                    a.playerId == b.playerId &&
                    a.skillId == b.skillId &&
                    a.operateType == b.operateType;
@@ -49,25 +56,46 @@ namespace Battle.FrameCommand
         
         public static FrameOperationData Clone(FrameOperationData source)
         {
-            return new FrameOperationData
+            if (source == null)
             {
-                inputDir = new CSFixIntVector3
-                {
-                    x = source.inputDir.x,
-                    y = source.inputDir.y,
-                    z = source.inputDir.z
-                },
+                Log.Warning("尝试克隆一个空的FrameOperationData");
+                return null;
+            }
+            
+            
+            var clone = new FrameOperationData
+            {
                 playerId = source.playerId,
                 skillId = source.skillId,
                 operateType = source.operateType
             };
+            if(source.inputDir != null)
+            {
+                clone.inputDir = new CSFixIntVector3()
+                {
+                    x = source.inputDir.x,
+                    y = source.inputDir.y,
+                    z = source.inputDir.z,
+                };
+            }
+
+            return clone;
         }
 
         public static bool IsSameFrameCommand(OneFrameCommandCache a, OneFrameCommandCache b)
         {
-            if(a.FrameID != b.FrameID || a._frameOperationDataList.Count != b._frameOperationDataList.Count) return false;
+            if (ReferenceEquals(a, b)) return true;
+            if (a == null || b == null) return false;
+            if (a.FrameID != b.FrameID || a._frameOperationDataList.Count != b._frameOperationDataList.Count) return false;
+
             for (int i = 0; i < a._frameOperationDataList.Count; i++)
-                if(!IsSameFrameOperationData(a._frameOperationDataList[i] , b._frameOperationDataList[i])) return false;
+            {
+                if (!IsSameFrameOperationData(a._frameOperationDataList[i], b._frameOperationDataList[i]))
+                {
+                    return false;
+                }
+            }
+
             return true;
         }
 
@@ -87,6 +115,10 @@ namespace Battle.FrameCommand
         {
             _frameOperationDataList.Sort((a, b) =>
             {
+                if (ReferenceEquals(a, b)) return 0;
+                if (a == null) return 1;
+                if (b == null) return -1;
+
                 int operateTypeCompare = b.operateType.CompareTo(a.operateType);
                 if (operateTypeCompare != 0)
                 {

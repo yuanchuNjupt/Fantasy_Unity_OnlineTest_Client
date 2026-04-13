@@ -49,6 +49,24 @@ namespace Battle
                 return;
             
             
+            //检测攻击
+            if (_pendingNormalAttack)
+            {
+                _pendingNormalAttack = false;
+                // 释放技能
+                if (LogicFrameConfig.IsUseLocalLogicFrame)
+                {
+                    _instance.logicLayer.ReleaseNormalAttack();
+                }
+                else
+                {
+                    _instance.logicLayer.ReleaseNormalAttack();
+                }
+                
+                return;
+            }
+            
+            
             newInput = _instance.battleMouseLogicManager.MoveInput;
             if (newInput != Vector2.zero && _playerCameraTransform != null)
             {
@@ -81,23 +99,6 @@ namespace Battle
             }
             else
                 _instance.battleLogicManager.MoveFrameDataInput(new FixedIntVector3( _inputDir.x, 0 , _inputDir.y ));
-                
-            //检测攻击
-            if (_pendingNormalAttack)
-            {
-                _pendingNormalAttack = false;
-                // 释放技能
-                if (LogicFrameConfig.IsUseLocalLogicFrame)
-                {
-                    _instance.logicLayer.ReleaseNormalAttack();
-                }
-                else
-                {
-                    _instance.logicLayer.ReleaseNormalAttack();
-                }
-            }
-            
-            
             
         }
         

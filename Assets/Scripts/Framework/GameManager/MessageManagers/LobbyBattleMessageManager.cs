@@ -72,7 +72,8 @@ namespace Framework.MessageManagers
             {
                 
                 UnityEngine.Debug.Log("收到开始战斗消息" );
-                
+                LogicFrameConfig.ServerLogicFrameId = 0;
+                LogicFrameConfig.LocalPredictedLogicFrameId = 0;
                 
                 WorldManager.CreateWorld<BattleWorld>((() =>
                 {
