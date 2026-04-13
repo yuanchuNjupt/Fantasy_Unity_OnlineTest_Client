@@ -289,6 +289,15 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CallMouse"",
+                    ""type"": ""Button"",
+                    ""id"": ""01f2fede-e834-4c89-bb5a-1eae679a0dda"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -355,6 +364,17 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
                     ""processors"": ""NormalizeVector2"",
                     ""groups"": """",
                     ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""49dc7e68-77ed-4e48-b1a7-c36ad9ec99af"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""CallMouse"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -432,6 +452,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         m_BattlePlayerInputMap_CameraLook = m_BattlePlayerInputMap.FindAction("CameraLook", throwIfNotFound: true);
         m_BattlePlayerInputMap_LAttack = m_BattlePlayerInputMap.FindAction("LAttack", throwIfNotFound: true);
         m_BattlePlayerInputMap_SpecialSkill1 = m_BattlePlayerInputMap.FindAction("SpecialSkill1", throwIfNotFound: true);
+        m_BattlePlayerInputMap_CallMouse = m_BattlePlayerInputMap.FindAction("CallMouse", throwIfNotFound: true);
     }
 
     ~@GameInputAction()
@@ -589,6 +610,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_BattlePlayerInputMap_CameraLook;
     private readonly InputAction m_BattlePlayerInputMap_LAttack;
     private readonly InputAction m_BattlePlayerInputMap_SpecialSkill1;
+    private readonly InputAction m_BattlePlayerInputMap_CallMouse;
     public struct BattlePlayerInputMapActions
     {
         private @GameInputAction m_Wrapper;
@@ -597,6 +619,7 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         public InputAction @CameraLook => m_Wrapper.m_BattlePlayerInputMap_CameraLook;
         public InputAction @LAttack => m_Wrapper.m_BattlePlayerInputMap_LAttack;
         public InputAction @SpecialSkill1 => m_Wrapper.m_BattlePlayerInputMap_SpecialSkill1;
+        public InputAction @CallMouse => m_Wrapper.m_BattlePlayerInputMap_CallMouse;
         public InputActionMap Get() { return m_Wrapper.m_BattlePlayerInputMap; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -618,6 +641,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             @SpecialSkill1.started += instance.OnSpecialSkill1;
             @SpecialSkill1.performed += instance.OnSpecialSkill1;
             @SpecialSkill1.canceled += instance.OnSpecialSkill1;
+            @CallMouse.started += instance.OnCallMouse;
+            @CallMouse.performed += instance.OnCallMouse;
+            @CallMouse.canceled += instance.OnCallMouse;
         }
 
         private void UnregisterCallbacks(IBattlePlayerInputMapActions instance)
@@ -634,6 +660,9 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
             @SpecialSkill1.started -= instance.OnSpecialSkill1;
             @SpecialSkill1.performed -= instance.OnSpecialSkill1;
             @SpecialSkill1.canceled -= instance.OnSpecialSkill1;
+            @CallMouse.started -= instance.OnCallMouse;
+            @CallMouse.performed -= instance.OnCallMouse;
+            @CallMouse.canceled -= instance.OnCallMouse;
         }
 
         public void RemoveCallbacks(IBattlePlayerInputMapActions instance)
@@ -666,5 +695,6 @@ public partial class @GameInputAction: IInputActionCollection2, IDisposable
         void OnCameraLook(InputAction.CallbackContext context);
         void OnLAttack(InputAction.CallbackContext context);
         void OnSpecialSkill1(InputAction.CallbackContext context);
+        void OnCallMouse(InputAction.CallbackContext context);
     }
 }
