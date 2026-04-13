@@ -46,6 +46,7 @@ namespace Battle.FrameCommand
             snapshot.ActionState = actor.ActionState;
             return snapshot;
         }
+        
 
         public override string ToString()
         {

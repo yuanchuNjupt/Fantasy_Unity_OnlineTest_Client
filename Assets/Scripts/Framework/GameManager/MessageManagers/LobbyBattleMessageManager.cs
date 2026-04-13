@@ -73,6 +73,7 @@ namespace Framework.MessageManagers
                 
                 UnityEngine.Debug.Log("收到开始战斗消息" );
                 
+                
                 WorldManager.CreateWorld<BattleWorld>((() =>
                 {
                     GameManager.Core.World.GetExitsDataManager<BattleDataManager>().InitBattlePlayerData(message.battlePlayers);

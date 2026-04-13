@@ -59,12 +59,14 @@ public class RenderObject : MonoBehaviour
     /// <summary>
     /// Unity引擎渲染帧，根据程序配置，渲染帧一般一秒为30帧、和60帧以及120帧 
     /// </summary>
-    public virtual void Update()
+    public virtual void LateUpdate()
     {
         if (logicObject == null) return;
         UpdatePosition();
         UpdateDir();
     }
+    
+    
     /// <summary>
     ///通用的位置更新逻辑
     /// </summary>

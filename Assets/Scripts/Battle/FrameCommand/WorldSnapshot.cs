@@ -26,6 +26,14 @@ namespace Battle.FrameCommand
                 _playerSnapshots.Add(uid, PlayerSnapshot.Create(uid , instance.logicLayer));
             }
         }
+
+        public void Restore(BattlePlayerLogicManager playerLogicManager)
+        {
+            foreach (var (uid , snapshot) in _playerSnapshots)
+            {
+                playerLogicManager.GetBattlePlayerInstance(uid).logicLayer.Restore(snapshot);
+            }
+        }
         
         
         

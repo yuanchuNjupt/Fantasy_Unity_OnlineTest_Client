@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using FixMath;
 using System;
+using Battle.FrameCommand;
 using FixedPhysics.Fixed_pointNumber.Core;
 using FixedPhysics.Fixed_pointNumber.FixedIntMath;
 using FixedPhysics.FixedCollider.Colliders._3D;
@@ -98,6 +99,18 @@ public abstract class LogicObject
             }
         }
     }
+
+   
+    /// <summary>
+    /// 状态回滚接口
+    /// </summary>
+    public virtual void Restore(PlayerSnapshot snapshot)
+    {
+        _actionState = snapshot.ActionState;
+        _logicPos = snapshot.LogicPos;
+        _logicForwardDir = snapshot.LogicForwardDir;
+    }
+    
 
     public Action<LogicObjectActionState> onActionStateChange;
     

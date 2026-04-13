@@ -9,6 +9,7 @@ using Framework.GameManager.DataManagers;
 using Framework.GameManagerFramework.DataManagers;
 using Framework.GameManagerFramework.WorldScripts;
 using Framework.MessageManagers;
+using Log = Framework.AdvancedLog.Log;
 
 namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
 {
@@ -105,13 +106,15 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
         #endregion
 
 
-        #region 预测指令
+        #region 预测回滚
 
         public void ExecutePredictionFrameCommand()
         {
             //预测当前客户端帧 + 预测窗口帧
             //得到当前的采集数据
-            var operationDataList = _frameCommandDataManager.currentFrameOperationData;
+            var operationDataList = _frameCommandDataManager.CloneCurrentFrameOperationData();
+            _frameCommandDataManager.currentFrameOperationData.Clear();
+            
             
             //发送给服务器，进行预测
             long currentFrameId = LogicFrameConfig.LocalPredictedLogicFrameId + LogicFrameConfig.PredictionWindowSize;
@@ -151,6 +154,12 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
             //添加到缓存中
             _frameCommandDataManager.AddCommand(command);
 
+            ExecuteFrameCommand(command);
+            
+        }
+        
+        public void ExecuteFrameCommand(OneFrameCommandCache command)
+        {
             foreach (var data in command.FrameOperationDataList)
             {
                 var playerLogic = _battlePlayerLogicManager.GetBattlePlayerInstance(data.playerId).logicLayer;
@@ -164,28 +173,44 @@ namespace Framework.GameManagerFramework.LogicManagers.FrameCommand
                     
                 }
             }
-            
             //执行一次逻辑帧更新
             _battlePlayerLogicManager.OnLogicFrameUpdate();
-            
-            
-            operationDataList.Clear();
             //采集快照
-            _frameCommandDataManager.CaptureSnapshot(currentFrameId , _battlePlayerLogicManager);
-            
-            
-            
+            _frameCommandDataManager.CaptureSnapshot(command.FrameID , _battlePlayerLogicManager);
         }
         
+        
+        
+        public bool Restore(long rollbackFrameId)
+        {
+            
+            if (!_frameCommandDataManager.TryGetSnapshot(rollbackFrameId, out var snapshot))
+            {
+                Log.Warning("[预测回滚]" , "没有找到回滚帧的快照，无法回滚，帧ID：" + (rollbackFrameId));
+                return false;
+            }
+            snapshot.Restore(_battlePlayerLogicManager);
+            return true;
+        }
+        
+
+        
+        
+
+        #endregion
+        
+        
+        
+        /// <summary>
+        /// 向服务器发送预测操作指令
+        /// </summary>
+        /// <param name="frameId"></param>
+        /// <param name="operationDataList"></param>
         private void SendOneFrameCommandToServer(long frameId , List<FrameOperationData> operationDataList)
         {
             long battleId = _battleDataManager.BattleId;
             _battleMessageManager.SendFrameOperateEventMessage(battleId, frameId, operationDataList);
         }
-        
-        
-
-        #endregion
         
     }
         

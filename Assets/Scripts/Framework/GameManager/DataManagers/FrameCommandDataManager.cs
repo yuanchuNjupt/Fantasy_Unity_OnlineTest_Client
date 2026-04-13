@@ -47,7 +47,15 @@ namespace Framework.GameManager.DataManagers
         public List<FrameOperationData> currentFrameOperationData = new List<FrameOperationData>();
         
         
-        
+        public List<FrameOperationData> CloneCurrentFrameOperationData()
+        {
+            var cloneList = new List<FrameOperationData>(currentFrameOperationData.Count);
+            foreach (var data in currentFrameOperationData)
+            {
+                cloneList.Add(OneFrameCommandCache.Clone(data));
+            }
+            return cloneList;
+        }
         
         
         public void OnCreate()
@@ -164,9 +172,12 @@ namespace Framework.GameManager.DataManagers
             {
                 Log.Warning("[状态快照]" , "当前快照缓存中最小帧ID为 " + MinSnapshotId + "，最大帧ID为 " + MaxSnapshotId + "，两者之差不等于配置的快照缓存大小 " + LogicFrameConfig.MaxWorldSnapshotBufferSize);
             }
+        }
 
 
-
+        public bool TryGetSnapshot(long rollbackFrameId, out WorldSnapshot snapshot)
+        {
+           return _snapshots.TryGetValue(rollbackFrameId, out snapshot);
         }
         
         

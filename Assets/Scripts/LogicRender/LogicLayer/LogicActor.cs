@@ -1,6 +1,7 @@
 using FixMath;
 using System.Collections;
 using System.Collections.Generic;
+using Battle.FrameCommand;
 using FixedPhysics.Bounds;
 using FixedPhysics.Fixed_pointNumber.Core;
 using FixedPhysics.FixedCollider.Core;
@@ -14,7 +15,7 @@ public partial class LogicActor : LogicObject
     {
         base.OnCreate();
     }
- 
+
     public override void OnLogicFrameUpdate()
     {
         base.OnLogicFrameUpdate();
@@ -30,43 +31,54 @@ public partial class LogicActor : LogicObject
     {
         RenderObj.PlayAnim(clip);
     }
+
     public void PlayAnim(string name)
     {
-        Debug.Log("释放技能："+name);
+        Debug.Log("释放技能：" + name);
         RenderObj.PlayAnim(name);
     }
+
     public virtual void OnHit(SkillDamageConfig config)
     {
         RenderObj.OnHit();
-        CalculateDamage(config.damageRate , DamageSource.SKill);
+        CalculateDamage(config.damageRate, DamageSource.SKill);
     }
-    public virtual void AddHitEffect(string effectHitObjPath,int survivalTimeMs, LogicObject source)
+
+    public virtual void AddHitEffect(string effectHitObjPath, int survivalTimeMs, LogicObject source)
     {
         RenderObj.AddHitEffect(effectHitObjPath, survivalTimeMs, source);
     }
-    
-    
-    
-    
+
+
+    public override void Restore(PlayerSnapshot snapshot)
+    {
+        base.Restore(snapshot);
+        hp = snapshot.Hp;
+
+        Log.Info(LogColor.Cyan, "[预测回滚]",
+            $"恢复对象快照 对象ID：{snapshot.uid} HP：{snapshot.Hp} Position：{snapshot.LogicPos} ForwardDir：{snapshot.LogicForwardDir} State：{snapshot.ActionState}");
+    }
+
     /// <summary>
     /// 计算伤害
     /// </summary>
     /// <param name="damage">伤害数值</param>
     /// <param name="source">伤害来源</param>
-    public void CalculateDamage(FixedInt damage,DamageSource source)
+    public void CalculateDamage(FixedInt damage, DamageSource source)
     {
-        if (ObjectState== LogicObjectState.Survival)
+        if (ObjectState == LogicObjectState.Survival)
         {
             //1.对象逻辑层血量减少
             ReduceHP(damage);
             //2.判断对象是否死亡 如果死亡就处理死亡逻辑
-            if (this.HP<=0)
+            if (this.HP <= 0)
             {
-                Log.Info(LogColor.Red , "战斗系统" , $"对象死亡");
+                Log.Info(LogColor.Red, "战斗系统", $"对象死亡");
                 OnDeath();
             }
         }
     }
+
     /// <summary>
     /// 对象死亡
     /// </summary>
@@ -77,16 +89,23 @@ public partial class LogicActor : LogicObject
         RenderObj.OnDeath();
         OnDeathCallBack?.Invoke();
     }
+
     /// <summary>
     /// 浮空回调，
     /// </summary>
     /// <param name="uploating">是否处于上浮</param>
-    public virtual void Floating(bool upfoating) {}
+    public virtual void Floating(bool upfoating)
+    {
+    }
+
     /// <summary>
     /// 对象触地
     /// </summary>
     /// <param name="upfoating"></param>
-    public virtual void TriggerGround() { }
+    public virtual void TriggerGround()
+    {
+    }
+
     public override void OnDestroy()
     {
         base.OnDestroy();
@@ -96,5 +115,4 @@ public partial class LogicActor : LogicObject
     {
         this.RenderObj = renderObj;
     }
-    
 }

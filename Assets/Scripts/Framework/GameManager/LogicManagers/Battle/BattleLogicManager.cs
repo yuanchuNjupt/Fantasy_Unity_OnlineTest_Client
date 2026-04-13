@@ -137,9 +137,24 @@ namespace Framework.GameManagerFramework.LogicManagers
             
             //进行回滚相关的处理
             
+            //取预测失败的帧的前一帧快照进行回滚
+            if (_frameCommandLogicManager.Restore(rollbackToFrameId.Value - 1))
+            {
+                //回滚成功后，开始重新执行逻辑帧更新，直到追上服务器权威帧
+                ExecuteRollback(rollbackToFrameId.Value);
+            }
             
+        }
+
+        private void ExecuteRollback(long frameId)
+        {
+            //从第frameId帧开始，重播到客户端最新的预测帧数
+            for (long replayerFrameId = frameId; replayerFrameId <= LogicFrameConfig.LocalPredictedLogicFrameId; replayerFrameId++)
+            {
+                _frameCommandLogicManager.ExecuteFrameCommand(_frameCommandDataManager[replayerFrameId]);
+            }
             
-            
+            //TODO:全部执行完毕后再执行渲染更新
             
             
             
@@ -166,8 +181,6 @@ namespace Framework.GameManagerFramework.LogicManagers
                 
                 //获取当前采集的输入数据，进行本地预测
                 _frameCommandLogicManager.ExecutePredictionFrameCommand();
-                
-                
             }
 
 
